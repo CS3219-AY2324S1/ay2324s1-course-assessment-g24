@@ -4,4 +4,3 @@
 
 This repository contains the source code for PeerPrep: A collaborative tool that will help you crack technical interviews with ease!
 
-
