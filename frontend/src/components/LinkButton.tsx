@@ -1,7 +1,4 @@
-import { 
-  Button, 
-  Link,
-} from "@chakra-ui/react";
+import { Button, Link } from "@chakra-ui/react";
 
 const LinkButton = ({
   link,
@@ -9,10 +6,10 @@ const LinkButton = ({
   content,
   variant = "solid",
 }: {
-  link: string,
-  size: string,
-  content: string,
-  variant?: string,
+  link: string;
+  size: string;
+  content: string;
+  variant?: string;
 }) => {
   return (
     <Link
@@ -24,7 +21,7 @@ const LinkButton = ({
         {content}
       </Button>
     </Link>
-  )
-}
+  );
+};
 
 export default LinkButton;

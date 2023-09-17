@@ -9,8 +9,8 @@ import {
 } from "@chakra-ui/react";
 
 import hero from "../assets/hero.svg";
-import PeerPrepLogo from "../components/PeerPrepLogo";
 import LinkButton from "../components/LinkButton";
+import PeerPrepLogo from "../components/PeerPrepLogo";
 
 const HomePage = () => {
   return (
@@ -85,7 +85,12 @@ const HomePage = () => {
         <Box>
           <ButtonGroup>
             <LinkButton link={"/signup"} size={"lg"} content={"Sign Up"} />
-            <LinkButton link={"/login"} size={"lg"} content={"Login"} variant={"outline"} />
+            <LinkButton
+              link={"/login"}
+              size={"lg"}
+              content={"Login"}
+              variant={"outline"}
+            />
           </ButtonGroup>
         </Box>
       </Center>
