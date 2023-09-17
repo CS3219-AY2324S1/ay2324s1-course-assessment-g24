@@ -1,4 +1,7 @@
-import { Button, Link } from "@chakra-ui/react";
+import { 
+  Button, 
+  Link,
+} from "@chakra-ui/react";
 
 const LinkButton = ({
   link,

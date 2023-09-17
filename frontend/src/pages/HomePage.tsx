@@ -1,99 +1,45 @@
 import {
+  AbsoluteCenter,
   Box,
   ButtonGroup,
   Center,
-  Container,
-  Heading,
   Image,
-  Text,
+  VStack,
 } from "@chakra-ui/react";
 
 import hero from "../assets/hero.svg";
-import LinkButton from "../components/LinkButton";
 import PeerPrepLogo from "../components/PeerPrepLogo";
+import LinkButton from "../components/LinkButton";
+import HeadingWithGradient from "../components/HeadingWithGradient";
 
 const HomePage = () => {
   return (
     <>
+    <Box w={"100dvw"} h={"100dvh"}>
+      <AbsoluteCenter>
       <Center
+        w={"2xl"}
         display={"flex"}
         flexDirection={"column"}
-        justifyContent={"space-around"}
+        justifyContent={"space-between"}
       >
-        <Box w={"xl"} mt={6}>
-          <Image src={hero} alt={"Person coding happily!"} />
-        </Box>
-
-        <Box
-          w={{ base: "full", md: 11 / 12, xl: 9 / 12 }}
-          textAlign={{ base: "left", md: "center" }}
-          margin={"5"}
-        >
+        <Image src={hero} alt={"Person coding happily!"} mb={2} />
+        <VStack spacing={5}>
           <PeerPrepLogo />
-          <Heading
-            mb={6}
-            fontSize={{
-              base: "3xl",
-              md: "5xl",
-            }}
-            fontWeight="bold"
-            lineHeight="none"
-            letterSpacing={{
-              base: "normal",
-              md: "tight",
-            }}
-            color="gray.900"
-            _dark={{
-              color: "gray.100",
-            }}
-          >
-            The only{" "}
-            <Text
-              display={{
-                base: "block",
-                lg: "inline",
-              }}
-              w="full"
-              bgClip="text"
-              bgGradient="linear(to-r, orange.400, red.500)"
-              fontWeight="extrabold"
-            >
-              tech interview
-            </Text>{" "}
-            preparation tool you will ever need!
-          </Heading>
-          <Container maxW={"3xl"}>
-            <Text
-              px={{
-                base: 0,
-                lg: 24,
-              }}
-              fontSize={{
-                base: "lg",
-                md: "xl",
-              }}
-              color="gray.600"
-              _dark={{
-                color: "gray.300",
-              }}
-            >
-              PeerPrep is a tool where students can find peers to practice
-              whiteboard-style inteview questions together.
-            </Text>
-          </Container>
-        </Box>
-        <Box>
+          <HeadingWithGradient 
+            preText={"The only"} 
+            gradientText={"tech interview"} 
+            postText={"preparation tool you will ever need!"}
+            bgGradient={"linear(to-r, orange.400, red.500)"} 
+          />
           <ButtonGroup>
             <LinkButton link={"/signup"} size={"lg"} content={"Sign Up"} />
-            <LinkButton
-              link={"/login"}
-              size={"lg"}
-              content={"Login"}
-              variant={"outline"}
-            />
+            <LinkButton link={"/login"} size={"lg"} content={"Login"} variant={"outline"} />
           </ButtonGroup>
-        </Box>
+        </VStack>
       </Center>
+      </AbsoluteCenter>
+    </Box>
     </>
   );
 };
