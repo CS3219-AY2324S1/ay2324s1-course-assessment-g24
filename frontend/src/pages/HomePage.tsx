@@ -1,16 +1,16 @@
 import {
   Box,
-  Button,
   ButtonGroup,
   Center,
+  Container,
   Heading,
   Image,
-  Link,
   Text,
 } from "@chakra-ui/react";
 
 import hero from "../assets/hero.svg";
 import PeerPrepLogo from "../components/PeerPrepLogo";
+import LinkButton from "../components/LinkButton";
 
 const HomePage = () => {
   return (
@@ -62,44 +62,30 @@ const HomePage = () => {
             </Text>{" "}
             preparation tool you will ever need!
           </Heading>
-          <Text
-            px={{
-              base: 0,
-              lg: 24,
-            }}
-            fontSize={{
-              base: "lg",
-              md: "xl",
-            }}
-            color="gray.600"
-            _dark={{
-              color: "gray.300",
-            }}
-          >
-            PeerPrep is a tool where students can find peers to practice
-            whiteboard-style inteview questions together.
-          </Text>
+          <Container maxW={"3xl"}>
+            <Text
+              px={{
+                base: 0,
+                lg: 24,
+              }}
+              fontSize={{
+                base: "lg",
+                md: "xl",
+              }}
+              color="gray.600"
+              _dark={{
+                color: "gray.300",
+              }}
+            >
+              PeerPrep is a tool where students can find peers to practice
+              whiteboard-style inteview questions together.
+            </Text>
+          </Container>
         </Box>
         <Box>
           <ButtonGroup>
-            <Link
-              href={"/signup"}
-              textDecoration={"none"}
-              _hover={{ textDecoration: "none" }}
-            >
-              <Button size={"lg"} colorScheme={"orange"}>
-                Sign Up
-              </Button>
-            </Link>
-            <Link
-              href={"/login"}
-              textDecoration={"none"}
-              _hover={{ textDecoration: "none" }}
-            >
-              <Button size={"lg"} colorScheme={"orange"} variant={"outline"}>
-                Login
-              </Button>
-            </Link>
+            <LinkButton link={"/signup"} size={"lg"} content={"Sign Up"} />
+            <LinkButton link={"/login"} size={"lg"} content={"Login"} variant={"outline"} />
           </ButtonGroup>
         </Box>
       </Center>
