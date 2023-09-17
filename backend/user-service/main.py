@@ -126,12 +126,3 @@ async def read_own_items(current_user: User = Depends(get_current_active_user)):
 
 pwd = get_password_hash("hardik1234")
 print(pwd)
-
-
-
-
-
-
-
-
-

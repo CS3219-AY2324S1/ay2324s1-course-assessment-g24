@@ -1,28 +1,21 @@
-import { useState } from "react";
-import { Button, Container, Heading, HStack, Text } from "@chakra-ui/react";
+import { Route, Routes } from "react-router-dom";
+
+import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
+import NotFound from "./pages/NotFound";
+import SignUpPage from "./pages/SignUpPage";
 
 function App() {
-  const [count, setCount] = useState<number>(0);
-
   return (
     <>
-      <Container size={"md"}>
-        <Heading>
-          PeerPrep: The only tool you need to crack your technical interviews!
-        </Heading>
-        <Text>Rajarshi chutiya!</Text>
-        <Text>Count is {count}</Text>
-        <HStack>
-          <Button onClick={() => setCount(count + 1)}>
-            +
-          </Button>
-          <Button onClick={() => setCount(count - 1)}>
-            -
-          </Button>
-        </HStack>
-      </Container>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
