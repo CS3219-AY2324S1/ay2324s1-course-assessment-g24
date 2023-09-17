@@ -33,6 +33,16 @@ If the file, `requirements.txt`, is not present in the directory, you can procee
 pip freeze > requirements.txt
 ```
 
+We are using `cblack` as the code formatter for all the microservices. The configurations for the tool have been included in each microservice. `cblack` is built on top of `black`, one of the industry standard code formatters out there. It automatically looks up for config files before running, so there is no need to explicitly passing parameters. Note that this command should be run in the root of the microservice not the `backend` folder. 
+```
+cblack .
+```
+
+Optionally, if that doesn't work, one can achieve the same results by running this command.
+```
+python -m cblack -l 100 --include '\.pyi?$' .
+```
+
 ### Service Descriptions
 
 

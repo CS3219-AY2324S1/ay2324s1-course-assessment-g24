@@ -8,31 +8,27 @@ from core.config import settings
 from models.user_model import User
 
 app = FastAPI(
-    title=settings.PROJECT_NAME,
-    openapi_url=f"{settings.API_V1_STR}/openapi.json"
+  title=settings.PROJECT_NAME, openapi_url=f"{settings.API_V1_STR}/openapi.json"
 )
 
 app.add_middleware(
-    CORSMiddleware,
-    allow_origins=settings.BACKEND_CORS_ORIGINS,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+  CORSMiddleware,
+  allow_origins=settings.BACKEND_CORS_ORIGINS,
+  allow_credentials=True,
+  allow_methods=["*"],
+  allow_headers=["*"],
 )
+
 
 @app.on_event("startup")
 async def app_init():
-    """
-        initialize crucial application services
-    """
-    
-    db_client = AsyncIOMotorClient(settings.MONGO_CONNECTION_STRING).test
-    
-    await init_beanie(
-        database=db_client,
-        document_models= [
-            User
-        ]
-    )
-    
+  """
+  initialize crucial application services
+  """
+
+  db_client = AsyncIOMotorClient(settings.MONGO_CONNECTION_STRING).test
+
+  await init_beanie(database=db_client, document_models=[User])
+
+
 app.include_router(router, prefix=settings.API_V1_STR)
