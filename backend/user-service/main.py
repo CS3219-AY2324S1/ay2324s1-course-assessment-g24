@@ -7,20 +7,24 @@ from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 
-load_dotenv()
+# load_dotenv()
 
-os.getenv("SECRET_KEY")
-os.getenv("ALGORITHM")
-os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
+# os.getenv("SECRET_KEY")
+# os.getenv("ALGORITHM")
+# os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
 
-fake_db = {
-    "tim": {
+SECRET_KEY="9dd4c071e0432ae5937a5bd89509bc85c8a3cdb33efe898f35ecbd3289fd955b"
+ALGORITHM="HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+db = {
+    "hardik": {
         "username": "hardik",
         "full_name": "Hardik Narang",
         "email": "naranghardik16@gmail.com",
-        "hashed_password": "",
+        "hashed_password": "$2b$12$R4FvNCy9vcLe/eoiXYApyuy3Bw29LiitN3vd5GWOUJ25ryzgD3QWm",
         "disabled": False
     }
 }
@@ -74,14 +78,14 @@ def create_access_token(data: dict, expires_delta: timedelta or None = None):
         expire = datetime.utcnow() + timedelta(minutes=15)
 
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, os.getenv("SECRET_KEY"), algorithm=os.getenv("ALGORITHM"))
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     credential_exception = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, 
                                          detail="Could not validate credentials", headers={"WWW-Authenticate": "Bearer" })
     try: 
-        payload = jwt.decode(token, os.getenv("SECRET_KEY"), algorithms=[os.getenv("ALGORITHM")])
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get("sub")
         if username is None:
             raise credential_exception
@@ -90,7 +94,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
     except JWTError: 
         raise credential_exception
     
-    user = get_user(fake_db, username=token_data.username)
+    user = get_user(db, username=token_data.username)
     if user is None:
         raise credential_exception
     
@@ -104,10 +108,10 @@ async def get_current_active_user(current_user: UserInDB = Depends(get_current_u
 
 @app.post("/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = authenticate_user(fake_db, form_data.username, form_data.password)
+    user = authenticate_user(db, form_data.username, form_data.password)
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect username or password", headers={"WWW-Authenticate": "Bearer" })
-    access_token_expires = timedelta(minutes=os.getenv("ACCESS_TOKEN_EXPIRES_MINUTES"))
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires)
     return {"access_token": access_token, "token_type": "bearer"}
@@ -120,7 +124,8 @@ async def read_users_me(current_user: User = Depends(get_current_active_user)):
 async def read_own_items(current_user: User = Depends(get_current_active_user)):
     return [{"item_id": 1, "owner": current_user}]
 
-
+pwd = get_password_hash("hardik1234")
+print(pwd)
 
 
 
