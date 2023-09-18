@@ -60,7 +60,7 @@ VITE_BACKEND_URL="..."   # Vite can see this
 SOME_IMPORTANT_VAR="..." # Vite cannot see this
 ```
 
-With regards to the current version, the following environment variables are needed. 
+With regards to the current version, the following environment variables are needed. The recommendation is to name the file `.env.[mode]` where the `mode` can be `development` or `production` based on your environment. 
 ```
 VITE_USER_SERVICE_URL
 ```
