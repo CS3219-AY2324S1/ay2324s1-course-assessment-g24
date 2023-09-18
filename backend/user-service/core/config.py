@@ -1,11 +1,12 @@
 from typing import List
 
 from decouple import config
-from pydantic import AnyHttpUrl, BaseSettings
+from pydantic import AnyHttpUrl
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-  API_V1_STR: str = "/api/v1"
+  API_STR: str = "/api"
   JWT_SECRET_KEY: str = config("JWT_SECRET_KEY", cast=str)
   JWT_REFRESH_SECRET_KEY: str = config("JWT_REFRESH_SECRET_KEY", cast=str)
   ALGORITHM: str = config("HASHING_ALGORITHM", cast=str)

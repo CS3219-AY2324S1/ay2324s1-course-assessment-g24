@@ -5,13 +5,13 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
 from pydantic import ValidationError
 
-from controllers.user_controller import UserService
+from controllers.user_controller import UserController
 from core.config import settings
 from models.user_model import User
 from schemas.auth_schema import TokenPayload
 
 reuseable_oauth = OAuth2PasswordBearer(
-  tokenUrl=f"{settings.API_V1_STR}/auth/login", scheme_name="JWT"
+  tokenUrl=f"{settings.API_STR}/auth/login", scheme_name="JWT"
 )
 
 
@@ -35,7 +35,7 @@ async def get_current_user(token: str = Depends(reuseable_oauth)) -> User:
       headers={"WWW-Authenticate": "Bearer"},
     )
 
-  user = await UserService.get_user_by_id(token_data.sub)
+  user = await UserController.get_user_by_id(token_data.sub)
 
   if not user:
     raise HTTPException(
