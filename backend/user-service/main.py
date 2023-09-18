@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from api.api_v1.router import router
+from api.router import router
 from core.config import settings
 from models.user_model import User
 
@@ -22,12 +22,7 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def app_init():
-  """
-  initialize crucial application services
-  """
-
-  db_client = AsyncIOMotorClient(settings.MONGO_CONNECTION_STRING).test
-
+  db_client = AsyncIOMotorClient(settings.MONGODB_CONNECTION_STRING).test
   await init_beanie(database=db_client, document_models=[User])
 
 

@@ -1,17 +1,17 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Body
-from fastapi.security import OAuth2PasswordRequestForm
 from typing import Any
-from controllers.user_controller import UserController
-from core.security import create_access_token, create_refresh_token
-from schemas.auth_schema import TokenSchema
-from schemas.user_schema import UserOut
-from models.user_model import User
-from api.deps.user_deps import get_current_user
-from core.config import settings
-from schemas.auth_schema import TokenPayload
-from pydantic import ValidationError
-from jose import jwt
 
+from fastapi import APIRouter, Body, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
+from jose import jwt
+from pydantic import ValidationError
+
+from api.deps.user_deps import get_current_user
+from controllers.user_controller import UserController
+from core.config import settings
+from core.security import create_access_token, create_refresh_token
+from models.user_model import User
+from schemas.auth_schema import TokenPayload, TokenSchema
+from schemas.user_schema import UserOut
 
 auth_router = APIRouter()
 

@@ -1,11 +1,13 @@
 from datetime import datetime
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from core.config import settings
-from models.user_model import User
 from jose import jwt
 from pydantic import ValidationError
+
 from controllers.user_controller import UserService
+from core.config import settings
+from models.user_model import User
 from schemas.auth_schema import TokenPayload
 
 reuseable_oauth = OAuth2PasswordBearer(

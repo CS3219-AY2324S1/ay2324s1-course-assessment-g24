@@ -1,11 +1,11 @@
 from typing import Optional
 from uuid import UUID
-from schemas.user_schema import UserAuth
-from models.user_model import User
-from core.security import get_password, verify_password
+
 import pymongo
 
-from schemas.user_schema import UserUpdate
+from core.security import get_password, verify_password
+from models.user_model import User
+from schemas.user_schema import UserAuth, UserUpdate
 
 
 class UserController:
