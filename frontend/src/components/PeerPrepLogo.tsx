@@ -2,7 +2,7 @@ import { Box, Text } from "@chakra-ui/react";
 
 const PeerPrepLogo = () => {
   return (
-    <Box mb={5} transform={"rotate(-2deg)"}>
+    <Box transform={"rotate(-2deg)"} mx={4} my={1}>
       <Text
         fontSize={{
           base: "4xl",
@@ -22,8 +22,8 @@ const PeerPrepLogo = () => {
           "linear-gradient(to right, #F27121cc, #E94057cc, #8A2387cc)"
         }
         borderRadius={6}
-        paddingY={1}
-        paddingX={4}
+        py={1}
+        px={4}
       >
         PeerPrep
       </Text>
