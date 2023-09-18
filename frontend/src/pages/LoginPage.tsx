@@ -1,33 +1,29 @@
-import { 
-  AbsoluteCenter, 
+import {
+  AbsoluteCenter,
   Box,
+  Button,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Input,
-  Button
+  VStack,
 } from "@chakra-ui/react";
+import { Field, Formik } from "formik";
+import { object, string } from "yup";
 
 import PeerPrepLogo from "../components/PeerPrepLogo";
+import LinkButton from "../components/LinkButton";
 
-import { useState } from "react";
-
-interface IUser {
-  username: string;
-  email: string;
-  password: string;
-};
+const loginValidation = object().shape({
+  email: string()
+    .required("Valid Email Required")
+    .email("Valid Email Required"),
+  password: string()
+    .min(8, "Password length cannot be smaller than 8")
+    .required("Required"),
+});
 
 const LoginPage = () => {
-  // const [user, setUser] = useState<IUser|null>(null);
-
-  // const handleChange = ({ name, value }: { name: string, value: string }) => {
-  // }
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log(e.target);
-  }
-
   return (
     <>
       <Box w={"100dvw"} h={"100dvh"}>
@@ -35,46 +31,67 @@ const LoginPage = () => {
           <Box mb={5}>
             <PeerPrepLogo />
           </Box>
-          <Box px={5} py={1} borderRadius={5}>
-          <Box as={"form"} mt={2} w={"md"} onSubmit={handleSubmit}>
-            <FormControl isRequired m={3}>
-              <FormLabel>Email</FormLabel>
-              <Input
-                backgroundColor={"white"}
-                placeholder={"Email"}
-                type={"email"}
-                size={"lg"}
-                // onChange={(e) => handleChange(e.target)}
-              />
-            </FormControl>
-            <FormControl isRequired m={3}>
-              <FormLabel>Password</FormLabel>
-              <Input
-                backgroundColor={"white"}
-                placeholder={"Password"}
-                type={"password"}
-                size={"lg"}
-              />
-            </FormControl>
-            <Button
-              loadingText={"Logging in..."}
-              width={"100%"}
-              variant={"solid"}
-              colorScheme={"orange"}
-              m={2}
-              type={"submit"}
+          <Box bg="white" p={6} rounded={"md"} w={"sm"}>
+            <Formik
+              initialValues={{
+                email: "",
+                password: "",
+              }}
+              onSubmit={(values) => {
+                alert(JSON.stringify(values, null, 2));
+              }}
+              validationSchema={loginValidation}
             >
-              Login
-            </Button>
-          </Box>
+              {({ handleSubmit, errors, touched }) => (
+                <Box as={"form"} onSubmit={handleSubmit}>
+                  <VStack spacing={4} align="flex-start">
+                    <FormControl>
+                      <FormLabel htmlFor={"email"}>Email Address</FormLabel>
+                      <Field
+                        as={Input}
+                        id="email"
+                        name="email"
+                        type="email"
+                        variant="filled"
+                        size={"lg"}
+                        placeholder={"Email"}
+                      />
+                    </FormControl>
+                    <FormControl
+                      isInvalid={!!errors.password && touched.password}
+                    >
+                      <FormLabel htmlFor={"password"}>Password</FormLabel>
+                      <Field
+                        as={Input}
+                        id="password"
+                        name="password"
+                        type="password"
+                        variant="filled"
+                        size={"lg"}
+                        placeholder={"Password"}
+                      />
+                      <FormErrorMessage>{errors.password}</FormErrorMessage>
+                    </FormControl>
+                    <Button
+                      loadingText={"Logging in..."}
+                      width={"full"}
+                      variant={"solid"}
+                      colorScheme={"orange"}
+                      type={"submit"}
+                      size={"lg"}
+                    >
+                      Login
+                    </Button>
+                    <LinkButton link={"/"} width={"full"} size={"lg"} content={"Go Back"} variant={"outline"} />
+                  </VStack>
+                </Box>
+              )}
+            </Formik>
           </Box>
         </AbsoluteCenter>
       </Box>
     </>
   );
 };
-
-// form box
-// form 
 
 export default LoginPage;

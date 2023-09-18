@@ -8,38 +8,43 @@ import {
 } from "@chakra-ui/react";
 
 import hero from "../assets/hero.svg";
-import PeerPrepLogo from "../components/PeerPrepLogo";
-import LinkButton from "../components/LinkButton";
 import HeadingWithGradient from "../components/HeadingWithGradient";
+import LinkButton from "../components/LinkButton";
+import PeerPrepLogo from "../components/PeerPrepLogo";
 
 const HomePage = () => {
   return (
     <>
-    <Box w={"100dvw"} h={"100dvh"}>
-      <AbsoluteCenter>
-      <Center
-        w={"2xl"}
-        display={"flex"}
-        flexDirection={"column"}
-        justifyContent={"space-between"}
-      >
-        <Image src={hero} alt={"Person coding happily!"} mb={2} />
-        <VStack spacing={5}>
-          <PeerPrepLogo />
-          <HeadingWithGradient 
-            preText={"The only"} 
-            gradientText={"tech interview"} 
-            postText={"preparation tool you will ever need!"}
-            bgGradient={"linear(to-r, orange.400, red.500)"} 
-          />
-          <ButtonGroup>
-            <LinkButton link={"/signup"} size={"lg"} content={"Sign Up"} />
-            <LinkButton link={"/login"} size={"lg"} content={"Login"} variant={"outline"} />
-          </ButtonGroup>
-        </VStack>
-      </Center>
-      </AbsoluteCenter>
-    </Box>
+      <Box w={"100dvw"} h={"100dvh"}>
+        <AbsoluteCenter>
+          <Center
+            w={"2xl"}
+            display={"flex"}
+            flexDirection={"column"}
+            justifyContent={"space-between"}
+          >
+            <Image src={hero} alt={"Person coding happily!"} mb={2} />
+            <VStack spacing={5}>
+              <PeerPrepLogo />
+              <HeadingWithGradient
+                preText={"The only"}
+                gradientText={"tech interview"}
+                postText={"preparation tool you will ever need!"}
+                bgGradient={"linear(to-r, orange.400, red.500)"}
+              />
+              <ButtonGroup>
+                <LinkButton link={"/signup"} size={"lg"} content={"Sign Up"} />
+                <LinkButton
+                  link={"/login"}
+                  size={"lg"}
+                  content={"Login"}
+                  variant={"outline"}
+                />
+              </ButtonGroup>
+            </VStack>
+          </Center>
+        </AbsoluteCenter>
+      </Box>
     </>
   );
 };

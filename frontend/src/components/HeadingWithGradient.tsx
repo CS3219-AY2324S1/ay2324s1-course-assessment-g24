@@ -1,7 +1,4 @@
-import {
-  Heading,
-  Text,
-} from "@chakra-ui/react";
+import { Heading, Text } from "@chakra-ui/react";
 
 const HeadingWithGradient = ({
   preText,
@@ -9,10 +6,10 @@ const HeadingWithGradient = ({
   postText,
   bgGradient,
 }: {
-  preText: string,
-  gradientText: string,
-  postText: string,
-  bgGradient: string,
+  preText: string;
+  gradientText: string;
+  postText: string;
+  bgGradient: string;
 }) => {
   return (
     <>
@@ -44,11 +41,11 @@ const HeadingWithGradient = ({
           fontWeight="extrabold"
         >
           {gradientText}
-        </Text>
-        {" "}{postText}
+        </Text>{" "}
+        {postText}
       </Heading>
     </>
-  )
-}
+  );
+};
 
 export default HeadingWithGradient;
