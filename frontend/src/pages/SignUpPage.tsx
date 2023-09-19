@@ -50,7 +50,7 @@ const SignUpPage = () => {
               }}
               validationSchema={signUpValidation}
             >
-              {({ handleSubmit, errors, touched }) => (
+              {({ handleSubmit, errors, touched, values }) => (
                 <Box as={"form"} onSubmit={handleSubmit}>
                   <VStack spacing={4} align="flex-start">
                     <FormControl>
@@ -84,6 +84,9 @@ const SignUpPage = () => {
                       isInvalid={
                         !!errors.confirmPassword && touched.confirmPassword
                       }
+                      isDisabled={
+                        values.password == "" || values.password.length < 8
+                      }
                     >
                       <FormLabel htmlFor={"password"}>
                         Confirm Password
@@ -108,18 +111,19 @@ const SignUpPage = () => {
                       colorScheme={"orange"}
                       type={"submit"}
                       size={"lg"}
+                      mt={4}
                     >
                       Sign Up
                     </Button>
-                    <HStack w="105%" mt={"3"}>
-                      <Text w={"150%"} fontSize="sm">
+                    <HStack w={"md"}>
+                      <Text fontSize={"sm"} whiteSpace={"nowrap"}>
                         Already have an account?
                       </Text>
                       <Spacer />
                       <LinkButton
                         link={"/login"}
                         size={"md"}
-                        content={"Log in"}
+                        content={"Login"}
                         variant={"link"}
                       />
                     </HStack>

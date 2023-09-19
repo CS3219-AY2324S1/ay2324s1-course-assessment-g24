@@ -78,8 +78,8 @@ const LoginPage = () => {
                     </FormControl>
 
                     <Link to={"/forgotpassword"} style={{ marginLeft: "auto" }}>
-                      <Button colorScheme="orange" variant="link" size={"sm"}>
-                        Forgot Password
+                      <Button colorScheme="orange" variant="link" size={"md"}>
+                        Forgot Password?
                       </Button>
                     </Link>
 
@@ -93,8 +93,8 @@ const LoginPage = () => {
                     >
                       Login
                     </Button>
-                    <HStack w="105%" mt={"3"}>
-                      <Text w={"150%"} fontSize="sm">
+                    <HStack w={"md"}>
+                      <Text fontSize={"sm"} whiteSpace={"nowrap"}>
                         Don't have an account?
                       </Text>
                       <Spacer />

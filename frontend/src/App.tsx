@@ -15,7 +15,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/forgotpassword" element={<ForgotPassword />} />
-        <Route path="/verificationEmailSent" element={<VerificationEmail />} />
+        <Route path="/verification" element={<VerificationEmail />} />
         <Route path="/resetpassword" element={<ResetPassword />} />
         <Route path="/" element={<HomePage />} />
         <Route path="*" element={<NotFound />} />

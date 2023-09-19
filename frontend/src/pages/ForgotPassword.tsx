@@ -5,7 +5,6 @@ import {
   FormControl,
   FormLabel,
   Input,
-  VStack,
 } from "@chakra-ui/react";
 import { Field, Formik } from "formik";
 import { Link } from "react-router-dom";
@@ -17,57 +16,49 @@ const ForgotPassword = () => {
     <>
       <Box w={"100dvw"} h={"100dvh"}>
         <AbsoluteCenter>
-          <Box
-            w={"2xl"}
-            display={"flex"}
-            flexDirection={"column"}
-            justifyContent={"space-between"}
-            alignItems={"center"}
-          >
-            <VStack spacing={5}>
-              <PeerPrepLogo />
-              <Formik
-                initialValues={{
-                  email: "",
-                }}
-                onSubmit={(values) => {
-                  alert(JSON.stringify(values, null, 2));
-                }}
-              >
-                {({ handleSubmit }) => (
-                  <Box as={"form"} onSubmit={handleSubmit}>
-                    <VStack spacing={4} align="flex-start">
-                      <FormControl>
-                        <FormLabel htmlFor={"email"}>Email Address</FormLabel>
-                        <Field
-                          as={Input}
-                          id="email"
-                          name="email"
-                          type="email"
-                          variant="filled"
-                          size={"lg"}
-                          placeholder={"Email"}
-                        />
-                      </FormControl>
-                      <Link to={"/verificationEmailSent"}>
-                        <div style={{ margin: "auto" }}>
-                          <Button
-                            loadingText={"Sending email..."}
-                            variant={"solid"}
-                            colorScheme={"orange"}
-                            type={"submit"}
-                            size={"md"}
-                            ml={"20%"}
-                          >
-                            Send Reset Email
-                          </Button>
-                        </div>
-                      </Link>
-                    </VStack>
-                  </Box>
-                )}
-              </Formik>
-            </VStack>
+          <Box mb={5}>
+            <PeerPrepLogo />
+          </Box>
+          <Box bg="white" p={6} rounded={"md"} w={"sm"}>
+            <Formik
+              initialValues={{
+                email: "",
+              }}
+              onSubmit={(values) => {
+                alert(JSON.stringify(values, null, 2));
+              }}
+            >
+              {({ handleSubmit }) => (
+                <Box as={"form"} onSubmit={handleSubmit}>
+                  <FormControl>
+                    <FormLabel htmlFor={"email"}>Email Address</FormLabel>
+                    <Field
+                      as={Input}
+                      id="email"
+                      name="email"
+                      type="email"
+                      variant="filled"
+                      size={"lg"}
+                      placeholder={"Email"}
+                      width={"full"}
+                    />
+                  </FormControl>
+                  <Link to={"/verification"}>
+                    <Button
+                      loadingText={"Sending email..."}
+                      variant={"solid"}
+                      colorScheme={"orange"}
+                      type={"submit"}
+                      size={"md"}
+                      width={"full"}
+                      mt={4}
+                    >
+                      Send Reset Email
+                    </Button>
+                  </Link>
+                </Box>
+              )}
+            </Formik>
           </Box>
         </AbsoluteCenter>
       </Box>
