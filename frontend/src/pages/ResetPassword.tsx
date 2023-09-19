@@ -5,23 +5,24 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
-  HStack,
   Input,
-  Spacer,
-  Text,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverHeader,
+  PopoverTrigger,
+  Portal,
   VStack,
 } from "@chakra-ui/react";
 import { Field, Formik } from "formik";
+import { Link } from "react-router-dom";
 import { object, ref, string } from "yup";
 
-import LinkButton from "../components/LinkButton";
 import PeerPrepLogo from "../components/PeerPrepLogo";
 
-const signUpValidation = object().shape({
-  email: string()
-    .required("Valid Email Required")
-    .email("Valid Email Required")
-    .required("Required"),
+const newPasswordValidation = object().shape({
   password: string()
     .min(8, "Password length cannot be smaller than 8")
     .required("Required"),
@@ -30,7 +31,7 @@ const signUpValidation = object().shape({
     .oneOf([ref("password")], "Passwords do not match"),
 });
 
-const SignUpPage = () => {
+const ResetPassword = () => {
   return (
     <>
       <Box w={"100dvw"} h={"100dvh"}>
@@ -41,42 +42,29 @@ const SignUpPage = () => {
           <Box bg="white" p={6} rounded={"md"} w={"sm"}>
             <Formik
               initialValues={{
-                email: "",
                 password: "",
                 confirmPassword: "",
               }}
               onSubmit={(values) => {
                 alert(JSON.stringify(values, null, 2));
               }}
-              validationSchema={signUpValidation}
+              validationSchema={newPasswordValidation}
             >
               {({ handleSubmit, errors, touched }) => (
                 <Box as={"form"} onSubmit={handleSubmit}>
                   <VStack spacing={4} align="flex-start">
-                    <FormControl>
-                      <FormLabel htmlFor={"email"}>Email Address</FormLabel>
-                      <Field
-                        as={Input}
-                        id="email"
-                        name="email"
-                        type="email"
-                        variant="filled"
-                        size={"lg"}
-                        placeholder={"Email"}
-                      />
-                    </FormControl>
                     <FormControl
                       isInvalid={!!errors.password && touched.password}
                     >
                       <FormLabel htmlFor={"password"}>Password</FormLabel>
                       <Field
                         as={Input}
-                        id="password"
-                        name="password"
+                        id="new password"
+                        name="new password"
                         type="password"
                         variant="filled"
                         size={"lg"}
-                        placeholder={"Password"}
+                        placeholder={"New Password"}
                       />
                       <FormErrorMessage>{errors.password}</FormErrorMessage>
                     </FormControl>
@@ -101,28 +89,44 @@ const SignUpPage = () => {
                         {errors.confirmPassword}
                       </FormErrorMessage>
                     </FormControl>
-                    <Button
-                      loadingText={"Logging in..."}
-                      width={"full"}
-                      variant={"solid"}
-                      colorScheme={"orange"}
-                      type={"submit"}
-                      size={"lg"}
-                    >
-                      Sign Up
-                    </Button>
-                    <HStack w="105%" mt={"3"}>
-                      <Text w={"150%"} fontSize="sm">
-                        Already have an account?
-                      </Text>
-                      <Spacer />
-                      <LinkButton
-                        link={"/login"}
-                        size={"md"}
-                        content={"Log in"}
-                        variant={"link"}
-                      />
-                    </HStack>
+                    <Popover>
+                      <PopoverTrigger>
+                        <Button
+                          loadingText={"Logging in..."}
+                          width={"full"}
+                          variant={"solid"}
+                          colorScheme={"orange"}
+                          type={"submit"}
+                          size={"lg"}
+                        >
+                          Reset Password
+                        </Button>
+                      </PopoverTrigger>
+                      <Portal>
+                        <PopoverContent>
+                          <PopoverArrow />
+                          <PopoverHeader>
+                            Your password has been successfully changed! Proceed
+                            to Logging in.
+                          </PopoverHeader>
+                          <PopoverCloseButton />
+                          <PopoverBody>
+                            <Link to={"/login"}>
+                              <Button
+                                loadingText={"Logging in..."}
+                                width={"full"}
+                                variant={"solid"}
+                                colorScheme={"orange"}
+                                type={"submit"}
+                                size={"lg"}
+                              >
+                                Log In
+                              </Button>
+                            </Link>
+                          </PopoverBody>
+                        </PopoverContent>
+                      </Portal>
+                    </Popover>
                   </VStack>
                 </Box>
               )}
@@ -134,4 +138,4 @@ const SignUpPage = () => {
   );
 };
 
-export default SignUpPage;
+export default ResetPassword;

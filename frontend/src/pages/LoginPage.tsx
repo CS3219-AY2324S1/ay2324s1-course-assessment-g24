@@ -5,14 +5,18 @@ import {
   FormControl,
   FormErrorMessage,
   FormLabel,
+  HStack,
   Input,
+  Spacer,
+  Text,
   VStack,
 } from "@chakra-ui/react";
 import { Field, Formik } from "formik";
+import { Link } from "react-router-dom";
 import { object, string } from "yup";
 
-import PeerPrepLogo from "../components/PeerPrepLogo";
 import LinkButton from "../components/LinkButton";
+import PeerPrepLogo from "../components/PeerPrepLogo";
 
 const loginValidation = object().shape({
   email: string()
@@ -72,6 +76,13 @@ const LoginPage = () => {
                       />
                       <FormErrorMessage>{errors.password}</FormErrorMessage>
                     </FormControl>
+
+                    <Link to={"/forgotpassword"} style={{ marginLeft: "auto" }}>
+                      <Button colorScheme="orange" variant="link" size={"sm"}>
+                        Forgot Password
+                      </Button>
+                    </Link>
+
                     <Button
                       loadingText={"Logging in..."}
                       width={"full"}
@@ -82,7 +93,18 @@ const LoginPage = () => {
                     >
                       Login
                     </Button>
-                    <LinkButton link={"/"} width={"full"} size={"lg"} content={"Go Back"} variant={"outline"} />
+                    <HStack w="105%" mt={"3"}>
+                      <Text w={"150%"} fontSize="sm">
+                        Don't have an account?
+                      </Text>
+                      <Spacer />
+                      <LinkButton
+                        link={"/signup"}
+                        size={"md"}
+                        content={"Sign Up"}
+                        variant={"link"}
+                      />
+                    </HStack>
                   </VStack>
                 </Box>
               )}
