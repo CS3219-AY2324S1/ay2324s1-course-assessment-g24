@@ -1,9 +1,11 @@
 from pydantic import BaseModel
 from beanie import init_beanie
+from beanie import Document
 from beanie.odm.models import init_document
 
-class CodeEditorContent(BaseModel):
+class CodeEditorContent(Document):
     user_id: str
     content: str
 
-init_document(CodeEditorContent)
+    class Settings:
+        name = "code-editor"
