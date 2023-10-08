@@ -16,14 +16,21 @@ from schemas.user_schema import UserOut
 auth_router = APIRouter()
 
 
+from pydantic import BaseModel
+
+class UserLoginModel(BaseModel):
+  email: str
+  password: str
+
+
 @auth_router.post(
   "/login",
   summary="Create access and refresh tokens for user",
   response_model=TokenSchema,
 )
-async def login(form_data: OAuth2PasswordRequestForm = Depends()) -> Any:
+async def login(user_data: UserLoginModel) -> Any:
   user = await UserController.authenticate(
-    email=form_data.username, password=form_data.password
+    email=user_data.email, password=user_data.password
   )
   if not user:
     raise HTTPException(
