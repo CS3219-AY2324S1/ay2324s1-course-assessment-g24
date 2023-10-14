@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, WebSocket
 from beanie import init_beanie
 from pydantic import BaseModel
-from db import database
 from models.code_editor_model import CodeEditorContent
+from schema.code_editor_schema import CodeEditorContentSchema
 from socketio import AsyncClient
+from core.config import settings
 
 router = APIRouter()
 
@@ -14,7 +15,6 @@ async def websocket_endpoint(
     sio: AsyncClient = Depends(get_socketio_client)
 ):
     await websocket.accept()
-    await sio.connect("http://localhost:8000/ws")
     await sio.emit("join_room", room=user_id)
 
     while True:

@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\backend",
+    "\\backend\\collaboration-service",
+    "\\backend\\collaboration-service\\controllers",
+    "\\backend\\collaboration-service\\core",
+    "\\backend\\collaboration-service\\models",
+    "\\backend\\collaboration-service\\schemas",
+    "\\backend\\question-service",
+    "\\backend\\user-service",
+    "\\backend\\user-service\\core"
+  ],
+  "SelectedNode": "\\backend",
+  "PreviewInSolutionExplorer": false
+}
