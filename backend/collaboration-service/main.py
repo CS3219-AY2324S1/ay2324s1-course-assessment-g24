@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Path
+from fastapi import FastAPI, HTTPException, Path, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -7,6 +7,8 @@ from typing import List
 from bson import ObjectId
 from dotenv import load_dotenv
 import os
+import asyncio
+import websockets
 
 class User(BaseModel):
     username: str
@@ -45,20 +47,32 @@ async def send_message(message: Message):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/api/get-messages/{sender_id}/{receiver_id}")
-async def get_messages(sender_id: str, receiver_id: str):
-    try:
-        cursor = app.mongodb.messages.find({
-            "$or": [
-                {"senderId": sender_id, "receiverId": receiver_id},
-                {"senderId": receiver_id, "receiverId": sender_id}
-            ]
-        })
+# @app.get("/api/get-messages/{sender_id}/{receiver_id}")
+# async def get_messages(sender_id: str, receiver_id: str):
+#     try:
+#         cursor = app.mongodb.messages.find({
+#             "$or": [
+#                 {"senderId": sender_id, "receiverId": receiver_id},
+#                 {"senderId": receiver_id, "receiverId": sender_id}
+#             ]
+#         })
         
-        messages = [message async for message in cursor]
-        # Convert ObjectId to string
-        for message in messages:
-            message['_id'] = str(message['_id'])
-        return messages
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+#         messages = [message async for message in cursor]
+#         # Convert ObjectId to string
+#         for message in messages:
+#             message['_id'] = str(message['_id'])
+#         return messages
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.websocket("/ws/{user_id}")
+async def websocket_endpoint(websocket: WebSocket, user_id: str):
+    await manager.connect(websocket)
+    try:
+        while True:
+            data = await websocket.receive_text()
+            await manager.broadcast(f"User {user_id}: {data}")
+    except WebSocketDisconnect:
+        manager.disconnect(websocket)
+        await manager.broadcast(f"User {user_id} left the chat")
