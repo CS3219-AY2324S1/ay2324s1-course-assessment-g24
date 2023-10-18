@@ -8,7 +8,8 @@ class QuestionRepo(Document):
   topic: str
   difficulty_level: str
   title: str
-  prompt: str
+  question_prompt: str
+  examples: str
   
   class Settings:
     name = "question-repo"
