@@ -5,6 +5,7 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import NotFound from "./pages/NotFound";
 import ResetPassword from "./pages/ResetPassword";
+import Room from "./pages/Room";
 import SignUpPage from "./pages/SignUpPage";
 import VerificationEmail from "./pages/VerificationEmail";
 
@@ -17,6 +18,7 @@ function App() {
         <Route path="/forgotpassword" element={<ForgotPassword />} />
         <Route path="/verification" element={<VerificationEmail />} />
         <Route path="/resetpassword" element={<ResetPassword />} />
+        <Route path="/room" element={<Room />} />
         <Route path="/" element={<HomePage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
