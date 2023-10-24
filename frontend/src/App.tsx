@@ -40,17 +40,42 @@
 
 // export default App;
 
-import React from 'react';
+// import React from 'react';
+// import CodeEditor from './pages/CodeEditor';
+
+// function App() {
+//   return (
+//     <div className="App">
+//       <CodeEditor />
+//     </div>
+//   );
+// }
+
+// export default App;
+
+import React, { useState } from 'react';
 import CodeEditor from './pages/CodeEditor';
 
-function App() {
+const App: React.FC = () => {
+  const [user_id, setUserId] = useState('');
+  const [partner_id, setPartnerId] = useState('');
+
   return (
-    <div className="App">
-      <CodeEditor />
+    <div>
+      <h1>Realtime Collaborative Code Editor</h1>
+      <input 
+        type="text" 
+        placeholder="Your ID" 
+        value={user_id} 
+        onChange={(e) => setUserId(e.target.value)} 
+      />
+      <CodeEditor user_id={user_id} />
     </div>
   );
-}
+};
 
 export default App;
+
+
 
 

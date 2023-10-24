@@ -1,70 +1,50 @@
-// import React, { useState, useEffect } from 'react';
-// import { Textarea, Box } from '@chakra-ui/react';
+import React, { useState, useEffect, useRef } from 'react';
 
-// interface CodeEditorProps {
-//   user_id: string;
-// }
+interface Props {
+  user_id: string;
+}
 
-// const CodeEditor: React.FC<CodeEditorProps> = ({ user_id }) => {
-//   const [content, setContent] = useState('');
-
-//   useEffect(() => {
-//     const socket = new WebSocket(`ws://localhost:8000/ws/user1`);
-
-//     socket.addEventListener('open', (event) => {
-//       console.log('WebSocket connected');
-//     });
-
-//     socket.addEventListener('message', (event) => {
-//       setContent(event.data);
-//     });
-
-//     return () => {
-//       socket.close();
-//     };
-//   }, [user_id]);
-
-//   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-//     const newContent = e.target.value;
-//     setContent(newContent);
-//   };
-
-//   return (
-//     <Box>
-//       <Textarea value={content} onChange={handleChange} />
-//     </Box>
-//   );
-// };
-
-// export default CodeEditor;
-
-import React, { useState, useEffect } from 'react';
-import { io, Socket } from 'socket.io-client';
-
-const socket: Socket = io('http://localhost:8000'); // Replace with your backend URL
-
-const CodeEditor: React.FC = () => {
-  const [content, setContent] = useState('');
+const CodeEditor: React.FC<Props> = ({ user_id }) => {
+  const [code, setCode] = useState('');
+  const socketRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    socket.on('content-change', (newContent: string) => {
-      setContent(newContent);
-    });
-  }, []);
+    const socket = new WebSocket(`ws://localhost:8000/ws/${user_id}`);
+    socketRef.current = socket;
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newContent = e.target.value;
-    setContent(newContent);
-    socket.emit('content-change', newContent);
+    socket.onopen = () => {
+      console.log('WebSocket connected');
+    };
+
+    socket.onmessage = (event) => {
+      const data = event.data;
+      setCode(data);
+    };
+
+    socket.onclose = () => {
+      console.log('WebSocket disconnected');
+      setTimeout(() => {
+        const newSocket = new WebSocket(`ws://localhost:8000/ws/${user_id}`);
+        socketRef.current = newSocket;
+      }, 3000);
+    };
+
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.close();
+      }
+    };
+  }, [user_id]);
+
+  const handleCodeChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newCode = e.target.value;
+    setCode(newCode);
+    if (socketRef.current) {
+      socketRef.current.send(newCode);
+    }
   };
 
-  return (
-    <textarea
-      value={content}
-      onChange={handleInputChange}
-      style={{ width: '100%', height: '400px' }}
-    />
-  );
+  return <textarea value={code} onChange={handleCodeChange} />;
 };
 
 export default CodeEditor;
