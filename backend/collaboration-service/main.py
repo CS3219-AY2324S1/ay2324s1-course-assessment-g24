@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 import os
 import asyncio
 import websockets
+from websocket_server import start_server
 
 class User(BaseModel):
     username: str
@@ -38,6 +39,10 @@ async def on_startup():
     client = AsyncIOMotorClient(os.getenv('MONGODB_CONNECTION_STRING'))
     app.mongodb = client.get_database("test")
 
+    loop = asyncio.get_event_loop()
+    loop.create_task(start_server())  # Start WebSocket server as a separate task
+
+
 @app.post("/api/send-message")
 async def send_message(message: Message):
     try:
@@ -66,13 +71,32 @@ async def send_message(message: Message):
 #         raise HTTPException(status_code=500, detail=str(e))
 
 
+class WebSocketManager:
+    def __init__(self):
+        self.connections = {}
+
+    async def connect(self, websocket, user_id):
+        await websocket.accept()
+        self.connections[user_id] = websocket
+
+    def disconnect(self, user_id):
+        del self.connections[user_id]
+
+    async def send_message(self, receiver_id, message):
+        await self.connections[receiver_id].send_text(message)
+
+manager = WebSocketManager()
+
 @app.websocket("/ws/{user_id}")
 async def websocket_endpoint(websocket: WebSocket, user_id: str):
-    await manager.connect(websocket)
+    await manager.connect(websocket, user_id)
     try:
         while True:
             data = await websocket.receive_text()
-            await manager.broadcast(f"User {user_id}: {data}")
+            message = json.loads(data)
+            receiver_id = message['receiverId']
+            await manager.send_message(receiver_id, data)
     except WebSocketDisconnect:
-        manager.disconnect(websocket)
+        manager.disconnect(user_id)
         await manager.broadcast(f"User {user_id} left the chat")
+
