@@ -71,8 +71,7 @@ function Navbar() {
               <p>Username</p>
             </Center>
             <MenuDivider />
-            <MenuItem>Your Servers</MenuItem>
-            <MenuItem>Account Settings</MenuItem>
+            <Link to={"/editprofile"}><MenuItem>Account Settings</MenuItem></Link>
             <MenuItem>Logout</MenuItem>
           </MenuList>
         </Menu>

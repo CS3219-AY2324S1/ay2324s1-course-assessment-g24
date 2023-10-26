@@ -9,6 +9,8 @@ import SignUpPage from "./pages/SignUpPage";
 import VerificationEmail from "./pages/VerificationEmail";
 import LoadingPage from "./pages/LoadingPage";
 import Matchmaker from "./pages/Matchmaker";
+import EditProfile from "./pages/EditProfile";
+import ChangePassword from "./pages/ChangePassword";
 
 function App() {
   return (
@@ -23,6 +25,8 @@ function App() {
         <Route path="/loadingpage" element={<LoadingPage />} />
         <Route path="/matchmaker" element={<Matchmaker />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="/editprofile" element={<EditProfile/>}/>
+        <Route path="/changepassword" element={<ChangePassword/>}/>
       </Routes>
     </>
   );
