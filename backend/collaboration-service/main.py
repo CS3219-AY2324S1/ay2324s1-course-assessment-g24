@@ -1,3 +1,4 @@
+#imports
 from fastapi import FastAPI, HTTPException, Path, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -61,7 +62,7 @@ class WebSocketManager:
 
     def disconnect(self, user_id):
         del self.connections[user_id]
-        
+
     async def send_message(self, receiver_id, message):
         await self.connections[receiver_id].send_text(message)
 
