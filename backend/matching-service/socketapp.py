@@ -1,9 +1,10 @@
+import os
+import requests
 import socketio
 
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
-from controllers import match_controller
 from database import SessionLocal
 from models import match_model
 from schemas import match_schema
@@ -40,6 +41,10 @@ async def get(db: Session = Depends(get_db)):
     sio_server.emit("error-server", { "message": "ERROR: Internal server error when retrieving all matches" })
     print(f"ERROR: Could not retrieve matches: {err}")
     return
+  
+async def fetch_questions(difficulty: str):
+  questions = await requests.get(f"{os.getenv('QUESTION_SERVICE_URL')}/questions/{difficulty}")
+  return questions
 
 @sio_server.event
 async def match(params, db: Session = Depends(get_db)):
@@ -72,12 +77,18 @@ async def match(params, db: Session = Depends(get_db)):
       print(f"No valid pending match for {user_one}")
       return
     
-    questions = [] # await fetch_questions_from_question_service() # util method to call question service
-    room_name = user_one + "_" + joinable_match.user_one
-    sio_server.enter_room()
-    sio_server.rooms()
+    user_two = joinable_match.user_one
+    socket_id_two = joinable_match.socket_id_one
 
-    sio_server.emit()
+    questions = await fetch_questions(difficulty)
+    room_name = user_one + "_" + user_two
+
+    sio_server.enter_room(socket_id_one, room=room_name)
+    sio_server.enter_room(socket_id_two, room=room_name)
+
+    sio_server.emit("match-success", to=socket_id_one, data={ "room_id": room_name, "questions": questions })
+    sio_server.emit("match-success", to=socket_id_two, data={ "room_id": room_name, "questions": questions })
+
     return len(sio_server.manager.get_participants(namespace="", room=room_name)) == 2
   except Exception as err:
     sio_server.emit("error-server", { "message": "ERROR: Internal server error when creating match" })

@@ -1,10 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from socketapp import sio_app
-
 from models import match_model
 from database import engine
+from socketapp import sio_app
+
+from dotenv import load_dotenv
+load_dotenv()
 
 match_model.Base.metadata.create_all(bind=engine)
 
