@@ -42,7 +42,6 @@ async def on_startup():
     loop = asyncio.get_event_loop()
     loop.create_task(start_server())  # Start WebSocket server as a separate task
 
-
 @app.post("/api/send-message")
 async def send_message(message: Message):
     try:
@@ -51,25 +50,6 @@ async def send_message(message: Message):
         return {"message": "Message sent successfully!"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-# @app.get("/api/get-messages/{sender_id}/{receiver_id}")
-# async def get_messages(sender_id: str, receiver_id: str):
-#     try:
-#         cursor = app.mongodb.messages.find({
-#             "$or": [
-#                 {"senderId": sender_id, "receiverId": receiver_id},
-#                 {"senderId": receiver_id, "receiverId": sender_id}
-#             ]
-#         })
-        
-#         messages = [message async for message in cursor]
-#         # Convert ObjectId to string
-#         for message in messages:
-#             message['_id'] = str(message['_id'])
-#         return messages
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
-
 
 class WebSocketManager:
     def __init__(self):
@@ -81,7 +61,7 @@ class WebSocketManager:
 
     def disconnect(self, user_id):
         del self.connections[user_id]
-
+        
     async def send_message(self, receiver_id, message):
         await self.connections[receiver_id].send_text(message)
 
@@ -99,4 +79,3 @@ async def websocket_endpoint(websocket: WebSocket, user_id: str):
     except WebSocketDisconnect:
         manager.disconnect(user_id)
         await manager.broadcast(f"User {user_id} left the chat")
-

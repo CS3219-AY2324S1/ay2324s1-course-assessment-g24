@@ -51,9 +51,6 @@ const handleSend = async () => {
       console.error('Error:', error);
     }
   };
-  
-
-
 
   useEffect(() => {
     if (!socket) return;
