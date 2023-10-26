@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Input, Stack } from '@chakra-ui/react';
+import { Button, Input, Stack, Box } from '@chakra-ui/react';
 
 const FormComponent = () => {
   const [senderId, setSenderId] = useState('');
@@ -26,38 +26,42 @@ const FormComponent = () => {
     setChatStarted(true);
   };
 
-const handleSend = async () => {
+  const handleSend = async () => {
     try {
-      if (!socket) return;
-  
-      const newMessage = { senderId, receiverId, content, timestamp: '' };
-      socket.send(JSON.stringify(newMessage));
-  
-      // Manually update messages state after sending message
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
-  
-      const response = await fetch('http://localhost:8000/api/send-message', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newMessage),
-      });
-  
-      if (!response.ok) {
-        alert('Error sending message');
-      }
+        if (!socket) return;
+
+        const newMessage = { senderId, receiverId, content, timestamp: '' };
+
+        // Manually update messages state after sending message on sender's side
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+
+        socket.send(JSON.stringify(newMessage));
+
+        const response = await fetch('http://localhost:8000/api/send-message', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newMessage),
+        });
+
+        if (!response.ok) {
+            alert('Error sending message');
+        }
     } catch (error) {
-      console.error('Error:', error);
+        console.error('Error:', error);
     }
-  };
+};
+
 
   useEffect(() => {
     if (!socket) return;
 
     const handleMessage = (event: MessageEvent) => {
       const newMessage = JSON.parse(event.data);
-      setMessages((prevMessages) => [...prevMessages, newMessage]);
+      if (newMessage.senderId === senderId) {
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+    }
     };
 
     socket.addEventListener('message', handleMessage);
@@ -65,10 +69,10 @@ const handleSend = async () => {
     return () => {
       socket.removeEventListener('message', handleMessage);
     };
-  }, [socket]);
+  }, [socket, senderId]);
 
   return (
-    <div>
+    <Box p={4}>
       {!chatStarted ? (
         <Stack spacing={4}>
           <Input
@@ -81,30 +85,41 @@ const handleSend = async () => {
             value={receiverId}
             onChange={(e) => setReceiverId(e.target.value)}
           />
-          <Button onClick={handleStartChat}>Start Chat</Button>
+          <Button onClick={handleStartChat} colorScheme="teal">Start Chat</Button>
         </Stack>
       ) : (
-        <div>
-          <div>Sender: {senderId}</div>
-          <div>Receiver: {receiverId}</div>
-          <div>
+        <Stack spacing={4}>
+          <Box>
+            <strong>Sender:</strong> {senderId}
+          </Box>
+          <Box>
+            <strong>Receiver:</strong> {receiverId}
+          </Box>
+          <Box p={2} border="1px solid #ccc" borderRadius="md">
             {messages.map((message, index) => (
-              <div key={index} style={{ textAlign: message.senderId === senderId ? 'left' : 'right' }}>
-                <span>{message.content}</span>
-              </div>
+              <Box
+                key={index}
+                textAlign={message.senderId === senderId ? 'right' : 'left'}
+                p={2}
+                bg={message.senderId === senderId ? 'teal.200' : 'gray.200'}
+                borderRadius="md"
+                mb={2}
+              >
+                {message.content}
+              </Box>
             ))}
-          </div>
+          </Box>
           <Stack spacing={4}>
             <Input
               placeholder="Message"
               value={content}
               onChange={(e) => setContent(e.target.value)}
             />
-            <Button onClick={handleSend}>Send</Button>
+            <Button onClick={handleSend} colorScheme="teal">Send</Button>
           </Stack>
-        </div>
+        </Stack>
       )}
-    </div>
+    </Box>
   );
 };
 
