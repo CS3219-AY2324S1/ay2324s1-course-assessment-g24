@@ -5,6 +5,7 @@ from uuid import UUID, uuid4
 
 class QuestionRepo(Document):
   question_id: UUID = Field(default_factory=uuid4)
+  leet_tag: str
   topic: str
   difficulty_level: str
   title: str

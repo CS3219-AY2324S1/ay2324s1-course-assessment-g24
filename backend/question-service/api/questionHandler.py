@@ -13,29 +13,62 @@ from selenium.common.exceptions import TimeoutException
 
 questionRouter = APIRouter()
 
-@questionRouter.get('/', response_model=List[QuestionRepo])
-async def get_questions():
-  questions = await QuestionRepo.find_all().to_list()
-  return questions
-
-@questionRouter.post('/', response_model=QuestionRepo)
-async def create_question(question: QuestionRepo):
-  try:
-      await question.insert()
-      return question
-  except Exception as e:
-      raise HTTPException(status_code=500, detail=f"Error creating question: {str(e)}")
-
 def getElement(driver, filterBy, name):
   element = WebDriverWait(driver, 10).until(
       EC.presence_of_element_located((filterBy, name))
   )
   return element
 
-@questionRouter.post('/add/{leetcode_question}', response_model=QuestionRepo)
-async def add_leetcode_question(leetcode_question: str):
+@questionRouter.get('/', response_model=List[QuestionRepo])
+async def get_questions():
+  questions = await QuestionRepo.find_all().to_list()
+  return questions
+
+# get questions by leetcode tag
+@questionRouter.get("/title/{leet_question_tag}")
+async def get_question_by_tag(leet_question_tag: str):
+  item = await QuestionRepo.find_one(QuestionRepo.leet_tag == leet_question_tag)
+  return item
+
+# get questions by difficulty level
+@questionRouter.get("/difficulty/{difficulty}")
+async def get_question_by_difficulty(difficulty: str):
+  item = await QuestionRepo.find(QuestionRepo.difficulty_level == difficulty).to_list()
+  return item
+
+# get questions by topic
+@questionRouter.get("/topic/{topic}")
+async def get_question_by_topic(topic: str):
+  item = await QuestionRepo.find(QuestionRepo.topic == topic).to_list()
+  return item
+
+@questionRouter.delete("/delete/{leet_question_tag}")
+async def delete_question(leet_question_tag: str):
+  item = await QuestionRepo.find_one(QuestionRepo.leet_tag == leet_question_tag)
+  if item is None:
+    raise HTTPException(status_code=404, detail="Item not found")
+  await QuestionRepo.delete(item)
+  return item
+
+@questionRouter.post('/', response_model=QuestionRepo)
+async def create_question(question: QuestionRepo):
+  item = await QuestionRepo.find_one(QuestionRepo.leet_tag == question.leet_tag)
+  if (item):
+    raise HTTPException(status_code=500, detail=f"Question already exists")
+  try:
+    await question.insert()
+    return question
+  except Exception as e:
+    raise HTTPException(status_code=500, detail=f"Error creating question: {str(e)}")
+
+@questionRouter.post('/add/{leet_question_tag}', response_model=QuestionRepo)
+async def add_leetcode_question(leet_question_tag: str):
+  item = await QuestionRepo.find(QuestionRepo.leet_tag == leet_question_tag).to_list()
+  if (item):
+    raise HTTPException(status_code=500, detail=f"Question already exists")
+
   driver = webdriver.Chrome()
-  driver.get("https://leetcode.com/problems/%s/" % (leetcode_question))
+  driver.get("https://leetcode.com/problems/%s/" % (leet_question_tag))
 
   try:
     # Title
@@ -45,11 +78,11 @@ async def add_leetcode_question(leetcode_question: str):
     # Difficulty level
     difficultyLevelElement = getElement(driver, By.CLASS_NAME, 'w-full')
     difficultyLevelElement = difficultyLevelElement.find_element(By.CLASS_NAME, 'mt-3')
-    difficultyLevelText = difficultyLevelElement.find_element(By.CLASS_NAME, 'inline-block').text
+    difficultyLevelText = difficultyLevelElement.find_element(By.CLASS_NAME, 'inline-block').text.lower()
 
     # Topic
     topicElement = driver.find_elements(By.CSS_SELECTOR, 'a.rounded-xl')
-    topicElementText = topicElement[0].get_attribute('href').split("/")[-2].capitalize()
+    topicElementText = topicElement[0].get_attribute('href').split("/")[-2]
     
     # Question and Test Case prompt
     promptElement = getElement(driver, By.CLASS_NAME, 'xFUwe')
@@ -59,7 +92,7 @@ async def add_leetcode_question(leetcode_question: str):
     questionText = ' '.join(promptElement[:testCaseIndex])
     testCaseText = ' '.join(promptElement[testCaseIndex:])
 
-    new_question = QuestionRepo(topic=topicElementText, difficulty_level=difficultyLevelText, title=titleText, question_prompt=questionText, examples=testCaseText)
+    new_question = QuestionRepo(leet_tag=leet_question_tag, topic=topicElementText, difficulty_level=difficultyLevelText, title=titleText, question_prompt=questionText, examples=testCaseText)
     await new_question.insert()
 
     return new_question
@@ -67,6 +100,6 @@ async def add_leetcode_question(leetcode_question: str):
   except TimeoutException:
      raise HTTPException(status_code=404, detail="Element not found within the given time frame.")
   except Exception as e:
-     print(f"An error occurred: {e}")
+     raise HTTPException(status_code=400, detail=e)
   finally:
     driver.quit()
