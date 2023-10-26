@@ -47,7 +47,7 @@ async def on_startup():
 async def send_message(message: Message):
     try:
         message.timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        await app.mongodb.messages.insert_one(message.dict())
+        await app.mongodb.messages.insert_one(message.dict()) # append to mongodb
         return {"message": "Message sent successfully!"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
