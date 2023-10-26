@@ -7,6 +7,8 @@ import NotFound from "./pages/NotFound";
 import ResetPassword from "./pages/ResetPassword";
 import SignUpPage from "./pages/SignUpPage";
 import VerificationEmail from "./pages/VerificationEmail";
+import LoadingPage from "./pages/LoadingPage";
+import Matchmaker from "./pages/Matchmaker";
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
         <Route path="/verification" element={<VerificationEmail />} />
         <Route path="/resetpassword" element={<ResetPassword />} />
         <Route path="/" element={<HomePage />} />
+        <Route path="/loadingpage" element={<LoadingPage />} />
+        <Route path="/matchmaker" element={<Matchmaker />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
