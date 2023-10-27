@@ -7,6 +7,7 @@ import NotFound from "./pages/NotFound";
 import ResetPassword from "./pages/ResetPassword";
 import SignUpPage from "./pages/SignUpPage";
 import VerificationEmail from "./pages/VerificationEmail";
+import ChatBox from "./pages/ChatBox"
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/resetpassword" element={<ResetPassword />} />
         <Route path="/" element={<HomePage />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="chat" element={<ChatBox />}></Route>
       </Routes>
     </>
   );
