@@ -105,5 +105,5 @@ async def delete_question_by_title(q_title: QuestionTitle):
   try:
     await QuestionRepo.find(QuestionRepo.title == q_title.title).delete()
   except Exception as e:
-    raise HTTPException(status_code=500, detail=f"Error retrieving question by title: {str(e)}")
+    raise HTTPException(status_code=500, detail=f"Error deleting question by title: {str(e)}")
   
