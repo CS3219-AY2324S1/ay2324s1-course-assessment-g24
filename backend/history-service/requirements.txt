@@ -3,7 +3,6 @@ anyio==3.7.1
 beanie==1.23.1
 certifi==2023.7.22
 click==8.1.7
-decouple==0.0.7
 dnspython==2.4.2
 email-validator==2.1.0.post1
 fastapi==0.104.0
@@ -23,6 +22,7 @@ pydantic-extra-types==2.1.0
 pydantic-settings==2.0.3
 pydantic_core==2.10.1
 pymongo==4.5.0
+python-decouple==3.8
 python-dotenv==1.0.0
 python-multipart==0.0.6
 PyYAML==6.0.1
