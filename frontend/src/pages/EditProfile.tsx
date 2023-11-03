@@ -18,7 +18,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 import HeadingWithGradient from "../components/HeadingWithGradient";
-import Navbar from "../components/Navbar";
+import NavBar from "../components/NavBar";
 
 const EditProfile = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -26,7 +26,7 @@ const EditProfile = () => {
 
   return (
     <Box w={"100dvw"} h={"100dvh"}>
-      <Navbar></Navbar>
+      <NavBar />
       <HeadingWithGradient
         preText={"Edit"}
         gradientText={"Profile"}

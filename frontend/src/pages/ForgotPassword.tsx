@@ -5,13 +5,16 @@ import {
   FormControl,
   FormLabel,
   Input,
+  VStack,
 } from "@chakra-ui/react";
 import { Field, Formik } from "formik";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import PeerPrepLogo from "../components/PeerPrepLogo";
 
 const ForgotPassword = () => {
+  const navigate = useNavigate();
+
   return (
     <>
       <Box w={"100dvw"} h={"100dvh"}>
@@ -26,24 +29,32 @@ const ForgotPassword = () => {
               }}
               onSubmit={(values) => {
                 alert(JSON.stringify(values, null, 2));
+                navigate("/verification");
               }}
             >
               {({ handleSubmit }) => (
                 <Box as={"form"} onSubmit={handleSubmit}>
-                  <FormControl>
-                    <FormLabel htmlFor={"email"}>Email Address</FormLabel>
-                    <Field
-                      as={Input}
-                      id="email"
-                      name="email"
-                      type="email"
-                      variant="filled"
-                      size={"lg"}
-                      placeholder={"Email"}
-                      width={"full"}
-                    />
-                  </FormControl>
-                  <Link to={"/verification"}>
+                  <VStack spacing={4} align="flex-start">
+                    <FormControl>
+                      <FormLabel htmlFor={"email"}>Email Address</FormLabel>
+                      <Field
+                        as={Input}
+                        id="email"
+                        name="email"
+                        type="email"
+                        variant="filled"
+                        size={"lg"}
+                        placeholder={"Email"}
+                        width={"full"}
+                      />
+                    </FormControl>
+
+                    <Link to={"/login"} style={{ marginLeft: "auto" }}>
+                      <Button colorScheme="orange" variant="link" size={"md"}>
+                        Go Back?
+                      </Button>
+                    </Link>
+
                     <Button
                       loadingText={"Sending email..."}
                       variant={"solid"}
@@ -55,7 +66,7 @@ const ForgotPassword = () => {
                     >
                       Send Reset Email
                     </Button>
-                  </Link>
+                  </VStack>
                 </Box>
               )}
             </Formik>

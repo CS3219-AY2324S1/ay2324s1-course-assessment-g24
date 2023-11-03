@@ -11,7 +11,7 @@ const LoadingPage = () => {
           <PeerPrepLogo />
         </Box>
         <Box bg="white" p={6} rounded={"md"} w={"sm"}></Box>
-        <LoadingSpinner></LoadingSpinner>
+        <LoadingSpinner />
       </AbsoluteCenter>
     </Box>
   );

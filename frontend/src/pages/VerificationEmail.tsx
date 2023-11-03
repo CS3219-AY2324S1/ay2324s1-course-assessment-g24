@@ -11,15 +11,15 @@ const VerificationEmail = () => {
           <Box mb={5}>
             <PeerPrepLogo />
           </Box>
-          <Box bg="white" p={6} rounded={"md"} w={"sm"}>
+          <Box bg="white" p={6} rounded={"md"} w={"lg"}>
             <VStack spacing={3}>
-              <Text>
+              <Text fontSize={20} as={"b"} mb={3}>
                 Email for password reset has been sent to your email, please
                 check your inbox!
               </Text>
               <LinkButton
                 link={"/login"}
-                size={"md"}
+                size={"lg"}
                 width={"full"}
                 content={"Login"}
               />
