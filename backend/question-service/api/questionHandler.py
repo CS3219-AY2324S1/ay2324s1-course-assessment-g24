@@ -93,6 +93,19 @@ async def get_most_popular_question_by_topic(topic: str):
     else:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No questions found for this topic")
 
+@questionRouter.get("/random_questions/{topics}/{difficulty}/{n}")
+async def get_random_questions(topics: str, difficulty: str, n: int):
+    matching_questions = await QuestionRepo.find(QuestionRepo.topic == topics, QuestionRepo.difficulty_level == difficulty).to_list()
+    
+    if len(matching_questions) == 0:
+        raise HTTPException(status_code=404, detail=f"No questions found for topics: {topics}, difficulty: {difficulty}")
+    
+    if len(matching_questions) <= n:
+        return matching_questions
+    
+    return random.sample(matching_questions, n)
+
+
 @questionRouter.delete("/delete/{leet_question_tag}")
 async def delete_question(leet_question_tag: str):
   item = await QuestionRepo.find_one(QuestionRepo.leet_tag == leet_question_tag)
@@ -164,8 +177,20 @@ async def add_leetcode_question(leet_question_tag: str):
     testCaseIndex = promptElement.index("Example 1:")
     questionText = ' '.join(promptElement[:testCaseIndex])
     testCaseText = ' '.join(promptElement[testCaseIndex:])
+    testCaseText = testCaseText.split("Constraints")[0].strip()
+    examples_list = testCaseText.split("Example ")
+    examples_list = [example.strip() for example in examples_list if example.strip()]
 
-    new_question = QuestionRepo(leet_tag=leet_question_tag, topic=topicElementText, difficulty_level=difficultyLevelText, title=titleText, question_prompt=questionText, examples=testCaseText,
+    formatted_examples = []
+
+    for i, example in enumerate(examples_list):
+        formatted_example = f"Example {example}"
+        formatted_examples.append(formatted_example)
+
+    formatted_examples = [example.replace("\n", " ") for example in formatted_examples]
+    formatted_examples = [example.replace("\"", "'") for example in formatted_examples]
+
+    new_question = QuestionRepo(leet_tag=leet_question_tag, topic=topicElementText, difficulty_level=difficultyLevelText, title=titleText, question_prompt=questionText, examples=formatted_examples,
     popularity=100.0, upvotes=0, downvotes=0)
     await new_question.insert()
 
