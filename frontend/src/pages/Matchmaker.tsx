@@ -1,37 +1,27 @@
 import {
-  AbsoluteCenter,
   Box,
   Button,
-  ButtonGroup,
   Card,
   CardBody,
   CardFooter,
   CardHeader,
-  Center,
   Heading,
   SimpleGrid,
-  Stack,
-  VStack,
-  theme,
 } from "@chakra-ui/react";
-import { DIFFICULTY } from "utils/enums";
 
 import HeadingWithGradient from "../components/HeadingWithGradient";
-import LinkButton from "../components/LinkButton";
-import Navbar from "../components/Navbar";
-import PeerPrepLogo from "../components/PeerPrepLogo";
+import NavBar from "../components/NavBar";
 
 const MatchMaker = () => {
   return (
     <Box w={"100dvw"} h={"100dvh"}>
-      <Navbar />
+      <NavBar />
       <HeadingWithGradient
         preText={"Select"}
         gradientText={"  Difficulty"}
         postText={""}
         bgGradient={"linear(to-r, orange.400, red.500)"}
       />
-
 
       <SimpleGrid
         spacing={4}

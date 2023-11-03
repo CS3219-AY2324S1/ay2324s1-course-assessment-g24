@@ -1,63 +1,54 @@
 import { Editor } from "@monaco-editor/react";
-import React, { useEffect, useRef, useState } from "react";
-import socketIOClient from "socket.io-client";
+import { editor } from "monaco-editor";
+import { useState } from "react";
 
-const CodeEditor = () => {
+const CodeEditor = ({ height }: { height: number }) => {
   const [editorValue, setEditorValue] = useState("");
-  const [clientChanges, setClientChanges] = useState([]);
-  const editorRef = useRef();
 
-  useEffect(() => {
-    const socket = socketIOClient("http://localhost:3001");
-
-    socket.on("connect", () => {
-      console.log("Connected to server");
-    });
-
-    socket.on("sync changes", (data) => {
-      setClientChanges((prevChanges) => [...prevChanges, data]);
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
-
-  useEffect(() => {
-    clientChanges.forEach((change) => {
-      editorRef.current.executeEdits(change.id, [
-        {
-          range: change.range,
-          text: change.text,
-        },
-      ]);
-    });
-  }, [clientChanges]);
-
-  const handleEditorChange = (value, event) => {
-    setEditorValue(value);
-
-    // Emit change event to server
-    const change = {
-      id: event.changes[0].id,
-      range: event.changes[0].range,
-      text: event.changes[0].text,
-    };
-    const socket = socketIOClient("http://localhost:3001");
-    socket.emit("send changes", change);
+  const options: editor.IStandaloneEditorConstructionOptions = {
+    fontSize: 14,
+    scrollBeyondLastLine: false,
+    minimap: {
+      enabled: false,
+    },
+    lineNumbersMinChars: 3,
+    readOnly: false,
+    scrollbar: {
+      useShadows: false,
+      verticalHasArrows: false,
+      horizontalHasArrows: false,
+      vertical: "visible",
+      horizontal: "visible",
+      verticalScrollbarSize: 10,
+      horizontalScrollbarSize: 10,
+    },
   };
 
   return (
     <div>
       <Editor
-        height="80vh"
         language="javascript"
         value={editorValue}
-        onChange={handleEditorChange}
-        ref={editorRef}
+        onChange={() => {
+          setEditorValue("");
+        }}
+        height={`${height}dvh`}
+        options={options}
       />
     </div>
   );
 };
+
+// interface Props {
+//   language?: LANGUAGE;
+//   questionNumber: number;
+//   editorContent?: string;
+//   editorRef: MutableRefObject<editor.IStandaloneCodeEditor | undefined>;
+//   userSelect: string;
+//   pointerEvents: string;
+//   shouldDisplay: boolean;
+//   readOnly?: boolean;
+//   isLoading: boolean;
+// }
 
 export default CodeEditor;

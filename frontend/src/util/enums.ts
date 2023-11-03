@@ -19,3 +19,9 @@ export enum DIFFICULTY {
   MEDIUM = "MEDIUM",
   HARD = "HARD",
 }
+
+export enum LANGUAGE {
+  PYTHON = "PYTHON",
+  CPP = "C++",
+  JAVASCRIPT = "JAVASCRIPT",
+}

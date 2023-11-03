@@ -5,7 +5,7 @@ import {
   FormControl,
   FormLabel,
   Input,
-  VStack
+  VStack,
 } from "@chakra-ui/react";
 import { Field, Formik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
@@ -34,38 +34,38 @@ const ForgotPassword = () => {
             >
               {({ handleSubmit }) => (
                 <Box as={"form"} onSubmit={handleSubmit}>
-                <VStack spacing={4} align="flex-start">
-                  <FormControl>
-                    <FormLabel htmlFor={"email"}>Email Address</FormLabel>
-                    <Field
-                      as={Input}
-                      id="email"
-                      name="email"
-                      type="email"
-                      variant="filled"
-                      size={"lg"}
-                      placeholder={"Email"}
+                  <VStack spacing={4} align="flex-start">
+                    <FormControl>
+                      <FormLabel htmlFor={"email"}>Email Address</FormLabel>
+                      <Field
+                        as={Input}
+                        id="email"
+                        name="email"
+                        type="email"
+                        variant="filled"
+                        size={"lg"}
+                        placeholder={"Email"}
+                        width={"full"}
+                      />
+                    </FormControl>
+
+                    <Link to={"/login"} style={{ marginLeft: "auto" }}>
+                      <Button colorScheme="orange" variant="link" size={"md"}>
+                        Go Back?
+                      </Button>
+                    </Link>
+
+                    <Button
+                      loadingText={"Sending email..."}
+                      variant={"solid"}
+                      colorScheme={"orange"}
+                      type={"submit"}
+                      size={"md"}
                       width={"full"}
-                    />
-                  </FormControl>
-
-                  <Link to={"/login"} style={{ marginLeft: "auto" }}>
-                    <Button colorScheme="orange" variant="link" size={"md"}>
-                      Go Back?
+                      mt={4}
+                    >
+                      Send Reset Email
                     </Button>
-                  </Link>
-
-                  <Button
-                    loadingText={"Sending email..."}
-                    variant={"solid"}
-                    colorScheme={"orange"}
-                    type={"submit"}
-                    size={"md"}
-                    width={"full"}
-                    mt={4}
-                  >
-                    Send Reset Email
-                  </Button>
                   </VStack>
                 </Box>
               )}

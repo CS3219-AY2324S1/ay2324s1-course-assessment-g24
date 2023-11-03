@@ -106,7 +106,8 @@ const ResetPassword = () => {
                         <PopoverContent>
                           <PopoverArrow />
                           <PopoverHeader>
-                            Your password has been successfully changed! Proceed to log in.
+                            Your password has been successfully changed! Proceed
+                            to log in.
                           </PopoverHeader>
                           <PopoverCloseButton />
                           <PopoverBody>
