@@ -1,10 +1,4 @@
 import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogOverlay,
   Avatar,
   Box,
   Button,
@@ -16,7 +10,6 @@ import {
   Icon,
   Text,
   defineStyle,
-  useDisclosure,
 } from "@chakra-ui/react";
 import React from "react";
 import { IoSettingsOutline } from "react-icons/io5";
@@ -39,12 +32,14 @@ const randomQuestions = [
   "How do you reverse a string in Python?",
   "What is the largest planet in our solar system?",
   "Write a function to find the factorial of a number.",
-  // Add more questions here
+  "Write a function to find the factorial of a number.",
+  "Write a function to find the factorial of a number.",
+  "Write a function to find the factorial of a number.",
+  "Write a function to find the factorial of a number.",
 ];
 
 const UserProfile = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const cancelRef = React.useRef();
+  
 
   return (
     <Box w="100vw" h="100vh">
@@ -89,7 +84,13 @@ const UserProfile = () => {
       <Card width={"49%"} ml={"1%"} mt={"5%"}>
       <CardHeader>
           <Heading size='md'>Questions History</Heading>
-          
+          <Box maxH="300px" overflowY="auto" mt={"2%"}>
+            {randomQuestions.map((question, index) => (
+              <Box key={index} border="1px" p={2} my={2}>
+               Q{index + 1}. {question}
+              </Box>
+            ))}
+          </Box>
         </CardHeader>
       </Card>
       </Flex>
