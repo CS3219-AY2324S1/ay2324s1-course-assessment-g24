@@ -1,18 +1,19 @@
 import {
+  Avatar,
   Box,
-  Flex,
-  Spacer,
   Button,
+  Center,
+  Flex,
   Menu,
   MenuButton,
-  Avatar,
-  MenuList,
-  Center,
   MenuDivider,
   MenuItem,
-} from '@chakra-ui/react';
-import PeerPrepLogo from './PeerPrepLogo';
-import { Link } from 'react-router-dom';
+  MenuList,
+  Spacer,
+} from "@chakra-ui/react";
+import { Link } from "react-router-dom";
+
+import PeerPrepLogo from "./PeerPrepLogo";
 
 function Navbar() {
   return (
@@ -33,45 +34,48 @@ function Navbar() {
 
       <Spacer />
 
-      <Box display={{ base: 'block', md: 'none' }}>
-      </Box>
+      <Box display={{ base: "block", md: "none" }}></Box>
 
       <Flex
-        display={{ base: 'none', md: 'flex' }}
-        width={{ base: 'full', md: 'auto' }}
+        display={{ base: "none", md: "flex" }}
+        width={{ base: "full", md: "auto" }}
         alignItems="center" // Align items vertically
       >
         <Link to="/matchmaker">
-        <Button colorScheme='orange' variant='solid' mr={10}>
-          Find a match
-        </Button>
-      </Link>
+          <Button colorScheme="orange" variant="solid" mr={10}>
+            Find a match
+          </Button>
+        </Link>
 
         <Menu>
-          <MenuButton mb={1} mr={5}
+          <MenuButton
+            mb={1}
+            mr={5}
             as={Button}
-            rounded={'full'}
-            variant={'link'}
-            cursor={'pointer'}
+            rounded={"full"}
+            variant={"link"}
+            cursor={"pointer"}
             minW={0}
           >
             <Avatar
-              size={'sm'}
-              src={'https://avatars.dicebear.com/api/male/username.svg'}
+              size={"sm"}
+              src={"https://avatars.dicebear.com/api/male/username.svg"}
             />
           </MenuButton>
-          <MenuList alignItems={'center'}>
+          <MenuList alignItems={"center"}>
             <Center>
               <Avatar
-                size={'2xl'}
-                src={'https://avatars.dicebear.com/api/male/username.svg'}
+                size={"2xl"}
+                src={"https://avatars.dicebear.com/api/male/username.svg"}
               />
             </Center>
             <Center>
               <p>Username</p>
             </Center>
             <MenuDivider />
-            <Link to={"/editprofile"}><MenuItem>Account Settings</MenuItem></Link>
+            <Link to={"/editprofile"}>
+              <MenuItem>Account Settings</MenuItem>
+            </Link>
             <MenuItem>Logout</MenuItem>
           </MenuList>
         </Menu>

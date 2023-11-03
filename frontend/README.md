@@ -53,20 +53,23 @@ This is the directory structure of the `frontend` directory.
 └── README.md           # You are currently here
 ```
 
-### Managing Environment Variables 
-Vite already provides good support for loading environment variables using the `dotenv` package. In order to create your own `.env` file, please ensure that the variables are prepended by `VITE_` to make them visible. An example is shown below. 
+### Managing Environment Variables
+
+Vite already provides good support for loading environment variables using the `dotenv` package. In order to create your own `.env` file, please ensure that the variables are prepended by `VITE_` to make them visible. An example is shown below.
+
 ```
-VITE_BACKEND_URL="..."   # Vite can see this 
+VITE_BACKEND_URL="..."   # Vite can see this
 SOME_IMPORTANT_VAR="..." # Vite cannot see this
 ```
 
-In order to use the environment variable inside the application, one can refer to it this way. 
+In order to use the environment variable inside the application, one can refer to it this way.
+
 ```
 import.meta.env.VITE_BACKEND.URL
 ```
 
-With regards to the current version, the following environment variables are needed. The recommendation is to name the file `.env.[mode]` where the `mode` can be `development` or `production` based on your environment. 
+With regards to the current version, the following environment variables are needed. The recommendation is to name the file `.env.[mode]` where the `mode` can be `development` or `production` based on your environment.
+
 ```
 VITE_USER_SERVICE_URL
 ```
-
