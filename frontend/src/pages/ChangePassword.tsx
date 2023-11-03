@@ -24,11 +24,7 @@ import { Link } from "react-router-dom";
 import { object, ref, string } from "yup";
 
 import HeadingWithGradient from "../components/HeadingWithGradient";
-<<<<<<< HEAD
-import Navbar from "../components/NavBar";
-=======
-import Navbar from "../components/Navbar";
->>>>>>> milestone1
+import NavBar from "../components/NavBar";
 
 const changePasswordValidation = object().shape({
   password: string()
@@ -44,7 +40,7 @@ const ChangePassword = () => {
   const cancelRef = React.useRef();
   return (
     <Box w={"100dvw"} h={"100dvh"}>
-      <Navbar></Navbar>
+      <NavBar />
       <HeadingWithGradient
         preText={"Edit"}
         gradientText={"Profile"}
