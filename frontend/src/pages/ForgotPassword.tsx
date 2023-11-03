@@ -8,11 +8,13 @@ import {
   VStack
 } from "@chakra-ui/react";
 import { Field, Formik } from "formik";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import PeerPrepLogo from "../components/PeerPrepLogo";
 
 const ForgotPassword = () => {
+  const navigate = useNavigate();
+
   return (
     <>
       <Box w={"100dvw"} h={"100dvh"}>
@@ -27,6 +29,7 @@ const ForgotPassword = () => {
               }}
               onSubmit={(values) => {
                 alert(JSON.stringify(values, null, 2));
+                navigate("/verification");
               }}
             >
               {({ handleSubmit }) => (
