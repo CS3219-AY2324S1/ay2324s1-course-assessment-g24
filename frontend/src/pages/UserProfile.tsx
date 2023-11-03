@@ -34,6 +34,14 @@ const underline = defineStyle({
   // let's also provide dark mode alternatives
 });
 
+const randomQuestions = [
+  "What is the capital of France?",
+  "How do you reverse a string in Python?",
+  "What is the largest planet in our solar system?",
+  "Write a function to find the factorial of a number.",
+  // Add more questions here
+];
+
 const UserProfile = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = React.useRef();
@@ -79,7 +87,10 @@ const UserProfile = () => {
         </CardHeader>
       </Card>
       <Card width={"49%"} ml={"1%"} mt={"5%"}>
-      
+      <CardHeader>
+          <Heading size='md'>Questions History</Heading>
+          
+        </CardHeader>
       </Card>
       </Flex>
       <Card width={"70%"} ml={"15%"} mt={"1%"} height={"30%"}>
