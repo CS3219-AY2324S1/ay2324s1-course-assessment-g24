@@ -24,7 +24,11 @@ import { Link } from "react-router-dom";
 import { object, ref, string } from "yup";
 
 import HeadingWithGradient from "../components/HeadingWithGradient";
+<<<<<<< HEAD
+import Navbar from "../components/NavBar";
+=======
 import Navbar from "../components/Navbar";
+>>>>>>> milestone1
 
 const changePasswordValidation = object().shape({
   password: string()

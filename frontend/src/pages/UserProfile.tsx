@@ -23,7 +23,7 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 
 import HeadingWithGradient from "../components/HeadingWithGradient";
-import Navbar from "../components/Navbar";
+import Navbar from "../components/NavBar";
 import PeerPrepLogo from "../components/PeerPrepLogo";
 
 const underline = defineStyle({

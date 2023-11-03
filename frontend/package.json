@@ -15,12 +15,15 @@
     "@chakra-ui/react": "^2.8.1",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@monaco-editor/react": "^4.6.0",
     "formik": "^2.4.5",
     "framer-motion": "^10.16.4",
+    "monaco-editor": "^0.44.0",
     "prettier": "^3.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.16.0",
+    "socket.io-client": "^4.7.2",
     "yup": "^1.2.0"
   },
   "devDependencies": {

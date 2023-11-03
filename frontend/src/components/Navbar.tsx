@@ -12,10 +12,9 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-
 import PeerPrepLogo from "./PeerPrepLogo";
 
-function Navbar() {
+const NavBar = () => {
   return (
     <Flex
       as="nav"
@@ -82,6 +81,6 @@ function Navbar() {
       </Flex>
     </Flex>
   );
-}
+};
 
-export default Navbar;
+export default NavBar;

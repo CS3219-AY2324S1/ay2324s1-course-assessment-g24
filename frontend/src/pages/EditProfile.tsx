@@ -18,7 +18,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 import HeadingWithGradient from "../components/HeadingWithGradient";
+<<<<<<< HEAD
+import Navbar from "../components/NavBar";
+=======
 import Navbar from "../components/Navbar";
+>>>>>>> milestone1
 
 const EditProfile = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
