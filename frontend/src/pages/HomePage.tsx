@@ -10,6 +10,7 @@ import {
 import hero from "../assets/hero.svg";
 import HeadingWithGradient from "../components/HeadingWithGradient";
 import LinkButton from "../components/LinkButton";
+import Navbar from "../components/Navbar";
 import PeerPrepLogo from "../components/PeerPrepLogo";
 
 const HomePage = () => {
@@ -32,6 +33,7 @@ const HomePage = () => {
                 postText={"preparation tool you will ever need!"}
                 bgGradient={"linear(to-r, orange.400, red.500)"}
               />
+
               <ButtonGroup>
                 <LinkButton link={"/signup"} size={"lg"} content={"Sign Up"} />
                 <LinkButton

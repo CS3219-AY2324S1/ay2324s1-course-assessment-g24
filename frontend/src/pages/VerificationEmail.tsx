@@ -1,12 +1,7 @@
-import {
-  AbsoluteCenter,
-  Box,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
+import { AbsoluteCenter, Box, Text, VStack } from "@chakra-ui/react";
 
-import PeerPrepLogo from "../components/PeerPrepLogo";
 import LinkButton from "../components/LinkButton";
+import PeerPrepLogo from "../components/PeerPrepLogo";
 
 const VerificationEmail = () => {
   return (
@@ -18,16 +13,16 @@ const VerificationEmail = () => {
           </Box>
           <Box bg="white" p={6} rounded={"md"} w={"sm"}>
             <VStack spacing={3}>
-            <Text>
-              Email for password reset has been sent to your email, please
-              check your inbox!
-            </Text>
-            <LinkButton
-              link={"/login"}
-              size={"md"}
-              width={"full"}
-              content={"Login"}
-            />
+              <Text>
+                Email for password reset has been sent to your email, please
+                check your inbox!
+              </Text>
+              <LinkButton
+                link={"/login"}
+                size={"md"}
+                width={"full"}
+                content={"Login"}
+              />
             </VStack>
           </Box>
         </AbsoluteCenter>
