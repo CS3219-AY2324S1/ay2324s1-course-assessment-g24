@@ -6,7 +6,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import LandingPage from "./pages/LandingPage";
 import LoadingPage from "./pages/LoadingPage";
 import LoginPage from "./pages/LoginPage";
-import Matchmaker from "./pages/Matchmaker";
+import MatchMaker from "./pages/MatchMaker";
 import NotFound from "./pages/NotFound";
 import ResetPassword from "./pages/ResetPassword";
 import SignUpPage from "./pages/SignUpPage";
@@ -21,7 +21,7 @@ const App = () => {
         <Route path="/forgotpassword" element={<ForgotPassword />} />
         <Route path="/loadingpage" element={<LoadingPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/matchmaker" element={<Matchmaker />} />
+        <Route path="/MatchMaker" element={<MatchMaker />} />
         <Route path="/resetpassword" element={<ResetPassword />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/verification" element={<VerificationEmail />} />

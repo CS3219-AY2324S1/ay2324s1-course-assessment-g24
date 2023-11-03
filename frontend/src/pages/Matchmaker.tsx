@@ -21,16 +21,17 @@ import LinkButton from "../components/LinkButton";
 import Navbar from "../components/Navbar";
 import PeerPrepLogo from "../components/PeerPrepLogo";
 
-const Matchmaker = () => {
+const MatchMaker = () => {
   return (
     <Box w={"100dvw"} h={"100dvh"}>
-      <Navbar></Navbar>
+      <Navbar />
       <HeadingWithGradient
         preText={"Select"}
         gradientText={"  Difficulty"}
         postText={""}
         bgGradient={"linear(to-r, orange.400, red.500)"}
       />
+
 
       <SimpleGrid
         spacing={4}
@@ -82,4 +83,4 @@ const Matchmaker = () => {
   );
 };
 
-export default Matchmaker;
+export default MatchMaker;
