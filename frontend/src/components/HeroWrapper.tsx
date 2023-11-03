@@ -1,5 +1,5 @@
-import { Paper, SxProps } from '@mui/material';
-import { FC, ReactNode } from 'react';
+import { Paper, SxProps } from "@mui/material";
+import { FC, ReactNode } from "react";
 
 type Props = {
   children: ReactNode;

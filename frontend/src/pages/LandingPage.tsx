@@ -10,10 +10,9 @@ import {
 import hero from "../assets/hero.svg";
 import HeadingWithGradient from "../components/HeadingWithGradient";
 import LinkButton from "../components/LinkButton";
-import Navbar from "../components/Navbar";
 import PeerPrepLogo from "../components/PeerPrepLogo";
 
-const HomePage = () => {
+const LandingPage = () => {
   return (
     <>
       <Box w={"100dvw"} h={"100dvh"}>
@@ -51,4 +50,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default LandingPage;

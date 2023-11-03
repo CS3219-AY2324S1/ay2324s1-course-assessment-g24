@@ -5,6 +5,7 @@ import {
   FormControl,
   FormLabel,
   Input,
+  VStack
 } from "@chakra-ui/react";
 import { Field, Formik } from "formik";
 import { Link } from "react-router-dom";
@@ -30,6 +31,7 @@ const ForgotPassword = () => {
             >
               {({ handleSubmit }) => (
                 <Box as={"form"} onSubmit={handleSubmit}>
+                <VStack spacing={4} align="flex-start">
                   <FormControl>
                     <FormLabel htmlFor={"email"}>Email Address</FormLabel>
                     <Field
@@ -43,19 +45,25 @@ const ForgotPassword = () => {
                       width={"full"}
                     />
                   </FormControl>
-                  <Link to={"/verification"}>
-                    <Button
-                      loadingText={"Sending email..."}
-                      variant={"solid"}
-                      colorScheme={"orange"}
-                      type={"submit"}
-                      size={"md"}
-                      width={"full"}
-                      mt={4}
-                    >
-                      Send Reset Email
+
+                  <Link to={"/login"} style={{ marginLeft: "auto" }}>
+                    <Button colorScheme="orange" variant="link" size={"md"}>
+                      Go Back?
                     </Button>
                   </Link>
+
+                  <Button
+                    loadingText={"Sending email..."}
+                    variant={"solid"}
+                    colorScheme={"orange"}
+                    type={"submit"}
+                    size={"md"}
+                    width={"full"}
+                    mt={4}
+                  >
+                    Send Reset Email
+                  </Button>
+                  </VStack>
                 </Box>
               )}
             </Formik>

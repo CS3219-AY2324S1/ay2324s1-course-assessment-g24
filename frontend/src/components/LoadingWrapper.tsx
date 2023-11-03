@@ -1,10 +1,10 @@
-import { Skeleton, Stack, SxProps } from '@mui/material';
-import  { FC, ReactNode } from 'react';
+import { Skeleton, Stack, SxProps } from "@mui/material";
+import { FC, ReactNode } from "react";
 
 export type LoadingWrapperProps = {
   children: ReactNode;
   isLoading: boolean;
-  variant?: 'rectangular' | 'text' | 'rounded' | 'circular';
+  variant?: "rectangular" | "text" | "rounded" | "circular";
   styles?: SxProps;
   containerStyles?: SxProps;
   custom?: boolean;
@@ -28,7 +28,7 @@ const LoadingWrapper: FC<LoadingWrapperProps> = ({
             <Skeleton
               key={`loading-${num}`}
               variant={variant}
-              sx={{ width: '100%', height: '2rem', ...styles }}
+              sx={{ width: "100%", height: "2rem", ...styles }}
             />
           );
         })}

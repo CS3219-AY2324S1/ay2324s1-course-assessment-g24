@@ -1,13 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
 import { Editor } from "@monaco-editor/react";
+import React, { useEffect, useRef, useState } from "react";
 import socketIOClient from "socket.io-client";
 
 const CodeEditor = () => {
- const [editorValue, setEditorValue] = useState("");
- const [clientChanges, setClientChanges] = useState([]);
- const editorRef = useRef();
+  const [editorValue, setEditorValue] = useState("");
+  const [clientChanges, setClientChanges] = useState([]);
+  const editorRef = useRef();
 
- useEffect(() => {
+  useEffect(() => {
     const socket = socketIOClient("http://localhost:3001");
 
     socket.on("connect", () => {
@@ -21,9 +21,9 @@ const CodeEditor = () => {
     return () => {
       socket.disconnect();
     };
- }, []);
+  }, []);
 
- useEffect(() => {
+  useEffect(() => {
     clientChanges.forEach((change) => {
       editorRef.current.executeEdits(change.id, [
         {
@@ -32,9 +32,9 @@ const CodeEditor = () => {
         },
       ]);
     });
- }, [clientChanges]);
+  }, [clientChanges]);
 
- const handleEditorChange = (value, event) => {
+  const handleEditorChange = (value, event) => {
     setEditorValue(value);
 
     // Emit change event to server
@@ -45,9 +45,9 @@ const CodeEditor = () => {
     };
     const socket = socketIOClient("http://localhost:3001");
     socket.emit("send changes", change);
- };
+  };
 
- return (
+  return (
     <div>
       <Editor
         height="80vh"
@@ -57,7 +57,7 @@ const CodeEditor = () => {
         ref={editorRef}
       />
     </div>
- );
+  );
 };
 
 export default CodeEditor;
