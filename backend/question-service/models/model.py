@@ -11,6 +11,9 @@ class QuestionRepo(Document):
   title: str
   question_prompt: str
   examples: str
-  
+  popularity: float
+  upvotes: int
+  downvotes: int 
+
   class Settings:
     name = "question-repo"

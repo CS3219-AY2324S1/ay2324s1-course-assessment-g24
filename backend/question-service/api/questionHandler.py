@@ -11,6 +11,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import TimeoutException
 
+import random
+
 questionRouter = APIRouter()
 
 def getElement(driver, filterBy, name):
@@ -36,11 +38,60 @@ async def get_question_by_difficulty(difficulty: str):
   item = await QuestionRepo.find(QuestionRepo.difficulty_level == difficulty).to_list()
   return item
 
+@questionRouter.get("/difficulty/{difficulty}/random")
+async def get_random_question_by_difficulty(difficulty: str):
+    questions = await QuestionRepo.find(
+        QuestionRepo.difficulty_level == difficulty
+    ).to_list()
+
+    if questions:
+        random_question = random.choice(questions)
+        return random_question
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No questions found for this difficulty level")
+
+# get most popular question for a particular difficulty level
+@questionRouter.get("/difficulty/{difficulty}/popular")
+async def get_most_popular_question_by_topic(difficulty: str):
+    questions = await QuestionRepo.find(
+      (QuestionRepo.difficulty_level == difficulty)
+    ).sort([("popularity", -1)]).to_list()
+
+    if questions:
+        return questions[0]
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No questions found for this difficulty level")
+
 # get questions by topic
 @questionRouter.get("/topic/{topic}")
 async def get_question_by_topic(topic: str):
   item = await QuestionRepo.find(QuestionRepo.topic == topic).to_list()
   return item
+
+@questionRouter.get("/topic/{topic}/random")
+async def get_random_question_by_topic(topic: str):
+    questions = await QuestionRepo.find(
+        QuestionRepo.topic == topic
+    ).to_list()
+
+    if questions:
+        random_question = random.choice(questions)
+        return random_question
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No questions found for this topic")
+
+
+# get most popular question for a particular topic
+@questionRouter.get("/topic/{topic}/popular")
+async def get_most_popular_question_by_topic(topic: str):
+    questions = await QuestionRepo.find(
+      (QuestionRepo.topic == topic)
+    ).sort([("popularity", -1)]).to_list()
+
+    if questions:
+        return questions[0]
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No questions found for this topic")
 
 @questionRouter.delete("/delete/{leet_question_tag}")
 async def delete_question(leet_question_tag: str):
@@ -60,6 +111,28 @@ async def create_question(question: QuestionRepo):
     return question
   except Exception as e:
     raise HTTPException(status_code=500, detail=f"Error creating question: {str(e)}")
+
+@questionRouter.post("/upvote/{leet_question_tag}", response_model=QuestionRepo)
+async def upvote_question(leet_question_tag: str):
+    question = await QuestionRepo.find_one(QuestionRepo.leet_tag == leet_question_tag)
+    if not question:
+        raise HTTPException(status_code=404, detail="Question not found")
+    
+    question.upvotes += 1
+    question.popularity = (question.upvotes / (question.upvotes + question.downvotes)) * 100
+    await question.save()
+    return question
+
+@questionRouter.post("/downvote/{leet_question_tag}", response_model=QuestionRepo)
+async def downvote_question(leet_question_tag: str):
+    question = await QuestionRepo.find_one(QuestionRepo.leet_tag == leet_question_tag)
+    if not question:
+        raise HTTPException(status_code=404, detail="Question not found")
+    
+    question.downvotes += 1
+    question.popularity = (question.upvotes / (question.upvotes + question.downvotes)) * 100
+    await question.save()
+    return question
 
 @questionRouter.post('/add/{leet_question_tag}', response_model=QuestionRepo)
 async def add_leetcode_question(leet_question_tag: str):
@@ -92,7 +165,8 @@ async def add_leetcode_question(leet_question_tag: str):
     questionText = ' '.join(promptElement[:testCaseIndex])
     testCaseText = ' '.join(promptElement[testCaseIndex:])
 
-    new_question = QuestionRepo(leet_tag=leet_question_tag, topic=topicElementText, difficulty_level=difficultyLevelText, title=titleText, question_prompt=questionText, examples=testCaseText)
+    new_question = QuestionRepo(leet_tag=leet_question_tag, topic=topicElementText, difficulty_level=difficultyLevelText, title=titleText, question_prompt=questionText, examples=testCaseText,
+    popularity=100.0, upvotes=0, downvotes=0)
     await new_question.insert()
 
     return new_question
