@@ -42,7 +42,7 @@ const UserProfile = () => {
   
 
   return (
-    <Box w="100vw" h="100vh">
+    <Box w="100vw"h="100vh" overflowY="auto">
       <Box mt={"1%"} display="flex">
         <PeerPrepLogo />
       </Box>{" "}
@@ -54,7 +54,7 @@ const UserProfile = () => {
         bgGradient={"linear(to-r, orange.400, red.500)"}
       />
       <Flex>
-      <Card width={"20%"} ml={"15%"} mt={"5%"}>
+      <Card width={"20%"} ml={"15%"} mt={"1%"}>
         <CardHeader>
           <Link to={"/editprofile"}>
             <Button bgColor={"white"} ml={"85%"} size={"lg"}>
@@ -81,7 +81,7 @@ const UserProfile = () => {
           <hr ></hr>
         </CardHeader>
       </Card>
-      <Card width={"49%"} ml={"1%"} mt={"5%"}>
+      <Card width={"49%"} ml={"1%"} mt={"1%"}>
       <CardHeader>
           <Heading size='md'>Questions History</Heading>
           <Box maxH="300px" overflowY="auto" mt={"2%"}>
