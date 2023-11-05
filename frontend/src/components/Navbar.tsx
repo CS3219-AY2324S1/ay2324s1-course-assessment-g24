@@ -20,6 +20,7 @@ const NavBar = ({
   withSettings,
   withHomePage,
   withoutAnything,
+  activeLink,
 }: NavBarProps) => {
   return (
     <>
@@ -34,7 +35,7 @@ const NavBar = ({
           p={2}
         >
           <Box transform={"scale(0.6)"}>
-            <PeerPrepLogo />
+            <PeerPrepLogo activeLink={activeLink} />
           </Box>
           <Spacer />
           {withoutAnything ?? (
@@ -46,7 +47,7 @@ const NavBar = ({
                   icon={<HamburgerIcon />}
                   variant={"outline"}
                 />
-                <MenuList p={2}>
+                <MenuList p={2} bg={"white"}>
                   {withHomePage ?? (
                     <MenuGroup title={"NAVIGATE"}>
                       <Link to={"/userprofile"}>
@@ -57,7 +58,7 @@ const NavBar = ({
                   {withSettings ?? (
                     <MenuGroup title={"PROFILE"}>
                       <Link to={"/editprofile"}>
-                        <MenuItem fontWeight={"normal"}>My Account</MenuItem>
+                        <MenuItem fontWeight={"normal"}>User Settings</MenuItem>
                       </Link>
                       <Link to={"/"}>
                         <MenuItem fontWeight={"normal"}>Logout</MenuItem>
@@ -85,6 +86,7 @@ interface NavBarProps {
   withSettings?: boolean;
   withHomePage?: boolean;
   withoutAnything?: boolean;
+  activeLink?: boolean;
 }
 
 export default NavBar;

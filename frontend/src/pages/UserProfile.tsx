@@ -1,28 +1,17 @@
 import {
-  Avatar,
+  Badge,
   Box,
   Button,
-  Card,
-  CardHeader,
-  Center,
-  Flex,
+  ButtonGroup,
+  HStack,
   Heading,
-  Icon,
-  Text,
-  defineStyle,
+  VStack,
 } from "@chakra-ui/react";
-import { IoSettingsOutline } from "react-icons/io5";
-import { Link } from "react-router-dom";
 
 import HeadingWithGradient from "../components/HeadingWithGradient";
-import PeerPrepLogo from "../components/PeerPrepLogo";
-
-const underline = defineStyle({
-  color: "orange.500",
-  borderBottom: "2px",
-  borderRadius: "10",
-  fontFamily: "serif",
-});
+import NavBar from "../components/NavBar";
+import Question from "../components/Question";
+import { DIFFICULTY } from "../util/enums";
 
 const randomQuestions = [
   "What is the capital of France?",
@@ -33,122 +22,117 @@ const randomQuestions = [
   "Write a function to find the factorial of a number.",
   "Write a function to find the factorial of a number.",
   "Write a function to find the factorial of a number.",
+  "What is the largest planet in our solar system?",
+  "Write a function to find the factorial of a number.",
+  "Write a function to find the factorial of a number.",
+  "Write a function to find the factorial of a number.",
+  "Write a function to find the factorial of a number.",
+  "Write a function to find the factorial of a number.",
 ];
+
+const difficultyToColorScheme = {
+  [DIFFICULTY.EASY]: "green",
+  [DIFFICULTY.MEDIUM]: "yellow",
+  [DIFFICULTY.HARD]: "red",
+};
 
 const UserProfile = () => {
   return (
     <Box w="100vw" h="100vh">
-      <Box mt={"1%"} display="flex">
-        <PeerPrepLogo />
-      </Box>{" "}
-      {/* Use "m" (margin) to create space */}
-      <HeadingWithGradient
-        preText={"Your"}
-        gradientText={"Profile"}
-        postText={""}
-        bgGradient={"linear(to-r, orange.400, red.500)"}
-      />
-      <Flex>
-        <Card width={"20%"} ml={"15%"} mt={"5%"}>
-          <CardHeader>
-            <Link to={"/editprofile"}>
-              <Button bgColor={"white"} ml={"85%"} size={"lg"}>
-                <Icon as={IoSettingsOutline} />
-              </Button>
-            </Link>
-            <Heading size="md" color={"black"} mt={"2%"}>
-              Particulars
-            </Heading>
-            <Avatar
-              size={"xl"}
-              src={"https://avatars.dicebear.com/api/male/username.svg"}
-              mt={"10%"}
-            />
-            <Center>
-              <p>Username</p> {/*update with the users username*/}
-            </Center>
-            <Text fontSize="md" mt={"10%"} align={"center"} mb={"5%"}>
-              Your preferred language:{" "}
-              <Text color={"orange"} fontSize="lg">
-                <b>Python</b>
-              </Text>
-              {/* <Link to={"/editprofile"}>
-            <Button bgColor={"white"} >
-            <Icon as={MdModeEditOutline}/></Button></Link> */}
-            </Text>{" "}
-            {/*add the user's preferred lang */}
-            <hr></hr>
-          </CardHeader>
-        </Card>
-        <Card width={"49%"} ml={"1%"} mt={"5%"}>
-          <CardHeader>
-            <Heading size="md">Questions History</Heading>
-            <Box maxH="300px" overflowY="auto" mt={"2%"}>
-              {randomQuestions.map((question, index) => (
-                <Box key={index} border="1px" p={2} my={2}>
-                  Q{index + 1}. {question}
-                </Box>
-              ))}
+      <NavBar withHomePage={false} />
+      <VStack
+        w={"100%"}
+        h={"80%"}
+        spacing={5}
+        mt={4}
+        justifyContent={"space-around"}
+      >
+        <HeadingWithGradient
+          preText={"The"}
+          gradientText={"Playground"}
+          postText={""}
+          bgGradient={"linear(to-r, orange.400, red.500)"}
+        />
+        <HStack w={"100%"} h={"80%"}>
+          <Box
+            w={"40%"}
+            display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            pl={4}
+          >
+            <VStack display={"flex"} flexDirection={"column"} justifyContent={"flex-start"} w={"100%"} h={"100%"} spacing={2}>
+              <Box
+                w={"100%"}
+                h={"20%"}
+                py={4}
+                px={2}
+                m={4}
+                rounded={"lg"}
+                boxShadow={"lg"}
+              >
+                <Heading size={"lg"} p={2} mx={4} bg={"white"}>
+                  Get A Match! 
+                </Heading>
+                <ButtonGroup isAttached>
+                  {Object.values(DIFFICULTY).map(d => {
+                    const tcolor = difficultyToColorScheme[d];
+                    return (
+                      <Button variant={"outline"} colorScheme={tcolor}>
+                        <Badge colorScheme={tcolor}>{d}</Badge>
+                      </Button>
+                    )
+                  })}
+                </ButtonGroup>
+              </Box>
+              <Box
+                w={"100%"}
+                h={"80%"}
+                py={4}
+                px={2}
+                m={4}
+                rounded={"lg"}
+                boxShadow={"lg"}
+              >
+                <Heading size={"lg"} p={2} mx={4} bg={"white"}>
+                  Statistics
+                </Heading>
+                Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
+                Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
+                when an unknown printer took a galley of type and scrambled it to make a type 
+                specimen book. It has survived not only five centuries, but also the leap into 
+                electronic typesetting, remaining essentially unchanged. It was popularised in 
+                the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, 
+                and more recently with desktop publishing software like Aldus PageMaker including 
+                versions of Lorem Ipsum.
+              </Box>
+            </VStack>
+          </Box>
+          <Box
+            w={"60%"}
+            display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}
+          >
+            <Box w={"100%"} py={4} px={2} m={4} rounded={"lg"} boxShadow={"lg"}>
+              <Heading size={"lg"} p={2} mx={4} mb={4} bg={"white"}>
+                Questions Repository
+              </Heading>
+              <Box maxH={"400px"} p={4} overflowY="auto">
+                {randomQuestions.map((question, index) => (
+                  <Question
+                    key={index}
+                    questionTitle={question}
+                    upVotes={1}
+                    downVotes={2}
+                    difficulty={DIFFICULTY.HARD}
+                  />
+                ))}
+              </Box>
             </Box>
-          </CardHeader>
-        </Card>
-      </Flex>
-      <Card width={"70%"} ml={"15%"} mt={"1%"} height={"30%"}>
-        <Flex>
-          <Card width={"20%"} ml={"2%"} mt={"1%"} bgColor={"green.100"}>
-            <CardHeader>
-              <Heading size="md">Easy</Heading>
-              <Text mt={"25%"}># of questions completed:</Text>
-              <Button
-                variant={"outline"}
-                colorScheme="green"
-                mt={"20%"}
-                mr={"80%"}
-              >
-                Match
-              </Button>
-            </CardHeader>
-          </Card>
-          <Card width={"20%"} ml={"2%"} mt={"1%"} bgColor={"orange.100"}>
-            <CardHeader>
-              <Heading size="md">Medium</Heading>
-              <Text mt={"25%"}># of questions completed:</Text>
-              <Button
-                variant={"outline"}
-                colorScheme="orange"
-                mt={"20%"}
-                mr={"80%"}
-              >
-                Match
-              </Button>
-            </CardHeader>
-          </Card>
-          <Card width={"20%"} ml={"2%"} mt={"1%"} bgColor={"red.100"}>
-            <CardHeader>
-              <Heading size="md">Hard</Heading>
-              <Text mt={"25%"}># of questions completed:</Text>
-              <Button
-                variant={"outline"}
-                colorScheme="red"
-                mt={"20%"}
-                mr={"80%"}
-              >
-                Match
-              </Button>
-            </CardHeader>
-          </Card>
-          <Card width={"30%"} ml={"2%"} mt={"1%"} bgColor={"white"}>
-            <CardHeader>
-              <Heading size="md">Statistics</Heading>
-              <Text mt={"3%"}>Total # of questions completed:</Text>
-              {/* <Button variant={"outline"} colorScheme="" mt={"20%"} mr={"80%"}>Match</Button> */}
-            </CardHeader>
-          </Card>
-        </Flex>
-      </Card>
-      <Button mt={"2%"} variant={"outline"} colorScheme="red">
-        Log Out
-      </Button>
+          </Box>
+        </HStack>
+      </VStack>
     </Box>
   );
 };

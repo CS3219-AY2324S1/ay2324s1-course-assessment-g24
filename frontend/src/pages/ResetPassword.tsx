@@ -1,25 +1,22 @@
 import {
   AbsoluteCenter,
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
   Box,
   Button,
   FormControl,
   FormErrorMessage,
   FormLabel,
   Input,
-  Popover,
-  PopoverArrow,
-  PopoverBody,
-  PopoverCloseButton,
-  PopoverContent,
-  PopoverHeader,
-  PopoverTrigger,
-  Portal,
   VStack,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { Field, Formik } from "formik";
-import { Link } from "react-router-dom";
 import { object, ref, string } from "yup";
 
+import LinkButton from "../components/LinkButton";
 import PeerPrepLogo from "../components/PeerPrepLogo";
 
 const newPasswordValidation = object().shape({
@@ -28,10 +25,12 @@ const newPasswordValidation = object().shape({
     .required("Required"),
   confirmPassword: string()
     .required("Please confirm your password")
-    .oneOf([ref("password")], "Passwords do not match"),
+    .oneOf([ref("password")], "Passwords must match!"),
 });
 
 const ResetPassword = () => {
+  const successAlert = useDisclosure({ defaultIsOpen: false });
+
   return (
     <>
       <Box w={"100dvw"} h={"100dvh"}>
@@ -45,12 +44,14 @@ const ResetPassword = () => {
                 password: "",
                 confirmPassword: "",
               }}
-              onSubmit={(values) => {
+              onSubmit={(values, { resetForm }) => {
                 alert(JSON.stringify(values, null, 2));
+                resetForm();
+                successAlert.onOpen();
               }}
               validationSchema={newPasswordValidation}
             >
-              {({ handleSubmit, errors, touched }) => (
+              {({ handleSubmit, errors, touched, values }) => (
                 <Box as={"form"} onSubmit={handleSubmit}>
                   <VStack spacing={4} align="flex-start">
                     <FormControl
@@ -59,8 +60,8 @@ const ResetPassword = () => {
                       <FormLabel htmlFor={"password"}>Password</FormLabel>
                       <Field
                         as={Input}
-                        id="new password"
-                        name="new password"
+                        id="password"
+                        name="password"
                         type="password"
                         variant="filled"
                         size={"lg"}
@@ -71,6 +72,9 @@ const ResetPassword = () => {
                     <FormControl
                       isInvalid={
                         !!errors.confirmPassword && touched.confirmPassword
+                      }
+                      isDisabled={
+                        values.password == "" || values.password.length < 8
                       }
                     >
                       <FormLabel htmlFor={"password"}>
@@ -89,44 +93,43 @@ const ResetPassword = () => {
                         {errors.confirmPassword}
                       </FormErrorMessage>
                     </FormControl>
-                    <Popover>
-                      <PopoverTrigger>
-                        <Button
-                          loadingText={"Logging in..."}
-                          width={"full"}
+                    {successAlert.isOpen ? (
+                      <Alert
+                        status="success"
+                        flexDirection={"row"}
+                        justifyContent={"space-between"}
+                        alignItems={"center"}
+                      >
+                        <AlertIcon />
+                        <Box>
+                          <AlertTitle>Success!</AlertTitle>
+                          <AlertDescription w={"auto"}>
+                            Proceed to log in!
+                          </AlertDescription>
+                        </Box>
+
+                        <LinkButton
+                          link={"/login"}
+                          size={"md"}
+                          width={"30%"}
+                          content={"Login"}
                           variant={"solid"}
-                          colorScheme={"orange"}
-                          type={"submit"}
-                          size={"lg"}
-                        >
-                          Reset Password
-                        </Button>
-                      </PopoverTrigger>
-                      <Portal>
-                        <PopoverContent>
-                          <PopoverArrow />
-                          <PopoverHeader>
-                            Your password has been successfully changed! Proceed
-                            to log in.
-                          </PopoverHeader>
-                          <PopoverCloseButton />
-                          <PopoverBody>
-                            <Link to={"/login"}>
-                              <Button
-                                loadingText={"Logging in..."}
-                                width={"full"}
-                                variant={"solid"}
-                                colorScheme={"orange"}
-                                type={"submit"}
-                                size={"lg"}
-                              >
-                                Log In
-                              </Button>
-                            </Link>
-                          </PopoverBody>
-                        </PopoverContent>
-                      </Portal>
-                    </Popover>
+                          colorScheme={"green"}
+                        />
+                      </Alert>
+                    ) : (
+                      <Button
+                        loadingText={"Logging in..."}
+                        width={"full"}
+                        variant={"solid"}
+                        colorScheme={"orange"}
+                        type={"submit"}
+                        size={"lg"}
+                        mt={6}
+                      >
+                        Reset Password
+                      </Button>
+                    )}
                   </VStack>
                 </Box>
               )}
