@@ -6,17 +6,19 @@ const LinkButton = ({
   content,
   width = "full",
   variant = "solid",
+  colorScheme = "orange",
 }: {
   link: string;
   size: string;
   content: string;
   width?: string;
   variant?: string;
+  colorScheme?: string;
 }) => {
   return (
     <Box width={width}>
       <Link href={link} textDecoration={""} _hover={{ textDecoration: "none" }}>
-        <Button size={size} colorScheme={"orange"} variant={variant}>
+        <Button size={size} colorScheme={colorScheme} variant={variant}>
           {content}
         </Button>
       </Link>

@@ -1,102 +1,223 @@
 import {
+  AbsoluteCenter,
+  Alert,
+  AlertDescription,
   AlertDialog,
   AlertDialogBody,
   AlertDialogContent,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogOverlay,
+  AlertIcon,
+  AlertTitle,
   Box,
   Button,
   Card,
   CardHeader,
+  CloseButton,
+  Container,
+  FormControl,
+  FormErrorMessage,
+  HStack,
   Heading,
   Select,
-  Text,
+  Spacer,
+  VStack,
   useDisclosure,
 } from "@chakra-ui/react";
-import React from "react";
-import { Link } from "react-router-dom";
+import { Field, FieldProps, Formik } from "formik";
+import { useRef, useState } from "react";
+import { object, string } from "yup";
 
 import HeadingWithGradient from "../components/HeadingWithGradient";
+import LinkButton from "../components/LinkButton";
 import NavBar from "../components/NavBar";
+import { LANGUAGE } from "../util/enums";
 
 const EditProfile = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const cancelRef = React.useRef();
+  const deleteModalDisclosure = useDisclosure();
+  const successAlert = useDisclosure({ defaultIsOpen: false });
+  const sameValueAlert = useDisclosure({ defaultIsOpen: false });
+  // const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
+  const cancelRef = useRef<HTMLButtonElement>(null);
+
+  const [currentLanguage, setCurrentLanguage] = useState<string>(
+    LANGUAGE.PYTHON,
+  );
+
+  const languageValidation = object().shape({
+    language: string().required("Valid Language Required"),
+  });
 
   return (
     <Box w={"100dvw"} h={"100dvh"}>
       <NavBar />
-      <HeadingWithGradient
-        preText={"Edit"}
-        gradientText={"Profile"}
-        postText={""}
-        bgGradient={"linear(to-r, orange.400, red.500)"}
-      />
+      <Container>
+        <AbsoluteCenter>
+          <VStack spacing={5}>
+            <HeadingWithGradient
+              preText={"User"}
+              gradientText={"Settings"}
+              postText={""}
+              bgGradient={"linear(to-r, orange.400, red.500)"}
+            />
+            <Card minW={"lg"} variant={"outline"} px={6} pb={6}>
+              <CardHeader>
+                <Heading size="md" color={"black"}>
+                  Preferred Programming Language
+                </Heading>
+              </CardHeader>
 
-      <Card width={"30%"} ml={"35%"} mt={"5%"}>
-        <CardHeader>
-          <Heading size="md" color={"black"} mt={"2%"}>
-            Change your preferred Language
-          </Heading>
+              <Formik
+                initialValues={{
+                  language: currentLanguage,
+                }}
+                onSubmit={(values) => {
+                  if (values.language != currentLanguage) {
+                    setCurrentLanguage(values.language);
+                    successAlert.onOpen();
+                  } else {
+                    sameValueAlert.onOpen();
+                  }
+                }}
+                validationSchema={languageValidation}
+              >
+                {({ handleSubmit, errors }) => (
+                  <Box as={"form"} onSubmit={handleSubmit}>
+                    <VStack spacing={4}>
+                      <FormControl>
+                        <Field>
+                          {({ field }: FieldProps) => (
+                            <Select
+                              id="language"
+                              onChange={field.onChange}
+                              defaultValue={currentLanguage}
+                            >
+                              <Box as={"option"} value={LANGUAGE.PYTHON}>
+                                Python
+                              </Box>
+                              <Box as={"option"} value={LANGUAGE.CPP}>
+                                C++
+                              </Box>
+                              <Box as={"option"} value={LANGUAGE.JAVASCRIPT}>
+                                JavaScript
+                              </Box>
+                            </Select>
+                          )}
+                        </Field>
+                        <FormErrorMessage>{errors.language}</FormErrorMessage>
+                      </FormControl>
 
-          <Text align={"left"} fontSize={"xs"} mt={"10%"} ml={"1%"}>
-            Preferred Language:
-          </Text>
-          <Select placeholder="Select option" mt={"1%"}>
-            <option value="option1">Python</option>
-            <option value="option2">C++</option>
-            <option value="option3">Java</option>
-          </Select>
+                      {successAlert.isOpen ? (
+                        <Alert status="success">
+                          <AlertIcon />
+                          <Spacer />
+                          <Box>
+                            <AlertTitle>Success!</AlertTitle>
+                            <AlertDescription>
+                              Preferred language changed!
+                            </AlertDescription>
+                          </Box>
+                          <Spacer />
+                          <Box>
+                            <CloseButton
+                              onClick={() => {
+                                successAlert.onClose();
+                              }}
+                            />
+                          </Box>
+                        </Alert>
+                      ) : sameValueAlert.isOpen ? (
+                        <Alert status="info">
+                          <AlertIcon />
+                          <Spacer />
+                          <Box>
+                            <AlertTitle>Info!</AlertTitle>
+                            <AlertDescription>
+                              Same language identified, no need to change!
+                            </AlertDescription>
+                          </Box>
+                          <Spacer />
+                          <Box>
+                            <CloseButton
+                              onClick={() => {
+                                sameValueAlert.onClose();
+                              }}
+                            />
+                          </Box>
+                        </Alert>
+                      ) : (
+                        <Button
+                          loadingText={"Updating..."}
+                          variant={"solid"}
+                          colorScheme={"orange"}
+                          type={"submit"}
+                          size={"lg"}
+                          mb={6}
+                        >
+                          Update
+                        </Button>
+                      )}
+                    </VStack>
+                  </Box>
+                )}
+              </Formik>
+            </Card>
 
-          <Button
-            loadingText={"Updating..."}
-            width={"50%"}
-            variant={"solid"}
-            colorScheme={"orange"}
-            type={"submit"}
-            size={"lg"}
-            mt={"10%"}
-          >
-            Update
-          </Button>
-        </CardHeader>
-      </Card>
-      <Link to={"/changepassword"}>
-        <Button mt={"5%"} colorScheme="orange" variant={"outline"}>
-          Change Password
-        </Button>
-      </Link>
-      <Text></Text>
-      <Button mt={"1%"} colorScheme="red" variant={"solid"} onClick={onOpen}>
-        Delete Account
-      </Button>
-      <AlertDialog
-        isOpen={isOpen}
-        leastDestructiveRef={cancelRef}
-        onClose={onClose}
-      >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Delete Account
-            </AlertDialogHeader>
-
-            <AlertDialogBody>
-              Are you sure? You can't undo this action afterwards.
-            </AlertDialogBody>
-
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
-                Cancel
+            <VStack spacing={2}>
+              <LinkButton
+                link={"/changepassword"}
+                size={"lg"}
+                content={"Change Password"}
+                variant={"outline"}
+              />
+              <Button
+                colorScheme={"red"}
+                variant={"solid"}
+                size={"lg"}
+                onClick={deleteModalDisclosure.onOpen}
+              >
+                Delete Account
               </Button>
-              <Button colorScheme="red" onClick={onClose} ml={3}>
-                Delete
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
+            </VStack>
+
+            <AlertDialog
+              isOpen={deleteModalDisclosure.isOpen}
+              leastDestructiveRef={cancelRef}
+              onClose={deleteModalDisclosure.onClose}
+            >
+              <AlertDialogOverlay>
+                <AlertDialogContent>
+                  <AlertDialogHeader fontSize={"lg"} fontWeight={"bold"}>
+                    Delete Account
+                  </AlertDialogHeader>
+
+                  <AlertDialogBody>
+                    Are you sure? You can't undo this action afterwards.
+                  </AlertDialogBody>
+
+                  <AlertDialogFooter>
+                    <HStack spacing={2}>
+                      <Button
+                        ref={cancelRef}
+                        onClick={deleteModalDisclosure.onClose}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        colorScheme={"red"}
+                        onClick={deleteModalDisclosure.onClose}
+                      >
+                        Delete
+                      </Button>
+                    </HStack>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialogOverlay>
+            </AlertDialog>
+          </VStack>
+        </AbsoluteCenter>
+      </Container>
     </Box>
   );
 };
