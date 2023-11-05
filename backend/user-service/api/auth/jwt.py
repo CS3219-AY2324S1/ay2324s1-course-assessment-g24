@@ -1,9 +1,8 @@
-from typing import Any
-
 from fastapi import APIRouter, Body, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from jose import jwt
 from pydantic import ValidationError
+from typing import Any
 
 from api.deps.user_deps import get_current_user
 from controllers.user_controller import UserController
@@ -11,7 +10,7 @@ from core.config import settings
 from core.security import create_access_token, create_refresh_token
 from models.user_model import User
 from schemas.auth_schema import TokenPayload, TokenSchema
-from schemas.user_schema import UserOut
+from schemas.user_schema import UserAuth, UserOut
 
 auth_router = APIRouter()
 
@@ -19,17 +18,12 @@ auth_router = APIRouter()
 from pydantic import BaseModel
 
 
-class UserLoginModel(BaseModel):
-  email: str
-  password: str
-
-
 @auth_router.post(
   "/login",
   summary="Create access and refresh tokens for user",
   response_model=TokenSchema,
 )
-async def login(user_data: UserLoginModel) -> Any:
+async def login(user_data: UserAuth) -> Any:
   user = await UserController.authenticate(
     email=user_data.email, password=user_data.password
   )
