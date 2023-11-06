@@ -11,11 +11,14 @@ from schemas.user_schema import UserAuth, UserUpdate
 class UserController:
   @staticmethod
   async def create_user(user: UserAuth):
+    if await UserController.get_user_by_email(user.email):
+      raise pymongo.errors.DuplicateKeyError("User Already Exists!")
+    
     user_in = User(
-      username=user.username,
       email=user.email,
       hashed_password=get_password(user.password),
     )
+    
     await user_in.save()
     return user_in
 

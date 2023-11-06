@@ -3,15 +3,18 @@ import {
   Box,
   Button,
   ButtonGroup,
+  Divider,
   HStack,
   Heading,
+  Text,
   VStack,
 } from "@chakra-ui/react";
 
 import HeadingWithGradient from "../components/HeadingWithGradient";
 import NavBar from "../components/NavBar";
 import Question from "../components/Question";
-import { DIFFICULTY } from "../util/enums";
+import { DIFFICULTY } from "../utils/enums";
+import { useAuth } from "../contexts/AuthContext";
 
 const randomQuestions = [
   "What is the capital of France?",
@@ -37,6 +40,8 @@ const difficultyToColorScheme = {
 };
 
 const UserProfile = () => {
+  const { user } = useAuth();
+
   return (
     <Box w="100vw" h="100vh">
       <NavBar withHomePage={false} />
@@ -61,7 +66,14 @@ const UserProfile = () => {
             alignItems={"center"}
             pl={4}
           >
-            <VStack display={"flex"} flexDirection={"column"} justifyContent={"flex-start"} w={"100%"} h={"100%"} spacing={2}>
+            <VStack
+              display={"flex"}
+              flexDirection={"column"}
+              justifyContent={"flex-start"}
+              w={"100%"}
+              h={"100%"}
+              spacing={2}
+            >
               <Box
                 w={"100%"}
                 h={"20%"}
@@ -72,18 +84,24 @@ const UserProfile = () => {
                 boxShadow={"lg"}
               >
                 <Heading size={"lg"} p={2} mx={4} bg={"white"}>
-                  Get A Match! 
+                  Get A Match!
                 </Heading>
                 <ButtonGroup isAttached>
-                  {Object.values(DIFFICULTY).map(d => {
+                  {Object.values(DIFFICULTY).map((d, i) => {
                     const tcolor = difficultyToColorScheme[d];
                     return (
-                      <Button variant={"outline"} colorScheme={tcolor}>
+                      <Button key={`badge-${i}`} variant={"outline"} colorScheme={tcolor}>
                         <Badge colorScheme={tcolor}>{d}</Badge>
                       </Button>
-                    )
+                    );
                   })}
                 </ButtonGroup>
+                <Divider my={3} />
+
+                You're
+                <Text as={"b"}>
+                  {" "} {user.email}
+                </Text>
               </Box>
               <Box
                 w={"100%"}
@@ -97,14 +115,16 @@ const UserProfile = () => {
                 <Heading size={"lg"} p={2} mx={4} bg={"white"}>
                   Statistics
                 </Heading>
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
-                Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, 
-                when an unknown printer took a galley of type and scrambled it to make a type 
-                specimen book. It has survived not only five centuries, but also the leap into 
-                electronic typesetting, remaining essentially unchanged. It was popularised in 
-                the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, 
-                and more recently with desktop publishing software like Aldus PageMaker including 
-                versions of Lorem Ipsum.
+                Lorem Ipsum is simply dummy text of the printing and typesetting
+                industry. Lorem Ipsum has been the industry's standard dummy
+                text ever since the 1500s, when an unknown printer took a galley
+                of type and scrambled it to make a type specimen book. It has
+                survived not only five centuries, but also the leap into
+                electronic typesetting, remaining essentially unchanged. It was
+                popularised in the 1960s with the release of Letraset sheets
+                containing Lorem Ipsum passages, and more recently with desktop
+                publishing software like Aldus PageMaker including versions of
+                Lorem Ipsum.
               </Box>
             </VStack>
           </Box>

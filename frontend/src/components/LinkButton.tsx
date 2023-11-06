@@ -1,4 +1,5 @@
-import { Box, Button, Link } from "@chakra-ui/react";
+import { Box, Button } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 
 const LinkButton = ({
   link,
@@ -17,7 +18,7 @@ const LinkButton = ({
 }) => {
   return (
     <Box width={width}>
-      <Link href={link} textDecoration={""} _hover={{ textDecoration: "none" }}>
+      <Link to={link}>
         <Button size={size} colorScheme={colorScheme} variant={variant}>
           {content}
         </Button>
