@@ -10,10 +10,12 @@ import {
   Spacer,
   Text,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
 import { Field, Formik } from "formik";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { object, string } from "yup";
+import { useAuth } from "../contexts/AuthContext";
 
 import LinkButton from "../components/LinkButton";
 import PeerPrepLogo from "../components/PeerPrepLogo";
@@ -28,6 +30,10 @@ const loginValidation = object().shape({
 });
 
 const LoginPage = () => {
+  const { login } = useAuth();
+  const toast = useToast();
+  const navigate = useNavigate();
+
   return (
     <>
       <Box w={"100dvw"} h={"100dvh"}>
@@ -41,8 +47,24 @@ const LoginPage = () => {
                 email: "",
                 password: "",
               }}
-              onSubmit={(values) => {
-                alert(JSON.stringify(values, null, 2));
+              onSubmit={async (values) => {
+                try {
+                  await login(values.email, values.password);
+                  toast({
+                    title: "Log In Successful!",
+                    status: "success",
+                    isClosable: true,
+                    duration: 1500,
+                  });
+                  navigate("/userprofile");
+                } catch (error) {
+                  toast({
+                    title: "Invalid Email or Password!",
+                    status: "error",
+                    isClosable: true,
+                    duration: 1500,
+                  });
+                }
               }}
               validationSchema={loginValidation}
             >

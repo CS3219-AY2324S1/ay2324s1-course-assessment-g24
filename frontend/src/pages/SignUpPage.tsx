@@ -10,12 +10,16 @@ import {
   Spacer,
   Text,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
 import { Field, Formik } from "formik";
 import { object, ref, string } from "yup";
+import userServiceAxiosInstance from "../services/userService";
+import { AxiosError } from "axios";
 
 import LinkButton from "../components/LinkButton";
 import PeerPrepLogo from "../components/PeerPrepLogo";
+import { useNavigate } from "react-router-dom";
 
 const signUpValidation = object().shape({
   email: string()
@@ -31,6 +35,9 @@ const signUpValidation = object().shape({
 });
 
 const SignUpPage = () => {
+  const toast = useToast();
+  const navigate = useNavigate();
+
   return (
     <>
       <Box w={"100dvw"} h={"100dvh"}>
@@ -45,8 +52,25 @@ const SignUpPage = () => {
                 password: "",
                 confirmPassword: "",
               }}
-              onSubmit={(values) => {
-                alert(JSON.stringify(values, null, 2));
+              onSubmit={async (values) => {
+                try {
+                  await userServiceAxiosInstance.post("/users/create", values);
+                  toast({
+                    title: "Account Created Successfully! Proceed to Log In!",
+                    status: "success",
+                    isClosable: true,
+                    duration: 1500,
+                  });
+                  navigate("/login", { replace: true });
+                } catch (error) {
+                  console.log(error);
+                  toast({
+                    title: `${error instanceof AxiosError ? error.response?.data.detail : String(error)}`,
+                    status: "error",
+                    isClosable: true,
+                    duration: 1500,
+                  });
+                }
               }}
               validationSchema={signUpValidation}
             >

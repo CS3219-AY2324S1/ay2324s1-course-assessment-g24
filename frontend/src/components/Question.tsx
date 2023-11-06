@@ -17,7 +17,7 @@ import {
   BiUpvote,
 } from "react-icons/bi";
 
-import { DIFFICULTY } from "../util/enums";
+import { DIFFICULTY } from "../utils/enums";
 
 const Question = ({
   questionTitle,

@@ -1,6 +1,6 @@
 import { Badge, Box, Code, Heading, Text } from "@chakra-ui/react";
-import { DIFFICULTY } from "../util/enums";
 
+import { DIFFICULTY } from "../utils/enums";
 
 const QuestionPanel = ({
   questionTitle,
@@ -10,32 +10,22 @@ const QuestionPanel = ({
 }: QuestionPanelProps) => {
   return (
     <>
-    <Box p={4} textAlign={"left"}>
-      <Heading size={"lg"}>
-        {questionTitle}
-      </Heading>
-      <Badge>
-        {difficulty}
-      </Badge>
-      <Text>
-        {questionDescription}
-      </Text>
+      <Box p={4} textAlign={"left"}>
+        <Heading size={"lg"}>{questionTitle}</Heading>
+        <Badge>{difficulty}</Badge>
+        <Text>{questionDescription}</Text>
         {examples.map((e, i) => {
           return (
             <>
-            <Text>
-              Example {i + 1}
-            </Text>
-            <Code>
-              {e}
-            </Code>
+              <Text>Example {i + 1}</Text>
+              <Code>{e}</Code>
             </>
-          )
+          );
         })}
-    </Box>
+      </Box>
     </>
-  )
-}
+  );
+};
 
 interface QuestionPanelProps {
   questionTitle: string;
@@ -45,4 +35,3 @@ interface QuestionPanelProps {
 }
 
 export default QuestionPanel;
-

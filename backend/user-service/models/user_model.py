@@ -8,11 +8,8 @@ from pydantic import Field
 
 class User(Document):
   user_id: UUID = Field(default_factory=uuid4)
-  username: Indexed(str, unique=True)
   email: Indexed(str, unique=True)
   hashed_password: str
-  first_name: Optional[str] = None
-  last_name: Optional[str] = None
   disabled: Optional[bool] = None
 
   def __repr__(self) -> str:
