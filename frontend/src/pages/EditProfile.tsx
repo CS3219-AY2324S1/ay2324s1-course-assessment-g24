@@ -16,13 +16,18 @@ import {
   CardHeader,
   CloseButton,
   Container,
+  Divider,
+  Flex,
   FormControl,
   FormErrorMessage,
   HStack,
   Heading,
   Select,
   Spacer,
+  Stack,
+  StackDivider,
   VStack,
+  useBreakpointValue,
   useDisclosure,
 } from "@chakra-ui/react";
 import { Field, FieldProps, Formik } from "formik";
@@ -33,6 +38,9 @@ import HeadingWithGradient from "../components/HeadingWithGradient";
 import LinkButton from "../components/LinkButton";
 import NavBar from "../components/NavBar";
 import { LANGUAGE } from "../util/enums";
+import { NameFormControl } from "../components/NameFormControl";
+import { PhotoFormControl } from "../components/PhotoFormControl";
+import { Page } from "../components/Page";
 
 const EditProfile = () => {
   const deleteModalDisclosure = useDisclosure();
@@ -61,13 +69,22 @@ const EditProfile = () => {
               postText={""}
               bgGradient={"linear(to-r, orange.400, red.500)"}
             />
+           <div>Customise your experience here at PeerPrep!</div>
+           <NameFormControl 
+              name={"Hardik Narang"}
+              onChange={(name: string): void => setState({ name })}
+            />
+            <PhotoFormControl
+              name={"Hardik Narang"}
+              onChange={(photoUrl: string): void => setState({ photoUrl })}
+              photoUrl={"https//s7manth.me"}
+            />
             <Card minW={"lg"} variant={"outline"} px={6} pb={6}>
               <CardHeader>
                 <Heading size="md" color={"black"}>
                   Preferred Programming Language
                 </Heading>
               </CardHeader>
-
               <Formik
                 initialValues={{
                   language: currentLanguage,
@@ -179,6 +196,7 @@ const EditProfile = () => {
               >
                 Delete Account
               </Button>
+              
             </VStack>
 
             <AlertDialog
