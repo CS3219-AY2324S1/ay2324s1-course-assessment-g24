@@ -5,6 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from typing import List
+import random
 
 from models.question_model import QuestionRepo
 from schemas.question_schema import QuestionTitle
@@ -21,11 +22,37 @@ async def get_questions():
 
 @question_router.get("/{difficulty_level}", response_model=List[QuestionRepo])
 async def get_questions_by_difficulty(difficulty_level: str):
+  difficulty_level = difficulty_level.capitalize()
   try:
     questions = await QuestionRepo.find(QuestionRepo.difficulty_level == difficulty_level).to_list()
     return questions
   except Exception as e:
     raise HTTPException(status_code=500, detail=f"Error retrieving questions by difficulty: {str(e)}")
+
+@question_router.get("/{difficulty_level}/random")
+async def get_random_question_by_difficulty(difficulty_level: str):
+    difficulty_level = difficulty_level.capitalize()
+    questions = await QuestionRepo.find(
+        QuestionRepo.difficulty_level == difficulty_level
+    ).to_list()
+
+    if questions:
+        random_question = random.choice(questions)
+        return random_question
+    else:
+        raise HTTPException(status_code=500, detail="No questions found for this difficulty level")
+
+# get most popular question for a particular difficulty level
+@question_router.get("/{difficulty}/popular")
+async def get_most_popular_question_by_topic(difficulty: str):
+    questions = await QuestionRepo.find(
+      (QuestionRepo.difficulty_level == difficulty)
+    ).sort([("popularity", -1)]).to_list()
+
+    if questions:
+        return questions[0]
+    else:
+        raise HTTPException(status_code=500, detail="No questions found for this difficulty level")
 
 @question_router.get("/title", response_model=QuestionRepo)
 async def get_question_by_title(q_title: QuestionTitle):
@@ -34,6 +61,72 @@ async def get_question_by_title(q_title: QuestionTitle):
     return question
   except Exception as e:
     raise HTTPException(status_code=500, detail=f"Error retrieving question by title: {str(e)}")
+
+# get questions by topic
+@question_router.get("/topic/{topic}")
+async def get_question_by_topic(topic: str):
+  item = await QuestionRepo.find(QuestionRepo.topic == topic).to_list()
+  return item
+
+@question_router.get("/topic/{topic}/random")
+async def get_random_question_by_topic(topic: str):
+    questions = await QuestionRepo.find(
+        QuestionRepo.topic == topic
+    ).to_list()
+
+    if questions:
+        random_question = random.choice(questions)
+        return random_question
+    else:
+        raise HTTPException(status_code=500, detail="No questions found for this topic")
+
+# get most popular question for a particular topic
+@question_router.get("/topic/{topic}/popular")
+async def get_most_popular_question_by_topic(topic: str):
+    questions = await QuestionRepo.find(
+      (QuestionRepo.topic == topic)
+    ).sort([("popularity", -1)]).to_list()
+
+    if questions:
+        return questions[0]
+    else:
+        raise HTTPException(status_code=500, detail="No questions found for this topic")
+
+@question_router.get("/random_questions/{topics}/{difficulty}/{n}")
+async def get_random_questions(topics: str, difficulty: str, n: int):
+    topics = topics.capitalize()
+    difficulty = difficulty.capitalize()
+    matching_questions = await QuestionRepo.find(QuestionRepo.topic == topics, QuestionRepo.difficulty_level == difficulty).to_list()
+    
+    if len(matching_questions) == 0:
+        raise HTTPException(status_code=404, detail=f"No questions found for topics: {topics}, difficulty: {difficulty}")
+    
+    if len(matching_questions) <= n:
+        return matching_questions
+    
+    return random.sample(matching_questions, n)
+
+@question_router.post("/upvote/{title}", response_model=QuestionRepo)
+async def upvote_question(title: str):
+    question = await QuestionRepo.find_one(QuestionRepo.title == title)
+    if not question:
+        raise HTTPException(status_code=404, detail="Question not found")
+    
+    question.upvotes += 1
+    question.popularity = (question.upvotes / (question.upvotes + question.downvotes)) * 100
+    await question.save()
+    return question
+
+@question_router.post("/downvote/{title}", response_model=QuestionRepo)
+async def downvote_question(title: str):
+    question = await QuestionRepo.find_one(QuestionRepo.title == title)
+    if not question:
+        raise HTTPException(status_code=404, detail="Question not found")
+    
+    question.downvotes += 1
+    question.popularity = (question.upvotes / (question.upvotes + question.downvotes)) * 100
+    await question.save()
+    return question
 
 @question_router.post("/", response_model=QuestionRepo)
 async def create_question(question: QuestionRepo):
@@ -75,6 +168,18 @@ async def add_leetcode_question(leetcode_question: str):
     
     question_text = " ".join(prompt_element[:test_case_index])
     test_case_text = " ".join(prompt_element[test_case_index:])
+    test_case_text = test_case_text.split("Constraints")[0].strip()
+    examples_list = test_case_text.split("Example ")
+    examples_list = [example.strip() for example in examples_list if example.strip()]
+
+    formatted_examples = []
+
+    for i, example in enumerate(examples_list):
+        formatted_example = f"Example {example}"
+        formatted_examples.append(formatted_example)
+
+    formatted_examples = [example.replace("\n", " ") for example in formatted_examples]
+    formatted_examples = [example.replace("\"", "'") for example in formatted_examples]
 
     q_if_exists = await QuestionRepo.find(QuestionRepo.title == title_text).first_or_none()
     exists = q_if_exists is not None
@@ -87,7 +192,10 @@ async def add_leetcode_question(leetcode_question: str):
       difficulty_level=difficulty_level_text,
       title=title_text,
       question_prompt=question_text,
-      examples=test_case_text
+      examples=formatted_examples,
+      popularity=100.0,
+      upvotes=0,
+      downvotes=0
     )
     
     await new_question.save()
