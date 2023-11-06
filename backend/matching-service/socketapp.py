@@ -2,12 +2,10 @@ import os
 import requests
 import socketio
 
-from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from database import SessionLocal
 from models import match_model
-from schemas import match_schema
 
 
 def get_db():
@@ -19,7 +17,7 @@ def get_db():
 
 sio_server = socketio.AsyncServer(
   async_mode="asgi",
-  cors_allowed_origin=[]
+  cors_allowed_origin=["*"]
 )
 
 users = list()
@@ -33,7 +31,7 @@ async def connect(sid, _environ, _auth):
   print("Connection established with", sid)
 
 @sio_server.event 
-async def get(db: Session = Depends(get_db)):
+async def get(db: Session = get_db):
   try:
     matches = await db.query(match_model.Match).all() 
     return matches
@@ -47,7 +45,7 @@ async def fetch_questions(difficulty: str):
   return questions
 
 @sio_server.event
-async def match(params, db: Session = Depends(get_db)):
+async def match(params, db: Session = get_db):
   try:
     user_one, difficulty, socket_id_one = params
 
@@ -96,7 +94,7 @@ async def match(params, db: Session = Depends(get_db)):
     return
 
 @sio_server.event 
-async def kill_match(params, db: Session = Depends(get_db)):
+async def kill_match(params, db: Session = get_db):
   user = params
   try:
     db.query(match_model.Match).filter(match_model.Match.user_one == user).delete()
@@ -107,7 +105,7 @@ async def kill_match(params, db: Session = Depends(get_db)):
     return
 
 @sio_server.event
-async def start_room(params, db: Session = Depends(get_db)):
+async def start_room(params, db: Session = get_db):
   sio_server.emit("partner-start", room=params["room_id"])
 
 @sio_server.event
