@@ -26,20 +26,25 @@ async def get_questions():
 @question_router.get("/{difficulty_level}", response_model=List[QuestionRepo])
 async def get_questions_by_difficulty(difficulty_level: str):
   try:
-        difficulty_level = difficulty_level.lower()
-        questions = await QuestionRepo.all().to_list()
-        filtered_questions = [q for q in questions if q.difficulty_level.lower() == difficulty_level]
-        return filtered_questions
+    questions = await QuestionRepo.find({
+        "difficulty_level": {
+            "$regex": difficulty_level,
+            "$options": "i"  # Enable case-insensitive search
+        }
+    }).to_list()
+    return questions
   except Exception as e:
     raise HTTPException(status_code=500, detail=f"Error retrieving questions by difficulty: {str(e)}")
 
 # get one random question for a particular difficulty level
 @question_router.get("/{difficulty_level}/random")
 async def get_random_question_by_difficulty(difficulty_level: str):
-    difficulty_level = difficulty_level.capitalize()
-    questions = await QuestionRepo.find(
-        QuestionRepo.difficulty_level == difficulty_level
-    ).to_list()
+    questions = await QuestionRepo.find({
+        "difficulty_level": {
+            "$regex": difficulty_level,
+            "$options": "i"  # Enable case-insensitive search
+        }
+    }).to_list()
 
     if questions:
         random_question = random.choice(questions)
@@ -50,10 +55,12 @@ async def get_random_question_by_difficulty(difficulty_level: str):
 # get most popular question for a particular difficulty level
 @question_router.get("/{difficulty}/popular")
 async def get_most_popular_question_by_topic(difficulty: str):
-    difficulty = difficulty.capitalize()
-    questions = await QuestionRepo.find(
-      (QuestionRepo.difficulty_level == difficulty)
-    ).sort([("popularity", -1)]).to_list()
+    questions = await QuestionRepo.find({
+        "difficulty_level": {
+            "$regex": difficulty,
+            "$options": "i"  # Enable case-insensitive search
+        }
+    }).sort([("popularity", -1)]).to_list()
 
     if questions:
         return questions[0]
@@ -65,7 +72,12 @@ async def get_most_popular_question_by_topic(difficulty: str):
 async def get_question_by_title(q_title: str):
   q_title = q_title.replace("_", " ")
   try:
-    question = await QuestionRepo.find(QuestionRepo.title == q_title).to_list()
+    question = await QuestionRepo.find({
+        "title": {
+            "$regex": q_title,
+            "$options": "i"  # Enable case-insensitive search
+        }
+    }).to_list()
     return question
   except Exception as e:
     raise HTTPException(status_code=500, detail=f"Error retrieving question by title: {str(e)}")
@@ -73,19 +85,25 @@ async def get_question_by_title(q_title: str):
 # get questions by topic
 @question_router.get("/topic/{topic}")
 async def get_question_by_topic(topic: str):
-      topic = topic.capitalize()
-      items = await QuestionRepo.find(QuestionRepo.topic == topic).to_list()
-      if not items:
+      questions = await QuestionRepo.find({
+        "topic": {
+            "$regex": topic,
+            "$options": "i"  # Enable case-insensitive search
+        }
+    }).to_list()
+      if not questions:
           raise HTTPException(status_code=500, detail="No questions found for this topic")
-      return items
+      return questions
 
 # get one random question for a particular topic
 @question_router.get("/topic/{topic}/random")
 async def get_random_question_by_topic(topic: str):
-    topic = topic.capitalize()
-    questions = await QuestionRepo.find(
-        QuestionRepo.topic == topic
-    ).to_list()
+    questions = await QuestionRepo.find({
+        "topic": {
+            "$regex": topic,
+            "$options": "i"  # Enable case-insensitive search
+        }
+    }).to_list()
 
     if questions:
         random_question = random.choice(questions)
@@ -96,10 +114,12 @@ async def get_random_question_by_topic(topic: str):
 # get most popular question for a particular topic
 @question_router.get("/topic/{topic}/popular")
 async def get_most_popular_question_by_topic(topic: str):
-    topic = topic.capitalize()
-    questions = await QuestionRepo.find(
-      (QuestionRepo.topic == topic)
-    ).sort([("popularity", -1)]).to_list()
+    questions = await QuestionRepo.find({
+        "topic": {
+            "$regex": topic,
+            "$options": "i"  # Enable case-insensitive search
+        }
+    }).sort([("popularity", -1)]).to_list()
 
     if questions:
         return questions[0]
@@ -109,9 +129,16 @@ async def get_most_popular_question_by_topic(topic: str):
 # get n random questions for a particular topic and difficulty level
 @question_router.get("/random_questions/{topic}/{difficulty}/{n}")
 async def get_random_questions(topic: str, difficulty: str, n: int):
-    topic = topic.capitalize()
-    difficulty = difficulty.capitalize()
-    matching_questions = await QuestionRepo.find(QuestionRepo.topic == topic, QuestionRepo.difficulty_level == difficulty).to_list()
+    matching_questions = await QuestionRepo.find({
+            "topic": {
+                "$regex": topic,
+                "$options": "i"  # Enable case-insensitive search
+            },
+            "difficulty_level": {
+                "$regex": difficulty,
+                "$options": "i"  # Enable case-insensitive search
+            }
+        }).to_list()
     
     if len(matching_questions) == 0:
         raise HTTPException(status_code=404, detail=f"No questions found for topic: {topic}, difficulty: {difficulty}")
@@ -125,7 +152,12 @@ async def get_random_questions(topic: str, difficulty: str, n: int):
 @question_router.post("/upvote/{title}", response_model=QuestionRepo)
 async def upvote_question(title: str):
     title = title.replace("_", " ")
-    question = await QuestionRepo.find_one(QuestionRepo.title == title)
+    question = await QuestionRepo.find_one({
+        "title": {
+            "$regex": title,
+            "$options": "i"  # Enable case-insensitive search
+        }
+    })
     if not question:
         raise HTTPException(status_code=404, detail="Question not found")
     
@@ -138,7 +170,12 @@ async def upvote_question(title: str):
 @question_router.post("/downvote/{title}", response_model=QuestionRepo)
 async def downvote_question(title: str):
     title = title.replace("_", " ")
-    question = await QuestionRepo.find_one(QuestionRepo.title == title)
+    question = await QuestionRepo.find_one({
+        "title": {
+            "$regex": title,
+            "$options": "i"  # Enable case-insensitive search
+        }
+    })
     if not question:
         raise HTTPException(status_code=404, detail="Question not found")
     
