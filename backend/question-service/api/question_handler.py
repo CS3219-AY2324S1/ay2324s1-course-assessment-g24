@@ -6,12 +6,14 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from typing import List
 import random
+import re
 
 from models.question_model import QuestionRepo
 from schemas.question_schema import QuestionTitle
 
 question_router = APIRouter()
 
+# get all questions stored in the question repository
 @question_router.get("/", response_model=List[QuestionRepo])
 async def get_questions():
   try:
@@ -20,15 +22,18 @@ async def get_questions():
   except Exception as e:
     raise HTTPException(status_code=500, detail=f"Error retrieving all questions: {str(e)}")
 
+# get all questions of a particular difficulty level
 @question_router.get("/{difficulty_level}", response_model=List[QuestionRepo])
 async def get_questions_by_difficulty(difficulty_level: str):
-  difficulty_level = difficulty_level.capitalize()
   try:
-    questions = await QuestionRepo.find(QuestionRepo.difficulty_level == difficulty_level).to_list()
-    return questions
+        difficulty_level = difficulty_level.lower()
+        questions = await QuestionRepo.all().to_list()
+        filtered_questions = [q for q in questions if q.difficulty_level.lower() == difficulty_level]
+        return filtered_questions
   except Exception as e:
     raise HTTPException(status_code=500, detail=f"Error retrieving questions by difficulty: {str(e)}")
 
+# get one random question for a particular difficulty level
 @question_router.get("/{difficulty_level}/random")
 async def get_random_question_by_difficulty(difficulty_level: str):
     difficulty_level = difficulty_level.capitalize()
@@ -45,6 +50,7 @@ async def get_random_question_by_difficulty(difficulty_level: str):
 # get most popular question for a particular difficulty level
 @question_router.get("/{difficulty}/popular")
 async def get_most_popular_question_by_topic(difficulty: str):
+    difficulty = difficulty.capitalize()
     questions = await QuestionRepo.find(
       (QuestionRepo.difficulty_level == difficulty)
     ).sort([("popularity", -1)]).to_list()
@@ -54,10 +60,12 @@ async def get_most_popular_question_by_topic(difficulty: str):
     else:
         raise HTTPException(status_code=500, detail="No questions found for this difficulty level")
 
-@question_router.get("/title", response_model=QuestionRepo)
-async def get_question_by_title(q_title: QuestionTitle):
+# get particular question based on title
+@question_router.get("/title/{q_title}")
+async def get_question_by_title(q_title: str):
+  q_title = q_title.replace("_", " ")
   try:
-    question = await QuestionRepo.find(QuestionRepo.title == q_title.title)
+    question = await QuestionRepo.find(QuestionRepo.title == q_title).to_list()
     return question
   except Exception as e:
     raise HTTPException(status_code=500, detail=f"Error retrieving question by title: {str(e)}")
@@ -65,11 +73,16 @@ async def get_question_by_title(q_title: QuestionTitle):
 # get questions by topic
 @question_router.get("/topic/{topic}")
 async def get_question_by_topic(topic: str):
-  item = await QuestionRepo.find(QuestionRepo.topic == topic).to_list()
-  return item
+      topic = topic.capitalize()
+      items = await QuestionRepo.find(QuestionRepo.topic == topic).to_list()
+      if not items:
+          raise HTTPException(status_code=500, detail="No questions found for this topic")
+      return items
 
+# get one random question for a particular topic
 @question_router.get("/topic/{topic}/random")
 async def get_random_question_by_topic(topic: str):
+    topic = topic.capitalize()
     questions = await QuestionRepo.find(
         QuestionRepo.topic == topic
     ).to_list()
@@ -83,6 +96,7 @@ async def get_random_question_by_topic(topic: str):
 # get most popular question for a particular topic
 @question_router.get("/topic/{topic}/popular")
 async def get_most_popular_question_by_topic(topic: str):
+    topic = topic.capitalize()
     questions = await QuestionRepo.find(
       (QuestionRepo.topic == topic)
     ).sort([("popularity", -1)]).to_list()
@@ -92,22 +106,25 @@ async def get_most_popular_question_by_topic(topic: str):
     else:
         raise HTTPException(status_code=500, detail="No questions found for this topic")
 
-@question_router.get("/random_questions/{topics}/{difficulty}/{n}")
-async def get_random_questions(topics: str, difficulty: str, n: int):
-    topics = topics.capitalize()
+# get n random questions for a particular topic and difficulty level
+@question_router.get("/random_questions/{topic}/{difficulty}/{n}")
+async def get_random_questions(topic: str, difficulty: str, n: int):
+    topic = topic.capitalize()
     difficulty = difficulty.capitalize()
-    matching_questions = await QuestionRepo.find(QuestionRepo.topic == topics, QuestionRepo.difficulty_level == difficulty).to_list()
+    matching_questions = await QuestionRepo.find(QuestionRepo.topic == topic, QuestionRepo.difficulty_level == difficulty).to_list()
     
     if len(matching_questions) == 0:
-        raise HTTPException(status_code=404, detail=f"No questions found for topics: {topics}, difficulty: {difficulty}")
+        raise HTTPException(status_code=404, detail=f"No questions found for topic: {topic}, difficulty: {difficulty}")
     
     if len(matching_questions) <= n:
         return matching_questions
     
     return random.sample(matching_questions, n)
 
+#upvote a particular question
 @question_router.post("/upvote/{title}", response_model=QuestionRepo)
 async def upvote_question(title: str):
+    title = title.replace("_", " ")
     question = await QuestionRepo.find_one(QuestionRepo.title == title)
     if not question:
         raise HTTPException(status_code=404, detail="Question not found")
@@ -117,8 +134,10 @@ async def upvote_question(title: str):
     await question.save()
     return question
 
+# downvote a particular question
 @question_router.post("/downvote/{title}", response_model=QuestionRepo)
 async def downvote_question(title: str):
+    title = title.replace("_", " ")
     question = await QuestionRepo.find_one(QuestionRepo.title == title)
     if not question:
         raise HTTPException(status_code=404, detail="Question not found")
