@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Form
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -7,6 +7,10 @@ from selenium.common.exceptions import TimeoutException
 from typing import List
 import random
 import re
+import requests
+import httpx
+import uuid
+from beanie import PydanticObjectId
 
 from models.question_model import QuestionRepo
 from schemas.question_schema import QuestionTitle
@@ -36,9 +40,33 @@ async def get_questions_by_difficulty(difficulty_level: str):
   except Exception as e:
     raise HTTPException(status_code=500, detail=f"Error retrieving questions by difficulty: {str(e)}")
 
-# get one random question for a particular difficulty level
-@question_router.get("/{difficulty_level}/random")
-async def get_random_question_by_difficulty(difficulty_level: str):
+async def create_history_record(email1: str, email2: str, difficulty_level: str, question_title: str, question_id: PydanticObjectId):
+    history_data = {
+        "email": email1,
+        "matched_email": email2,
+        "difficulty_level": difficulty_level,
+        "question_title": question_title,
+        "question_id": str(question_id)  # Convert question_id to a string
+    }
+
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.post("http://localhost:8001/history/",
+                json=history_data,
+                headers={"Content-Type": "application/json"}
+            )
+
+            response.raise_for_status()
+
+            return response.json()
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Error creating history record: {str(e)}")
+
+@question_router.post("/{difficulty_level}/random")
+async def get_random_question_by_difficulty(difficulty_level: str, request_data: dict):
+    email1 = request_data.get("email1")
+    email2 = request_data.get("email2")
+
     questions = await QuestionRepo.find({
         "difficulty_level": {
             "$regex": difficulty_level,
@@ -48,9 +76,16 @@ async def get_random_question_by_difficulty(difficulty_level: str):
 
     if questions:
         random_question = random.choice(questions)
+
+        question_title = random_question.title
+        question_id = random_question.id  # Assuming the question has an ID field
+
+        await create_history_record(email1, email2, difficulty_level, question_title, question_id)  # Pass question_id
+
         return random_question
     else:
         raise HTTPException(status_code=500, detail="No questions found for this difficulty level")
+
 
 # get most popular question for a particular difficulty level
 @question_router.get("/{difficulty}/popular")
@@ -269,5 +304,4 @@ async def delete_question_by_title(q_title: QuestionTitle):
   try:
     await QuestionRepo.find(QuestionRepo.title == q_title.title).delete()
   except Exception as e:
-    raise HTTPException(status_code=500, detail=f"Error deleting question by title: {str(e)}")
-  
+    raise HTTPException(status_code=500, detail=f"Error deleting question by title: {str(e)}")  
