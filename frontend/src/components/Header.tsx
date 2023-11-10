@@ -9,7 +9,7 @@ const Header:React.FC = () => {
       </Avatar>
       <Flex flexDirection="column" mx="5" justify="center">
         <Text fontSize="lg" fontWeight="bold">
-          Ferin Patel
+          Sumanth Yalamarty
         </Text>
         <Text color="green.500">Online</Text>
       </Flex>
