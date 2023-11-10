@@ -13,6 +13,7 @@ import SignUpPage from "./pages/SignUpPage";
 import UserProfile from "./pages/UserProfile";
 import VerificationEmail from "./pages/VerificationEmail";
 import WorkspacePage from "./pages/WorkspacePage";
+import MockChat from "./pages/MockChat";
 
 const App = () => {
   return (
@@ -31,7 +32,6 @@ const App = () => {
         <Route path="/" element={<LandingPage />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/editprofile" element={<EditProfile />} />
-        <Route path="/changepassword" element={<ChangePassword />} />
         <Route path="/userprofile" element={<UserProfile />} />
       </Routes>
     </>
