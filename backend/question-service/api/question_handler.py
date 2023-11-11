@@ -40,6 +40,74 @@ async def get_questions_by_difficulty(difficulty_level: str):
   except Exception as e:
     raise HTTPException(status_code=500, detail=f"Error retrieving questions by difficulty: {str(e)}")
 
+@question_router.post("/add/{leetcode_question}", response_model=QuestionRepo)
+async def add_leetcode_question(leetcode_question: str):
+  driver = webdriver.Chrome()
+  driver.get(f"https://leetcode.com/problems/{leetcode_question}/")
+
+  try:
+    # Title
+    title_element = get_element(driver, By.CSS_SELECTOR, 'a.text-label-1')
+    title_text = title_element.text.split(".")[-1].strip()
+
+    # Difficulty level
+    difficulty_level_element = get_element(driver, By.CLASS_NAME, 'w-full')
+    difficulty_level_element = difficulty_level_element.find_element(By.CLASS_NAME, 'mt-3')
+    difficulty_level_text = difficulty_level_element.find_element(By.CLASS_NAME, 'inline-block').text
+
+    # Topic
+    topic_element = driver.find_elements(By.CSS_SELECTOR, 'a.rounded-xl')
+    topic_element_text = topic_element[0].get_attribute('href').split("/")[-2].capitalize()
+    
+    # Question and Test Case Prompt
+    prompt_element = get_element(driver, By.CLASS_NAME, 'xFUwe')
+    prompt_element = prompt_element.find_elements(By.XPATH, '//*[self::p or self::pre or self::ul]')
+    prompt_element = [element.text for element in prompt_element]
+
+    test_case_index = prompt_element.index("Example 1:")
+    
+    #question_text = " ".join(prompt_element[:test_case_index])
+    test_case_text = " ".join(prompt_element[test_case_index:])
+    test_case_text = test_case_text.split("Constraints")[0].strip()
+    examples_list = test_case_text.split("Example ")
+    examples_list = [example.strip() for example in examples_list if example.strip()]
+
+    formatted_examples = []
+
+    for i, example in enumerate(examples_list):
+        formatted_example = f"Example {example}"
+        formatted_examples.append(formatted_example)
+
+    #formatted_examples = [example.replace("\n", " ") for example in formatted_examples]
+    #formatted_examples = [example.replace("\"", "'") for example in formatted_examples]
+
+    q_if_exists = await QuestionRepo.find(QuestionRepo.title == title_text).first_or_none()
+    exists = q_if_exists is not None
+
+    if exists:
+      return q_if_exists
+
+    new_question = QuestionRepo(
+      topic=topic_element_text, 
+      difficulty_level=difficulty_level_text,
+      title=title_text,
+      question_prompt=prompt_element[:test_case_index],
+      examples=formatted_examples,
+      popularity=100.0,
+      upvotes=0,
+      downvotes=0
+    )
+    
+    await new_question.save()
+    return new_question
+  
+  except TimeoutException:
+     raise HTTPException(status_code=404, detail="Element not found within the given time frame.")
+  except Exception as e:
+     print(f"An error occurred: {e}")
+  finally:
+    driver.quit()
+
 async def create_history_record(email1: str, email2: str, difficulty_level: str, question_title: str, question_id: PydanticObjectId):
     history_data = {
         "email": email1,
@@ -51,7 +119,9 @@ async def create_history_record(email1: str, email2: str, difficulty_level: str,
 
     async with httpx.AsyncClient() as client:
         try:
-            response = await client.post("http://localhost:8001/history/",
+            #historyServiceURL = f"{os.getenv('HISTORY_SERVICE_URL')}/history/"
+            historyServiceURL = "http://localhost:8001/history/"
+            response = await client.post(historyServiceURL,
                 json=history_data,
                 headers={"Content-Type": "application/json"}
             )
@@ -62,7 +132,7 @@ async def create_history_record(email1: str, email2: str, difficulty_level: str,
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error creating history record: {str(e)}")
 
-@question_router.post("/{difficulty_level}/random")
+@question_router.post("/test/{difficulty_level}/random")
 async def get_random_question_by_difficulty(difficulty_level: str, request_data: dict):
     email1 = request_data.get("email1")
     email2 = request_data.get("email2")
@@ -86,6 +156,69 @@ async def get_random_question_by_difficulty(difficulty_level: str, request_data:
     else:
         raise HTTPException(status_code=500, detail="No questions found for this difficulty level")
 
+@question_router.post("/{difficulty_level}/{n}")
+async def get_n_question_by_difficulty(difficulty_level: str, n: int, request_data: dict):
+    email1 = request_data.get("email1")
+    email2 = request_data.get("email2")
+
+    questions = await QuestionRepo.find({
+        "difficulty_level": {
+            "$regex": difficulty_level,
+            "$options": "i"  # Enable case-insensitive search
+        }
+    }).to_list()
+
+    if questions:
+        n = min(n, len(questions))
+        
+        random_questions = random.sample(questions, n)  # Select n random questions
+
+        history_records = []  # List to store history records
+
+        for random_question in random_questions:
+            question_title = random_question.title
+            question_id = random_question.id  # Assuming the question has an ID field
+
+            await create_history_record(email1, email2, difficulty_level, question_title, question_id)  # Pass question_id
+
+            history_records.append(random_question)
+
+        return history_records
+    else:
+        raise HTTPException(status_code=500, detail="No questions found for this difficulty level")
+
+
+@question_router.post("/{difficulty_level}/{n}/popular")
+async def get_n_question_by_difficulty(difficulty_level: str, n: int, request_data: dict):
+    email1 = request_data.get("email1")
+    email2 = request_data.get("email2")
+
+    questions = await QuestionRepo.find({
+        "difficulty_level": {
+            "$regex": difficulty_level,
+            "$options": "i"  # Enable case-insensitive search
+        }
+    }).sort([("popularity", -1)]).to_list()
+
+    if questions:
+        questions = questions[:10]
+        n = min(n, len(questions))
+        
+        random_questions = random.sample(questions, n)  # Select n random questions
+
+        history_records = []  # List to store history records
+
+        for random_question in random_questions:
+            question_title = random_question.title
+            question_id = random_question.id  # Assuming the question has an ID field
+
+            await create_history_record(email1, email2, difficulty_level, question_title, question_id)  # Pass question_id
+
+            history_records.append(random_question)
+
+        return history_records
+    else:
+        raise HTTPException(status_code=500, detail="No questions found for this difficulty level")
 
 # get most popular question for a particular difficulty level
 @question_router.get("/{difficulty}/popular")
@@ -230,74 +363,6 @@ async def create_question(question: QuestionRepo):
 def get_element(driver, filter_by, name):
   element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((filter_by, name)))
   return element
-
-@question_router.post("/add/{leetcode_question}", response_model=QuestionRepo)
-async def add_leetcode_question(leetcode_question: str):
-  driver = webdriver.Chrome()
-  driver.get(f"https://leetcode.com/problems/{leetcode_question}/")
-
-  try:
-    # Title
-    title_element = get_element(driver, By.CSS_SELECTOR, 'a.text-label-1')
-    title_text = title_element.text.split(".")[-1].strip()
-
-    # Difficulty level
-    difficulty_level_element = get_element(driver, By.CLASS_NAME, 'w-full')
-    difficulty_level_element = difficulty_level_element.find_element(By.CLASS_NAME, 'mt-3')
-    difficulty_level_text = difficulty_level_element.find_element(By.CLASS_NAME, 'inline-block').text
-
-    # Topic
-    topic_element = driver.find_elements(By.CSS_SELECTOR, 'a.rounded-xl')
-    topic_element_text = topic_element[0].get_attribute('href').split("/")[-2].capitalize()
-    
-    # Question and Test Case Prompt
-    prompt_element = get_element(driver, By.CLASS_NAME, 'xFUwe')
-    prompt_element = prompt_element.find_elements(By.XPATH, '//*[self::p or self::pre]')
-    prompt_element = [element.text for element in prompt_element]
-
-    test_case_index = prompt_element.index("Example 1:")
-    
-    question_text = " ".join(prompt_element[:test_case_index])
-    test_case_text = " ".join(prompt_element[test_case_index:])
-    test_case_text = test_case_text.split("Constraints")[0].strip()
-    examples_list = test_case_text.split("Example ")
-    examples_list = [example.strip() for example in examples_list if example.strip()]
-
-    formatted_examples = []
-
-    for i, example in enumerate(examples_list):
-        formatted_example = f"Example {example}"
-        formatted_examples.append(formatted_example)
-
-    formatted_examples = [example.replace("\n", " ") for example in formatted_examples]
-    formatted_examples = [example.replace("\"", "'") for example in formatted_examples]
-
-    q_if_exists = await QuestionRepo.find(QuestionRepo.title == title_text).first_or_none()
-    exists = q_if_exists is not None
-
-    if exists:
-      return q_if_exists
-
-    new_question = QuestionRepo(
-      topic=topic_element_text, 
-      difficulty_level=difficulty_level_text,
-      title=title_text,
-      question_prompt=question_text,
-      examples=formatted_examples,
-      popularity=100.0,
-      upvotes=0,
-      downvotes=0
-    )
-    
-    await new_question.save()
-    return new_question
-  
-  except TimeoutException:
-     raise HTTPException(status_code=404, detail="Element not found within the given time frame.")
-  except Exception as e:
-     print(f"An error occurred: {e}")
-  finally:
-    driver.quit()
 
 @question_router.delete("/title")
 async def delete_question_by_title(q_title: QuestionTitle):

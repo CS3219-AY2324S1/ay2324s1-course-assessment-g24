@@ -9,29 +9,31 @@ const QuestionPanel = ({
   difficulty,
 }: QuestionPanelProps) => {
   return (
-    <>
-      <Box p={4} textAlign={"left"}>
-        <Heading size={"lg"}>{questionTitle}</Heading>
-        <Badge>{difficulty}</Badge>
-        <Text>{questionDescription}</Text>
-        {examples.map((e, i) => {
-          return (
-            <>
-              <Text>Example {i + 1}</Text>
-              <Code>{e}</Code>
-            </>
-          );
-        })}
-      </Box>
-    </>
+    <Box p={4} textAlign={"left"}>
+      <Heading size={"lg"}>{questionTitle}</Heading>
+      <Badge>{difficulty}</Badge>
+      {questionDescription.map((line, index) => (
+        <Box key={index} whiteSpace="pre-line">
+          {line}
+        </Box>
+      ))}
+      {examples.map((e, i) => {
+        return (
+          <div key={i}>
+            <Text>Example {i + 1}</Text>
+            <Code whiteSpace="pre-line">{e}</Code>
+          </div>
+        );
+      })}
+    </Box>
   );
 };
 
 interface QuestionPanelProps {
   questionTitle: string;
-  questionDescription: string;
+  questionDescription: [string];
   examples: [string];
-  difficulty: DIFFICULTY;
+  difficulty: string;
 }
 
 export default QuestionPanel;

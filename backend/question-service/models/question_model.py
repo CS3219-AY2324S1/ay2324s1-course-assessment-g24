@@ -5,7 +5,7 @@ class QuestionRepo(Document):
   title: Indexed(str, unique=True)
   topic: str
   difficulty_level: str
-  question_prompt: str
+  question_prompt: List[str]
   examples: List[str]
   popularity: float
   upvotes: int
