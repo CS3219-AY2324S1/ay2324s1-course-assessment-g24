@@ -15,6 +15,7 @@ import {
 import { Link } from "react-router-dom";
 
 import PeerPrepLogo from "./PeerPrepLogo";
+import { useAuth } from "../contexts/AuthContext";
 
 const NavBar = ({
   withSettings,
@@ -22,6 +23,8 @@ const NavBar = ({
   withoutAnything,
   activeLink,
 }: NavBarProps) => {
+  const { logout } = useAuth();
+
   return (
     <>
       <Box>
@@ -61,7 +64,7 @@ const NavBar = ({
                         <MenuItem fontWeight={"normal"}>User Settings</MenuItem>
                       </Link>
                       <Link to={"/"}>
-                        <MenuItem fontWeight={"normal"}>Logout</MenuItem>
+                        <MenuItem onClick={logout} fontWeight={"normal"}>Logout</MenuItem>
                       </Link>
                     </MenuGroup>
                   )}

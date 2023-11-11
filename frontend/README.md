@@ -65,7 +65,7 @@ SOME_IMPORTANT_VAR="..." # Vite cannot see this
 In order to use the environment variable inside the application, one can refer to it this way.
 
 ```
-import.meta.env.VITE_BACKEND.URL
+import.meta.env.VITE_BACKEND_URL
 ```
 
 With regards to the current version, the following environment variables are needed. The recommendation is to name the file `.env.[mode]` where the `mode` can be `development` or `production` based on your environment.
