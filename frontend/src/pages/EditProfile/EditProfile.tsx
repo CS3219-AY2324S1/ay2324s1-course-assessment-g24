@@ -29,10 +29,10 @@ import { Field, FieldProps, Formik } from "formik";
 import { useRef, useState } from "react";
 import { object, string } from "yup";
 
-import HeadingWithGradient from "../components/HeadingWithGradient";
-import LinkButton from "../components/LinkButton";
-import NavBar from "../components/NavBar";
-import { LANGUAGE } from "../utils/enums";
+import HeadingWithGradient from "../../components/HeadingWithGradient";
+import LinkButton from "../../components/LinkButton";
+import NavBar from "../../components/NavBar";
+import { LANGUAGE } from "../../utils/enums";
 
 const EditProfile = () => {
   const deleteModalDisclosure = useDisclosure();

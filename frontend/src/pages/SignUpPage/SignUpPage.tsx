@@ -14,11 +14,11 @@ import {
 } from "@chakra-ui/react";
 import { Field, Formik } from "formik";
 import { object, ref, string } from "yup";
-import userServiceAxiosInstance from "../services/userService";
+import userServiceAxiosInstance from "../../services/userService";
 import { AxiosError } from "axios";
 
-import LinkButton from "../components/LinkButton";
-import PeerPrepLogo from "../components/PeerPrepLogo";
+import LinkButton from "../../components/LinkButton";
+import PeerPrepLogo from "../../components/PeerPrepLogo";
 import { useNavigate } from "react-router-dom";
 
 const signUpValidation = object().shape({

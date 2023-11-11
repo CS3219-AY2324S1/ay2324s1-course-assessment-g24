@@ -41,6 +41,7 @@ const difficultyToColorScheme = {
 
 const UserProfile = () => {
   const { user } = useAuth();
+  
 
   return (
     <Box w="100vw" h="100vh">
