@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 
 import HeadingWithGradient from "../components/HeadingWithGradient";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/NavBar/NavBar";
 import Question from "../components/Question";
 import { DIFFICULTY } from "../utils/enums";
 import { useAuth } from "../contexts/AuthContext";

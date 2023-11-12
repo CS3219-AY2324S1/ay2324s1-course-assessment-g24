@@ -31,7 +31,7 @@ import { object, string } from "yup";
 
 import HeadingWithGradient from "../../components/HeadingWithGradient";
 import LinkButton from "../../components/LinkButton";
-import NavBar from "../../components/NavBar";
+import NavBar from "../../components/NavBar/NavBar";
 import { LANGUAGE } from "../../utils/enums";
 
 const EditProfile = () => {

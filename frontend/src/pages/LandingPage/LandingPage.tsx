@@ -7,10 +7,10 @@ import {
   VStack,
 } from "@chakra-ui/react";
 
-import hero from "../assets/hero.svg";
-import HeadingWithGradient from "../components/HeadingWithGradient";
-import LinkButton from "../components/LinkButton";
-import PeerPrepLogo from "../components/PeerPrepLogo";
+import hero from "../../assets/hero.svg";
+import HeadingWithGradient from "../../components/HeadingWithGradient";
+import LinkButton from "../../components/LinkButton";
+import PeerPrepLogo from "../../components/PeerPrepLogo";
 
 const LandingPage = () => {
   return (
