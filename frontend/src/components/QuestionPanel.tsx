@@ -1,5 +1,7 @@
 import { Badge, Box, Code, Heading, Text } from "@chakra-ui/react";
+
 import { DIFFICULTY } from "../utils/enums";
+
 const QuestionPanel = ({
   questionTitle,
   questionDescription,
