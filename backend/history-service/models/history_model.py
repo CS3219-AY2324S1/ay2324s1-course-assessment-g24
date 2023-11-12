@@ -8,4 +8,4 @@ class History(Document):
   question_id: PydanticObjectId
   
   class Settings:
-    name = "history"
+    name = "history2"

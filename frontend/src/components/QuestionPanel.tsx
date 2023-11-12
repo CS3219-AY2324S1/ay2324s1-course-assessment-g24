@@ -29,9 +29,9 @@ const QuestionPanel = ({
 
 interface QuestionPanelProps {
   questionTitle: string;
-  questionDescription: string;
+  questionDescription: [string];
   examples: [string];
-  difficulty: DIFFICULTY;
+  difficulty: string;
 }
 
 export default QuestionPanel;
