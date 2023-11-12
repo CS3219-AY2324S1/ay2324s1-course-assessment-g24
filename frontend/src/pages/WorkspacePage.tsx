@@ -38,5 +38,3 @@ const WorkspacePage = () => {
 };
 
 export default WorkspacePage;
-
-export default WorkspacePage;
