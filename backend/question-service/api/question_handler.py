@@ -66,7 +66,6 @@ async def add_leetcode_question(leetcode_question: str):
 
     test_case_index = prompt_element.index("Example 1:")
     
-    #question_text = " ".join(prompt_element[:test_case_index])
     test_case_text = " ".join(prompt_element[test_case_index:])
     test_case_text = test_case_text.split("Constraints")[0].strip()
     examples_list = test_case_text.split("Example ")
@@ -77,9 +76,6 @@ async def add_leetcode_question(leetcode_question: str):
     for i, example in enumerate(examples_list):
         formatted_example = f"Example {example}"
         formatted_examples.append(formatted_example)
-
-    #formatted_examples = [example.replace("\n", " ") for example in formatted_examples]
-    #formatted_examples = [example.replace("\"", "'") for example in formatted_examples]
 
     q_if_exists = await QuestionRepo.find(QuestionRepo.title == title_text).first_or_none()
     exists = q_if_exists is not None
@@ -119,7 +115,6 @@ async def create_history_record(email1: str, email2: str, difficulty_level: str,
 
     async with httpx.AsyncClient() as client:
         try:
-            #historyServiceURL = f"{os.getenv('HISTORY_SERVICE_URL')}/history/"
             historyServiceURL = "http://localhost:8001/history/"
             response = await client.post(historyServiceURL,
                 json=history_data,
