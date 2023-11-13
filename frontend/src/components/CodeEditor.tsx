@@ -143,9 +143,29 @@ const CodeEditor = ({ height, onExecuteCode, selectedLanguage }: CodeEditorProps
         <Button style={buttonStyle} colorScheme="teal" onClick={executeCode}>
           Execute
         </Button>
-        <Text fontWeight="bold">Output:</Text>
-        <Box p={2} border="1px solid #ccc" borderRadius="5px">
-          <pre>{output}</pre>
+        <Text fontWeight="bold" mt={2}>
+          Output:
+        </Text>
+        <Box
+          p={4}
+          border="1px solid #ddd"
+          borderRadius="8px"
+          bg="white"
+          boxShadow="md"
+          mt={2}
+          overflow="auto"
+        >
+          <pre
+            style={{
+              whiteSpace: 'pre-wrap',
+              wordWrap: 'break-word',
+              margin: '0',
+              fontSize: '14px',
+              color: '#333',
+            }}
+          >
+            {output}
+          </pre>
         </Box>
       </Box>
     </Box>

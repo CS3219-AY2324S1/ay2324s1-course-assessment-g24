@@ -2,7 +2,7 @@
 
 import { useParams } from "react-router-dom";
 import React, { useState, useEffect, useCallback } from "react";
-import { Box, Flex, Select} from "@chakra-ui/react";
+import { Box, Flex, Select, Text} from "@chakra-ui/react";
 import CodeEditor from "../components/CodeEditor";
 import LoadingWrapper from "../components/LoadingWrapper";
 import NavBar from "../components/NavBar";
@@ -53,42 +53,47 @@ const QuestionDetailsPage = () => {
         setExecutionOutput(output);
       };
 
-    return (
+      return (
         <Box w={"100vw"} h={"100vh"}>
           <LoadingWrapper isLoading={!question} repeat={2}>
             <NavBar withoutAnything activeLink={false} />
             <Box h={"80%"} p={2} mt={6}>
               <Flex flexDirection={"row"}>
                 <Box w={"35%"}>
-                <Select
-                  value={selectedLanguage}
-                  onChange={(e) => setSelectedLanguage(e.target.value)}
-                >
-                  <option value="python">Python</option>
-                  <option value="javascript">JavaScript</option>
-                  <option value="cpp">C++</option>
-                </Select>
                   {question && (
                     <FullQuestionPanel
-                    questionTitle={question.title}
-                    questionDescription={question.question_prompt}
-                    difficulty={question.difficulty_level}
-                    topic={question.topic}
-                    upvotes={question.upvotes}
-                    downvotes={question.downvotes}
-                    popularity={question.popularity}
-                    examples={question.examples}
-                  />
+                      questionTitle={question.title}
+                      questionDescription={question.question_prompt}
+                      difficulty={question.difficulty_level}
+                      topic={question.topic}
+                      upvotes={question.upvotes}
+                      downvotes={question.downvotes}
+                      popularity={question.popularity}
+                      examples={question.examples}
+                    />
                   )}
                 </Box>
-                <Box w={"65%"}>
-                {/* Pass the selected language to CodeEditor */}
-                <CodeEditor
-                  height={50}
-                  onExecuteCode={handleExecuteCode}
-                  selectedLanguage={selectedLanguage}
-                />
-              </Box>
+                <Box w={"65%"} ml={4}>
+                  {/* Add a label for the dropdown */}
+                  <Flex alignItems="center" mb={2}>
+                  <Text mr={2} width="250px" fontSize="16px" fontWeight="bold" color="gray.700" letterSpacing="0.5px">Choose your language:</Text>
+                    {/* Style the Select component */}
+                    <Select
+                      value={selectedLanguage}
+                      onChange={(e) => setSelectedLanguage(e.target.value)}
+                    >
+                      <option value="python">Python</option>
+                      <option value="javascript">JavaScript</option>
+                      <option value="cpp">C++</option>
+                    </Select>
+                  </Flex>
+                  {/* Pass the selected language to CodeEditor */}
+                  <CodeEditor
+                    height={50}
+                    onExecuteCode={handleExecuteCode}
+                    selectedLanguage={selectedLanguage}
+                  />
+                </Box>
               </Flex>
             </Box>
           </LoadingWrapper>
