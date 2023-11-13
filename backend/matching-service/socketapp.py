@@ -46,6 +46,14 @@ async def fetch_questions(difficulty: str):
   questions = await requests.get(f"{os.getenv('QUESTION_SERVICE_URL')}/questions/{difficulty}")
   return questions
 
+async def fetch_questions_random(difficulty: str, email1: str, email2: str):
+    payload = {
+        "email1": email1,
+        "email2": email2
+    }
+    questions = await requests.get(f"{os.getenv('QUESTION_SERVICE_URL')}/questions/{difficulty}/random", json=payload)
+    return questions
+
 @sio_server.event
 async def match(params, db: Session = Depends(get_db)):
   try:
@@ -81,6 +89,7 @@ async def match(params, db: Session = Depends(get_db)):
     socket_id_two = joinable_match.socket_id_one
 
     questions = await fetch_questions(difficulty)
+    randomQuestion = await fetch_questions_random(difficulty, user_one, user_two)
     room_name = user_one + "_" + user_two
 
     sio_server.enter_room(socket_id_one, room=room_name)

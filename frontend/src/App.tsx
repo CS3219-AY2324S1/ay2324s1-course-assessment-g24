@@ -12,6 +12,7 @@ import UserProfile from "./pages/UserProfile";
 import VerificationEmail from "./pages/VerificationEmail";
 import WorkspacePage from "./pages/WorkspacePage";
 import Authenticated from "./components/Authenticated";
+import Chat from "./pages/Chat";
 
 const App = () => {
   return (
@@ -21,13 +22,14 @@ const App = () => {
         <Route path="/editprofile" element={<Authenticated><EditProfile /></Authenticated>} />
         <Route path="/userprofile" element={<Authenticated><UserProfile /></Authenticated>} />
         <Route path="/workspace" element={<Authenticated><WorkspacePage /></Authenticated>} />
-
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/forgotpassword" element={<ForgotPassword />} />
         <Route path="/resetpassword" element={<ResetPassword />} />
         <Route path="/verification" element={<VerificationEmail />} />
+        <Route path="/chat" element={<Chat from={""} text={""} />} />
+        
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
