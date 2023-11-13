@@ -12,14 +12,14 @@ import {
   VStack,
   useToast,
 } from "@chakra-ui/react";
-import { Field, Formik } from "formik";
-import { object, ref, string } from "yup";
-import userServiceAxiosInstance from "../../services/userService";
 import { AxiosError } from "axios";
+import { Field, Formik } from "formik";
+import { useNavigate } from "react-router-dom";
+import { object, ref, string } from "yup";
 
 import LinkButton from "../../components/LinkButton";
 import PeerPrepLogo from "../../components/PeerPrepLogo";
-import { useNavigate } from "react-router-dom";
+import userServiceAxiosInstance from "../../services/userService";
 
 const signUpValidation = object().shape({
   email: string()
@@ -65,7 +65,11 @@ const SignUpPage = () => {
                 } catch (error) {
                   console.log(error);
                   toast({
-                    title: `${error instanceof AxiosError ? error.response?.data.detail : String(error)}`,
+                    title: `${
+                      error instanceof AxiosError
+                        ? error.response?.data.detail
+                        : String(error)
+                    }`,
                     status: "error",
                     isClosable: true,
                     duration: 1500,

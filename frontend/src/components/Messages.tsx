@@ -1,11 +1,11 @@
+import { Avatar, Flex, Text } from "@chakra-ui/react";
 import React, { useEffect, useRef } from "react";
-import { Avatar, Flex, Text } from "@chakra-ui/react"; 
 
 interface MessageProps {
   messages: { from: string; text: string }[];
 }
 
-const Messages:React.FC<MessageProps> = ({ messages }) => {
+const Messages: React.FC<MessageProps> = ({ messages }) => {
   const AlwaysScrollToBottom = () => {
     const elementRef = useRef<HTMLDivElement>(null);
     useEffect(() => {

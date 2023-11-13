@@ -13,8 +13,8 @@ import {
 import HeadingWithGradient from "../components/HeadingWithGradient";
 import NavBar from "../components/NavBar/NavBar";
 import Question from "../components/Question";
-import { DIFFICULTY } from "../utils/enums";
 import { useAuth } from "../contexts/AuthContext";
+import { DIFFICULTY } from "../utils/enums";
 
 const randomQuestions = [
   "What is the capital of France?",
@@ -41,7 +41,6 @@ const difficultyToColorScheme = {
 
 const UserProfile = () => {
   const { user } = useAuth();
-  
 
   return (
     <Box w="100vw" h="100vh">
@@ -91,18 +90,19 @@ const UserProfile = () => {
                   {Object.values(DIFFICULTY).map((d, i) => {
                     const tcolor = difficultyToColorScheme[d];
                     return (
-                      <Button key={`badge-${i}`} variant={"outline"} colorScheme={tcolor}>
+                      <Button
+                        key={`badge-${i}`}
+                        variant={"outline"}
+                        colorScheme={tcolor}
+                      >
                         <Badge colorScheme={tcolor}>{d}</Badge>
                       </Button>
                     );
                   })}
                 </ButtonGroup>
                 <Divider my={3} />
-
                 You're
-                <Text as={"b"}>
-                  {" "} {user.email}
-                </Text>
+                <Text as={"b"}> {user.email}</Text>
               </Box>
               <Box
                 w={"100%"}

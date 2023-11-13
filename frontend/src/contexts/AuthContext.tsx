@@ -1,4 +1,11 @@
-import { createContext, useEffect, useReducer, useRef, useContext, useMemo } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useReducer,
+  useRef,
+} from "react";
 
 import userServiceAxiosInstance from "../services/userService";
 import { validateToken } from "../utils/jwt";
@@ -125,10 +132,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const getTokens = async (email: string, password: string) => {
     try {
-      const response = await userServiceAxiosInstance.post(
-        "/auth/login",
-        { email, password }
-      );
+      const response = await userServiceAxiosInstance.post("/auth/login", {
+        email,
+        password,
+      });
 
       setSession(response.data.access_token, response.data.refresh_token);
     } catch (error) {
@@ -165,16 +172,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       login,
       logout,
     }),
-    [state]
+    [state],
   );
 
-  return (
-    <AuthContext.Provider
-      value={value}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const AuthConsumer = AuthContext.Consumer;

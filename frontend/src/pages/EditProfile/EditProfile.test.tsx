@@ -1,50 +1,76 @@
-// import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-// import '@testing-library/jest-dom';
-// import EditProfile from './EditProfile';
-// import { MemoryRouter } from 'react-router-dom';
-// import { ChakraProvider } from '@chakra-ui/react';
+import "@testing-library/jest-dom";
+import { within } from '@testing-library/dom'
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 
-// jest.mock('@chakra-ui/react', () => ({
-//   ...jest.requireActual('@chakra-ui/react'),
-//   useDisclosure: jest.fn(() => ({ isOpen: false, onOpen: jest.fn(), onClose: jest.fn() })),
-// }));
+import EditProfile from "./EditProfile";
+import TestEnvironmentWrapper from "../../utils/TestEnvironmentWrapper";
+import { LANGUAGE } from "../../utils/enums";
 
-// test('renders EditProfile component', async () => {
-//   render(<ChakraProvider><MemoryRouter><EditProfile /></MemoryRouter></ChakraProvider>);
-//   await waitFor(() => {
-//     expect(screen.getByText('Preferred Programming Language')).toBeInTheDocument();
-//   });
-// });
+jest.mock("@chakra-ui/react", () => ({
+  ...jest.requireActual("@chakra-ui/react"),
+  useDisclosure: jest.fn(() => ({
+    isOpen: false,
+    onOpen: jest.fn(),
+    onClose: jest.fn(),
+  })),
+}));
 
-// test('updates preferred language on form submission', async () => {
-//   render(<ChakraProvider><MemoryRouter><EditProfile /></MemoryRouter></ChakraProvider>);
-  
-//   // Wait for initial render and interaction
-//   await waitFor(() => {
-//     fireEvent.change(screen.getByRole('combobox'), { target: { value: 'C++' } });
-//     fireEvent.click(screen.getByText('Update'));
-//   });
+test("Renders the entire page", async () => {
+  render(
+    <TestEnvironmentWrapper>
+      <EditProfile />
+    </TestEnvironmentWrapper>,
+  );
 
-//   // Introduce a short delay
-//   await new Promise(resolve => setTimeout(resolve, 500));
+  const { getByText } = within(screen.getByTestId("form-title"));
+  expect(getByText("Preferred Programming Language")).toBeInTheDocument();
+});
 
+test("Preferred language update", async () => {
+  render(
+    <TestEnvironmentWrapper>
+        <EditProfile />
+    </TestEnvironmentWrapper>
+  );
 
-//   // Wait for success alert
-//   await waitFor(() => {
-//     expect(screen.getByText('Preferred language changed!')).toBeInTheDocument();
-//   });
-// });
+  const languageSelector = screen.getByTestId("language-selector");
 
-// test('displays info alert for same language on form submission', async () => {
-//   render(<ChakraProvider><MemoryRouter><EditProfile /></MemoryRouter></ChakraProvider>);
-  
-//   // Wait for initial render and interaction
-//   await waitFor(() => {
-//     fireEvent.click(screen.getByText('Update'));
-//   });
+  const options = screen.getAllByTestId("language-option");
 
-//   // Wait for info alert
-//   await waitFor(() => {
-//     expect(screen.getByText('Same language identified, no need to change!')).toBeInTheDocument();
-//   });
+  expect((options[0] as HTMLOptionElement).selected).toBe(true);
+  expect((options[1] as HTMLOptionElement).selected).toBe(false);
+  expect((options[2] as HTMLOptionElement).selected).toBe(false);
+
+  await waitFor(() => {
+    fireEvent.change(languageSelector, {
+      target: { value: LANGUAGE.JAVASCRIPT },
+    });
+  });
+
+  expect((options[0] as HTMLOptionElement).selected).toBe(false);
+  expect((options[1] as HTMLOptionElement).selected).toBe(false);
+  expect((options[2] as HTMLOptionElement).selected).toBe(true);
+
+  await waitFor(() => {
+    fireEvent.change(languageSelector, {
+      target: { value: LANGUAGE.CPP },
+    });
+  });
+
+  expect((options[0] as HTMLOptionElement).selected).toBe(false);
+  expect((options[1] as HTMLOptionElement).selected).toBe(true);
+  expect((options[2] as HTMLOptionElement).selected).toBe(false);
+});
+
+// test("Info alert display on same language submission", async () => {
+//   render(
+//     <TestEnvironmentWrapper>
+//         <EditProfile />
+//     </TestEnvironmentWrapper>
+//   );
+
+//   const updateButton = screen.getByTestId("update-button");
+//   await waitFor(() => fireEvent.click(updateButton));
+
+//   expect(screen.getByText("Same language identified, no need to change!")).toBeInTheDocument();
 // });

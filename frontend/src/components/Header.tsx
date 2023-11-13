@@ -1,7 +1,7 @@
+import { Avatar, AvatarBadge, Flex, Text } from "@chakra-ui/react";
 import React from "react";
-import { Flex, Avatar, AvatarBadge, Text } from "@chakra-ui/react";
 
-const Header:React.FC = () => {
+const Header: React.FC = () => {
   return (
     <Flex w="100%">
       <Avatar size="lg" name="Dan Abrahmov" src="https://bit.ly/dan-abramov">

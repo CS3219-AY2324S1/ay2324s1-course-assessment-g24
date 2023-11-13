@@ -15,10 +15,10 @@ import {
 import { Field, Formik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import { object, string } from "yup";
-import { useAuth } from "../../contexts/AuthContext";
 
 import LinkButton from "../../components/LinkButton";
 import PeerPrepLogo from "../../components/PeerPrepLogo";
+import { useAuth } from "../../contexts/AuthContext";
 
 const loginValidation = object().shape({
   email: string()
