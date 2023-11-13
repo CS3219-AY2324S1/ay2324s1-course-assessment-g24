@@ -39,12 +39,16 @@ const FullQuestionPanel = ({
               Popularity: <strong>{popularity}%</strong>
             </Text>
           </Flex>
-          {examples.map((e, i) => (
-            <Box key={i} mt={4}>
-              <Text fontWeight="bold">Example {i + 1}</Text>
-              <Code>{e}</Code>
-            </Box>
-          ))}
+          {examples.map((example, i) => (
+          <Box key={i} mt={4}>
+            <Text fontWeight="bold">Example {i + 1}</Text>
+            {example.split('\n').map((line, j) => (
+              <Text key={j} mt={j > 0 ? 2 : 0}>
+                {line}
+              </Text>
+            ))}
+          </Box>
+        ))}
         </Box>
       </>
     );

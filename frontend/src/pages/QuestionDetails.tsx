@@ -2,7 +2,8 @@
 
 import { useParams } from "react-router-dom";
 import React, { useState, useEffect, useCallback } from "react";
-import { Box, Flex} from "@chakra-ui/react";
+import { Box, Flex, Select} from "@chakra-ui/react";
+import CodeEditor from "../components/CodeEditor";
 import LoadingWrapper from "../components/LoadingWrapper";
 import NavBar from "../components/NavBar";
 import FullQuestionPanel from "../components/FullQuestionPanel";
@@ -23,6 +24,9 @@ interface Question {
 const QuestionDetailsPage = () => {
     const { title } = useParams();
     const [question, setQuestion] = useState<any>(null);
+    const [executionResult, setExecutionResult] = useState<string | null>(null);
+    const [executionOutput, setExecutionOutput] = useState<string | null>(null);
+    const [selectedLanguage, setSelectedLanguage] = useState("python"); // Default language is set to Python
   
     const fetchQuestion = useCallback(async () => {
         try {
@@ -45,6 +49,10 @@ const QuestionDetailsPage = () => {
         }
       }, [title, fetchQuestion]);
 
+      const handleExecuteCode = (output: string) => {
+        setExecutionOutput(output);
+      };
+
     return (
         <Box w={"100vw"} h={"100vh"}>
           <LoadingWrapper isLoading={!question} repeat={2}>
@@ -52,6 +60,14 @@ const QuestionDetailsPage = () => {
             <Box h={"80%"} p={2} mt={6}>
               <Flex flexDirection={"row"}>
                 <Box w={"35%"}>
+                <Select
+                  value={selectedLanguage}
+                  onChange={(e) => setSelectedLanguage(e.target.value)}
+                >
+                  <option value="python">Python</option>
+                  <option value="javascript">JavaScript</option>
+                  <option value="cpp">C++</option>
+                </Select>
                   {question && (
                     <FullQuestionPanel
                     questionTitle={question.title}
@@ -65,6 +81,14 @@ const QuestionDetailsPage = () => {
                   />
                   )}
                 </Box>
+                <Box w={"65%"}>
+                {/* Pass the selected language to CodeEditor */}
+                <CodeEditor
+                  height={50}
+                  onExecuteCode={handleExecuteCode}
+                  selectedLanguage={selectedLanguage}
+                />
+              </Box>
               </Flex>
             </Box>
           </LoadingWrapper>
