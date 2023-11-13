@@ -241,7 +241,7 @@ async def get_question_by_title(q_title: str):
             "$options": "i"  # Enable case-insensitive search
         }
     }).to_list()
-    return question
+    return question[0]
   except Exception as e:
     raise HTTPException(status_code=500, detail=f"Error retrieving question by title: {str(e)}")
 
