@@ -13,7 +13,9 @@ from main import app
 
 
 # Override config settings before loading the app
-settings.MONGODB_CONNECTION_STRING = config("TEST_MONGO_URI", default="mongodb://localhost:27017")
+settings.MONGODB_CONNECTION_STRING = config(
+    "TEST_MONGO_URI", default="mongodb://localhost:27017"
+)
 
 
 async def clear_database(server: FastAPI) -> None:
