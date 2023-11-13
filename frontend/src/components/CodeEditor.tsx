@@ -97,10 +97,13 @@ const CodeEditor = ({ height, onExecuteCode, selectedLanguage }: CodeEditorProps
       });
 
       // Update the output state with the response
-      setOutput(response.data.output);
-
+      const resultOutput = response.data.error_detail || response.data.error || response.data.output;
+  
+      // Update the output state with the response error or regular error/output
+      setOutput(resultOutput);
+  
       // Pass the output to the parent component
-      onExecuteCode(response.data.output);
+      onExecuteCode(resultOutput);
     } catch (error) {
       console.error("Error executing code:", error);
       setOutput("Error executing code");

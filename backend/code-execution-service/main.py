@@ -1,8 +1,8 @@
-# code-execution/main.py: 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import subprocess
+import platform
 import tempfile
 import shutil
 import os
@@ -30,26 +30,41 @@ async def execute_code(request: CodeRequest):
     language = request.language
 
     if language not in ["python", "javascript", "cpp"]:
-        raise HTTPException(status_code=400, detail="Unsupported language")
+        return {"error_detail": "Unsupported language"}
 
     script_extension = "py" if language == "python" else "js" if language == "javascript" else "cpp"
     script_dir = tempfile.mkdtemp()
     script_path = os.path.join(script_dir, f"temp_script.{script_extension}")
     with open(script_path, "w") as script_file:
         script_file.write(code)
+
+    error_detail = None
+
     try:
         if language == "python":
-            process = subprocess.run(["python", script_path], capture_output=True, text=True)
+            process = subprocess.run([language, script_path], capture_output=True, text=True, timeout=5)
         elif language == "javascript":
-            process = subprocess.run(["node", script_path], capture_output=True, text=True)
+            # Use Node.js to run JavaScript code
+            process = subprocess.run(["node", script_path], capture_output=True, text=True, timeout=5)
         elif language == "cpp":
-            print("Script Path:", script_path)
-            compile_process = subprocess.run(["g++", script_path, "-o", "temp_executable"])
+            compile_process = subprocess.run(["g++", script_path, "-o", "temp_executable"], capture_output=True, text=True, timeout=5)
             if compile_process.returncode != 0:
-                raise Exception("Compilation error")
-            process = subprocess.run(["./temp_executable"], capture_output=True, text=True)
+                error_detail = f"Error compiling code:\n{compile_process.stderr}\nExit Code: {compile_process.returncode}"
+                return {"error_detail": error_detail}
+            process = subprocess.run(["./temp_executable"], capture_output=True, text=True, timeout=5)
+    except subprocess.CalledProcessError as e:
+        error_detail = f"Error executing code:\n{e.stderr}\nExit Code: {e.returncode}"
     except Exception as e:
-        return {"output": f"Error executing code: {str(e)}"}
+        import traceback
+        traceback_str = traceback.format_exc()
+        error_detail = f"Error executing code: {traceback_str}"
+
     finally:
         shutil.rmtree(script_dir)
-    return {"output": process.stdout}
+
+    if error_detail is not None:
+        return {"error_detail": error_detail}
+
+    return {"output": process.stdout, "error": process.stderr, "error_detail": None}
+
+
