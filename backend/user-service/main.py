@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+
 from beanie import init_beanie
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -7,8 +9,17 @@ from api.router import router
 from core.config import settings
 from models.user_model import User
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    app.db = AsyncIOMotorClient(settings.MONGODB_CONNECTION_STRING).test
+    await init_beanie(app.db, document_models=[User])
+    print("Startup complete")
+    yield
+    print("Shutdown complete")
+
 app = FastAPI(
-  title=settings.PROJECT_NAME, openapi_url=f"{settings.API_STR}/openapi.json"
+  title=settings.PROJECT_NAME, openapi_url=f"{settings.API_STR}/openapi.json",
+  lifespan=lifespan
 )
 
 app.add_middleware(
@@ -18,12 +29,5 @@ app.add_middleware(
   allow_methods=["*"],
   allow_headers=["*"],
 )
-
-
-@app.on_event("startup")
-async def app_init():
-  db_client = AsyncIOMotorClient(settings.MONGODB_CONNECTION_STRING).test
-  await init_beanie(database=db_client, document_models=[User])
-
 
 app.include_router(router, prefix=settings.API_STR)
