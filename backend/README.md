@@ -1,11 +1,12 @@
-## PeerPrep Backend using FastAPI Microservices 
-We are using FastAPI for building the microservices that will support various features in the application. 
+## PeerPrep Backend using Microservices Architecture
+We are using FastAPI and Express for building the microservices that will support various features in the application. 
 
 ### Basic Instructions 
 - Each microservice has its own directory. The directory naming follows the basic convention of appending `-service` to whatever is trying to be achieved. 
-- Each microservice has its own `requirements.txt`, specifying all the python packages used that would help us replicate the virutal environment for development. 
 
-### Steps to Replicate Dev Environment
+### Steps to Replicate Dev Environment (FastAPI)
+Each microservice has its own `requirements.txt`, specifying all the python packages used that would help us replicate the virutal environment for development. 
+
 In order to create the virtual environment, navigate to the microservice of interest. 
 ```
 cd backend/<name>-service
@@ -38,18 +39,21 @@ We are using `cblack` as the code formatter for all the microservices. The confi
 make format
 ```
 
-### Service Descriptions
+### Steps to Replicate Dev Environment (Express)
+
+
+### Service 
+- Matching Service
+
 
 ### Directory Structure 
 This is the directory structure of the `backend` directory.
 ```
 .
 ├── user-service
-│   ├── requirements.txt
-│   ├── main.py
-│   └── README.md
 ├── question-service
 ├── matching-service
 ├── collaboration-service
+├── communication-service
 └── README.md                # You are currently here
 ```
