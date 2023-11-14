@@ -104,6 +104,7 @@ async def add_leetcode_question(leetcode_question: str):
   finally:
     driver.quit()
 
+# COMMENTED THIS BECAUSE WE ARE UPDATING HISTORY FROM UI
 # async def create_history_record(email1: str, email2: str, difficulty_level: str, question_title: str, question_id: PydanticObjectId):
 #     history_data = {
 #         "email": email1,
