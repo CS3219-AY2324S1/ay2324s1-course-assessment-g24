@@ -7,21 +7,29 @@ from api.history_handler import history_router
 from core.config import settings
 from models.history_model import History
 
-app = FastAPI()
+from contextlib import asynccontextmanager
 
-app.add_middleware(
-  CORSMiddleware,
-  allow_origins=settings.BACKEND_CORS_ORIGINS,
-  allow_credentials=True,
-  allow_methods=["*"],
-  allow_headers=["*"],
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    app.db = AsyncIOMotorClient(settings.MONGODB_CONNECTION_STRING).test
+    await init_beanie(app.db, document_models=[History])
+    print("Startup complete")
+    yield
+    print("Shutdown complete")
+
+
+app = FastAPI(
+    title=settings.PROJECT_NAME,
+    lifespan=lifespan,
 )
 
-@app.on_event("startup")
-async def app_init():
-  db_client = AsyncIOMotorClient(settings.MONGODB_CONNECTION_STRING).test
-  await init_beanie(database=db_client, document_models=[History])
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.BACKEND_CORS_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-app.include_router(history_router, prefix="/history", tags=["history"])
-
-
+app.include_router(history_router, prefix=settings.API_STR, tags=["history"])

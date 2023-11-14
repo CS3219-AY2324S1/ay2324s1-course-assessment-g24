@@ -79,13 +79,7 @@ async def add_leetcode_question(leetcode_question: str):
     test_case_text = " ".join(prompt_element[test_case_index:])
     test_case_text = test_case_text.split("Constraints")[0].strip()
     examples_list = test_case_text.split("Example ")
-    examples_list = [example.strip() for example in examples_list if example.strip()]
-
-    formatted_examples = []
-
-    for _, example in enumerate(examples_list):
-      formatted_example = f"Example {example}"
-      formatted_examples.append(formatted_example)
+    examples_list = [example[3:].strip() for example in examples_list if example.strip()]
 
     q_if_exists = await QuestionRepo.find(
       QuestionRepo.title == title_text
@@ -100,7 +94,7 @@ async def add_leetcode_question(leetcode_question: str):
       difficulty_level=difficulty_level_text,
       title=title_text,
       question_prompt=prompt_element[:test_case_index],
-      examples=formatted_examples,
+      examples=examples_list,
       popularity=100.0,
       upvotes=0,
       downvotes=0,
@@ -119,74 +113,33 @@ async def add_leetcode_question(leetcode_question: str):
   finally:
     driver.quit()
 
+# COMMENTED THIS BECAUSE WE ARE UPDATING HISTORY FROM UI
+# async def create_history_record(email1: str, email2: str, difficulty_level: str, question_title: str, question_id: PydanticObjectId):
+#     history_data = {
+#         "email": email1,
+#         "matched_email": email2,
+#         "difficulty_level": difficulty_level,
+#         "question_title": question_title,
+#         "question_id": str(question_id)  # Convert question_id to a string
+#     }
 
-async def create_history_record(
-  email1: str,
-  email2: str,
-  difficulty_level: str,
-  question_title: str,
-  question_id: PydanticObjectId,
-):
-  history_data = {
-    "email": email1,
-    "matched_email": email2,
-    "difficulty_level": difficulty_level,
-    "question_title": question_title,
-    "question_id": str(question_id),  # Convert question_id to a string
-  }
+#     async with httpx.AsyncClient() as client:
+#         try:
+#             historyServiceURL = "http://localhost:8001/history/"
+#             response = await client.post(historyServiceURL,
+#                 json=history_data,
+#                 headers={"Content-Type": "application/json"}
+#             )
 
-  async with httpx.AsyncClient() as client:
-    try:
-      historyServiceURL = "http://localhost:8001/history/"
-      response = await client.post(
-        historyServiceURL,
-        json=history_data,
-        headers={"Content-Type": "application/json"},
-      )
+#             response.raise_for_status()
 
-      response.raise_for_status()
-      return response.json()
-    except Exception as e:
-      raise HTTPException(
-        status_code=500, 
-        detail=f"Error creating history record: {str(e)}"
-      )
-
+#             return response.json()
+#         except Exception as e:
+#             raise HTTPException(status_code=500, detail=f"Error creating history record: {str(e)}")
 
 @question_router.post("/test/{difficulty_level}/random")
 async def get_random_question_by_difficulty(difficulty_level: str, request_data: dict):
-  email1 = request_data.get("email1")
-  email2 = request_data.get("email2")
-
-  questions = await QuestionRepo.find(
-    {
-      "difficulty_level": {
-        "$regex": difficulty_level,
-        "$options": "i",  # Enable case-insensitive search
-      }
-    }
-  ).to_list()
-
-  if questions:
-    random_question = random.choice(questions)
-
-    question_title = random_question.title
-    question_id = random_question.id  # Assuming the question has an ID field
-
-    await create_history_record(
-      email1, 
-      email2, 
-      difficulty_level, 
-      question_title, 
-      question_id # Pass question_id
-    )
-
-    return random_question
-  else:
-    raise HTTPException(
-      status_code=500, 
-      detail="No questions found for this difficulty level"
-    )
+  return await get_n_question_by_difficulty(1)
 
 
 @question_router.post("/{difficulty_level}/{n}")
@@ -195,25 +148,21 @@ async def get_n_question_by_difficulty(difficulty_level: str, n: str):
     {
       "difficulty_level": {
         "$regex": difficulty_level,
-        "$options": "i",  # Enable case-insensitive search
+        "$options": "i",
       }
     }
   ).to_list()
 
   if questions:
     n = min(int(n), len(questions))
-    questions = random.sample(questions, n)  # Select n random questions
-
+    questions = random.sample(questions, n)
     return questions
   else:
-    raise HTTPException(
-      status_code=500, 
-      detail="No questions found for this difficulty level"
-    )
+    raise HTTPException(status_code=500, detail="No questions found for this difficulty level")
 
 
 @question_router.post("/{difficulty_level}/{n}/popular")
-async def get_n_question_by_difficulty(difficulty_level: str, n: int, request_data: dict):
+async def get_n_popular_question_by_difficulty(difficulty_level: str, n: int, request_data: dict):
     email1 = request_data.get("email1")
     email2 = request_data.get("email2")
 
@@ -242,9 +191,7 @@ async def get_n_question_by_difficulty(difficulty_level: str, n: int, request_da
             question_title = random_question.title
             question_id = random_question.id  # Assuming the question has an ID field
 
-            await create_history_record(
-                email1, email2, difficulty_level, question_title, question_id
-            )  # Pass question_id
+            # await create_history_record(email1, email2, difficulty_level, question_title, question_id)  # Pass question_id
 
             history_records.append(random_question)
 
@@ -282,22 +229,17 @@ async def get_most_popular_question_by_topic(difficulty: str):
 # get particular question based on title
 @question_router.get("/title/{q_title}")
 async def get_question_by_title(q_title: str):
-    q_title = q_title.replace("_", " ")
-    try:
-        question = await QuestionRepo.find(
-            {
-                "title": {
-                    "$regex": q_title,
-                    "$options": "i",  # Enable case-insensitive search
-                }
-            }
-        ).to_list()
-        return question
-    except Exception as e:
-        raise HTTPException(
-            status_code=500, detail=f"Error retrieving question by title: {str(e)}"
-        )
-
+  q_title = q_title.replace("_", " ")
+  try:
+    question = await QuestionRepo.find({
+        "title": {
+            "$regex": q_title,
+            "$options": "i"  # Enable case-insensitive search
+        }
+    }).to_list()
+    return question[0]
+  except Exception as e:
+    raise HTTPException(status_code=500, detail=f"Error retrieving question by title: {str(e)}")
 
 # get questions by topic
 @question_router.get("/topic/{topic}")
