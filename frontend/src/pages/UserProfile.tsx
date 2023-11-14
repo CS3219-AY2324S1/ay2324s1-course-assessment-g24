@@ -100,7 +100,7 @@ const UserProfile = () => {
 
                 You're
                 <Text as={"b"}>
-                  {" "} {user.email}
+                  {" "} {"user.email"}
                 </Text>
               </Box>
               <Box

@@ -307,7 +307,7 @@ async def get_random_questions(topic: str, difficulty: str, n: int):
     return random.sample(matching_questions, n)
 
 #upvote a particular question
-@question_router.post("/upvote/{title}", response_model=QuestionRepo)
+@question_router.post("/popularity/upvote/{title}", response_model=QuestionRepo)
 async def upvote_question(title: str):
     title = title.replace("_", " ")
     question = await QuestionRepo.find_one({
@@ -325,7 +325,7 @@ async def upvote_question(title: str):
     return question
 
 # downvote a particular question
-@question_router.post("/downvote/{title}", response_model=QuestionRepo)
+@question_router.post("/popularity/downvote/{title}", response_model=QuestionRepo)
 async def downvote_question(title: str):
     title = title.replace("_", " ")
     question = await QuestionRepo.find_one({
