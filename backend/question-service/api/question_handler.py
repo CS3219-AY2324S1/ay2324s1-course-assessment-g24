@@ -169,7 +169,7 @@ async def get_n_question_by_difficulty(difficulty_level: str, n: int, request_da
             question_title = random_question.title
             question_id = random_question.id  # Assuming the question has an ID field
 
-            #await create_history_record(email1, email2, difficulty_level, question_title, question_id)  # Pass question_id
+            # await create_history_record(email1, email2, difficulty_level, question_title, question_id)  # Pass question_id
 
             history_records.append(random_question)
 
@@ -202,7 +202,7 @@ async def get_n_popular_question_by_difficulty(difficulty_level: str, n: int, re
             question_title = random_question.title
             question_id = random_question.id  # Assuming the question has an ID field
 
-            #await create_history_record(email1, email2, difficulty_level, question_title, question_id)  # Pass question_id
+            # await create_history_record(email1, email2, difficulty_level, question_title, question_id)  # Pass question_id
 
             history_records.append(random_question)
 
