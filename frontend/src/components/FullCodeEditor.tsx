@@ -36,7 +36,7 @@ const FullCodeEditor = ({ height, onExecuteCode, selectedLanguage }: FullCodeEdi
   const executeCode = async () => {
     try {
       // Make API call to execute code on the server
-      const response = await axios.post("http://localhost:8002/execute", {
+      const response = await axios.post("http://localhost:5001/execute", {
         code: editorValue,
         language: selectedLanguage,
       });

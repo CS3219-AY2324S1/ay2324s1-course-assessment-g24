@@ -16,11 +16,15 @@ import {
   BiSolidUpvote,
   BiUpvote,
 } from "react-icons/bi";
+import { updateUpvote } from "../services/questionService";
+import { updateDownvote } from "../services/questionService"
+import { Link } from 'react-router-dom';
 
 import { DIFFICULTY } from "../utils/enums";
 
 const Question = ({
   questionTitle,
+  questionTopic,
   upVotes,
   downVotes,
   difficulty,
@@ -42,18 +46,12 @@ const Question = ({
 
     switch (vs) {
       case VoteStatus.UPVOTE:
-        setVoteStatus(VoteStatus.UPVOTE);
-        setUvs(uvs + 1);
-        if (voteStatus != VoteStatus.NOVOTE) {
-          setDvs(dvs - 1);
-        }
+        updateUpvote(questionTitle);
+        setUvs(uvs+1);
         break;
       case VoteStatus.DOWNVOTE:
-        setVoteStatus(VoteStatus.DOWNVOTE);
-        setDvs(dvs + 1);
-        if (voteStatus != VoteStatus.NOVOTE) {
-          setUvs(uvs - 1);
-        }
+        updateDownvote(questionTitle);
+        setDvs(dvs+1);
         break;
       default:
         setVoteStatus(VoteStatus.NOVOTE);
@@ -61,56 +59,61 @@ const Question = ({
   };
 
   return (
-    <Box
-      textAlign={"left"}
-      rounded={"lg"}
-      p={2}
-      my={2}
-      borderWidth={2}
-      bg={`${tcolor}.50`}
-      borderColor={`${tcolor}.200`}
-      color={`${tcolor}.500`}
-      {...props}
-    >
-      <Flex flexDirection={"row"} alignItems={"center"}>
-        <Text as={"b"}>{questionTitle}</Text>
-        <Spacer />
-        <HStack flexDirection={"row"} alignItems={"center"}>
-          <IconButton
-            mr={-6}
-            aria-label={"Upvote"}
-            variant={"unstyled"}
-            onClick={() => handleVoteStatusChange(VoteStatus.UPVOTE)}
-            icon={
-              voteStatus == VoteStatus.UPVOTE ? <BiSolidUpvote /> : <BiUpvote />
-            }
-          />
-          <Text as={"b"}>{uvs}</Text>
-          <Divider colorScheme={tcolor} orientation={"vertical"} />
-          <Text as={"b"}>{dvs}</Text>
-          <IconButton
-            mr={-6}
-            aria-label={"Downvote"}
-            variant={"unstyled"}
-            onClick={() => handleVoteStatusChange(VoteStatus.DOWNVOTE)}
-            icon={
-              voteStatus == VoteStatus.DOWNVOTE ? (
-                <BiSolidDownvote />
-              ) : (
-                <BiDownvote />
-              )
-            }
-          />
+    <Link to={`/question/${questionTitle}`} style={{ textDecoration: 'none' }}>
+      <Box
+        textAlign={"left"}
+        rounded={"lg"}
+        p={2}
+        my={2}
+        borderWidth={2}
+        bg={`${tcolor}.50`}
+        borderColor={`${tcolor}.200`}
+        color={`${tcolor}.500`}
+        {...props}
+      >
+        <Flex flexDirection={"row"} gap="1.5rem" alignItems={"center"}>
+          <Badge colorScheme={tcolor} minWidth="100px" textAlign="center">{questionTopic}</Badge> 
+          <Text as={"b"}>{questionTitle}</Text>
           <Spacer />
+              
           <Badge colorScheme={tcolor}>{difficulty}</Badge>
-        </HStack>
-      </Flex>
-    </Box>
+          <HStack flexDirection={"row"} alignItems={"center"}>
+            <IconButton
+              mr={-6}
+              aria-label={"Upvote"}
+              variant={"unstyled"}
+              onClick={() => handleVoteStatusChange(VoteStatus.UPVOTE)}
+              icon={
+                voteStatus == VoteStatus.UPVOTE ? <BiSolidUpvote /> : <BiUpvote />
+              }
+            />
+            <Text as={"b"}>{uvs}</Text>
+            <Divider colorScheme={tcolor} orientation={"vertical"} />
+            <Text as={"b"}>{dvs}</Text>
+            <IconButton
+              mr={-6}
+              aria-label={"Downvote"}
+              variant={"unstyled"}
+              onClick={() => handleVoteStatusChange(VoteStatus.DOWNVOTE)}
+              icon={
+                voteStatus == VoteStatus.DOWNVOTE ? (
+                  <BiSolidDownvote />
+                ) : (
+                  <BiDownvote />
+                )
+              }
+            />
+            <Spacer />
+          </HStack>
+        </Flex>
+      </Box>
+    </Link>
   );
 };
 
 interface QuestionProps {
   questionTitle: string;
+  questionTopic: string;
   upVotes: number;
   downVotes: number;
   difficulty: DIFFICULTY;
@@ -118,8 +121,9 @@ interface QuestionProps {
 
 const difficultyToColorScheme = {
   [DIFFICULTY.EASY]: "green",
-  [DIFFICULTY.MEDIUM]: "yellow",
+  [DIFFICULTY.MEDIUM]: "orange",
   [DIFFICULTY.HARD]: "red",
+  [DIFFICULTY.DEFAULT]: "grey",
 };
 
 enum VoteStatus {
