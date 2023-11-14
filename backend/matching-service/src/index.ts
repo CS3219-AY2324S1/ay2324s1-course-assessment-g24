@@ -6,8 +6,6 @@ import { Server, Socket } from "socket.io";
 import "./database/db";
 import matchHandler from "./handlers/matchHandler";
 import { UserModel } from "./models/userModel";
-import { getQuestionsByDifficulty } from "./services/questionService";
-import { DIFFICULTY } from "./utils/enums";
 
 const app = express();
 app.use(
