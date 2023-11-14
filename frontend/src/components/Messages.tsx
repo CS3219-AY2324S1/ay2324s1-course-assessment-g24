@@ -26,7 +26,7 @@ const Messages:React.FC<MessageProps> = ({ messages, senderId }) => {
           return (
             <Flex key={index} w="100%" justify="flex-end">
               <Flex
-                bg="black"
+                bg="green"
                 color="white"
                 minW="100px"
                 maxW="350px"
@@ -47,7 +47,7 @@ const Messages:React.FC<MessageProps> = ({ messages, senderId }) => {
               ></Avatar>
               <Flex
                 bg="gray.100"
-                color="black"
+                color="blue"
                 minW="100px"
                 maxW="350px"
                 my="1"

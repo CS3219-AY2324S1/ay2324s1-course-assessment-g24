@@ -12,7 +12,6 @@ import UserProfile from "./pages/UserProfile";
 import VerificationEmail from "./pages/VerificationEmail";
 import WorkspacePage from "./pages/WorkspacePage";
 import Authenticated from "./components/Authenticated";
-import Chat from "./pages/Chat";
 import QuestionDetails from "./pages/QuestionDetails"; // Import the new component
 
 const App = () => {
@@ -29,7 +28,6 @@ const App = () => {
         <Route path="/forgotpassword" element={<ForgotPassword />} />
         <Route path="/resetpassword" element={<ResetPassword />} />
         <Route path="/verification" element={<VerificationEmail />} />
-        <Route path="/chat" element={<Chat from={""} text={""} />} />
         <Route path="/question/:title" element={<Authenticated><QuestionDetails /></Authenticated>}/>
         <Route path="*" element={<NotFound />} />
       </Routes>

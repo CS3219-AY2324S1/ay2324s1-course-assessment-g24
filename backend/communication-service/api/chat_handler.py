@@ -19,14 +19,16 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
             senderId = message["senderId"]
             receiverId = message["receiverId"]
             content = message["content"]
+            isChat = message["chat"] # if the request is abt sending a chat msg
             
             # Send message to relevant client
-            dataToSend = json.dumps({ "senderId": senderId, "content": content })
+            dataToSend = json.dumps({ "senderId": senderId, "content": content, "chat": isChat })
             await manager.send_personal_message(dataToSend, receiverId)
 
             # Update database
-            message["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            await save_message(ChatModel(**message))
+            if (isChat):
+              message["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+              await save_message(ChatModel(**message))
     except WebSocketDisconnect:
         print("Disconnected :/")
         manager.disconnect(websocket, client_id)
