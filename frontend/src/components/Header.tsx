@@ -12,7 +12,7 @@ const Header:React.FC<HeaderProps> = ({ receiverId }) => {
         <AvatarBadge boxSize="1.25em" bg="green.500" />
       </Avatar>
       <Flex flexDirection="column" mx="5" justify="center">
-        <Text fontSize="lg" fontWeight="bold" color="white">
+        <Text fontSize="lg" fontWeight="bold" color="black">
           {receiverId}
         </Text>
       </Flex>
