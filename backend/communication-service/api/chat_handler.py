@@ -37,4 +37,18 @@ async def save_message(message: ChatModel):
     await ChatModel.insert_one(message)
   except Exception as e:
     raise HTTPException(status_code=500, detail=f"Error saving message to the db: {str(e)}")
-  
+
+# Mock API for returning matched ID (will remove once matching service is done)
+counter = 0
+
+@chat_router.get("/getSenderReceiver")
+async def get_sender_receiver():
+    global counter
+    counter += 1
+    val = counter % 4
+
+    # Check the current count of requests
+    if val == 1 or val == 2:
+        return ["user_a", "user_b"]
+    else:
+        return ["user_b", "user_a"]
