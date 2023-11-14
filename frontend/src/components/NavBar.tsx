@@ -14,14 +14,15 @@ import {
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
-import PeerPrepLogo from "./PeerPrepLogo";
 import { useAuth } from "../contexts/AuthContext";
+import PeerPrepLogo from "./PeerPrepLogo";
 
 const NavBar = ({
   withSettings,
   withHomePage,
   withoutAnything,
   activeLink,
+  whereToGoOnClick,
 }: NavBarProps) => {
   const { logout } = useAuth();
 
@@ -38,7 +39,7 @@ const NavBar = ({
           p={2}
         >
           <Box transform={"scale(0.6)"}>
-            <PeerPrepLogo activeLink={activeLink} />
+            <PeerPrepLogo activeLink={activeLink} link={whereToGoOnClick} />
           </Box>
           <Spacer />
           {withoutAnything ?? (
@@ -64,7 +65,9 @@ const NavBar = ({
                         <MenuItem fontWeight={"normal"}>User Settings</MenuItem>
                       </Link>
                       <Link to={"/"}>
-                        <MenuItem onClick={logout} fontWeight={"normal"}>Logout</MenuItem>
+                        <MenuItem onClick={logout} fontWeight={"normal"}>
+                          Logout
+                        </MenuItem>
                       </Link>
                     </MenuGroup>
                   )}
@@ -90,6 +93,7 @@ interface NavBarProps {
   withHomePage?: boolean;
   withoutAnything?: boolean;
   activeLink?: boolean;
+  whereToGoOnClick: string;
 }
 
 export default NavBar;

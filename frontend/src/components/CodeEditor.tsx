@@ -1,6 +1,6 @@
 import { Editor } from "@monaco-editor/react";
 import { editor } from "monaco-editor";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 type EditorValue = string | undefined;
 
@@ -11,7 +11,12 @@ interface CodeEditorProps {
   receiver_id: string;
 }
 
-const CodeEditor: React.FC<CodeEditorProps> = ({ height, socketObj, sender_id, receiver_id  }) => {
+const CodeEditor: React.FC<CodeEditorProps> = ({
+  height,
+  socketObj,
+  sender_id,
+  receiver_id,
+}) => {
   const [editorValue, setEditorValue] = useState<EditorValue>("");
   const [socket, setSocket] = useState<WebSocket | null>(null);
   const [senderId, setSenderId] = useState("");
@@ -21,18 +26,18 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height, socketObj, sender_id, r
     setSocket(socketObj);
     setSenderId(sender_id);
     setReceiverId(receiver_id);
-  }, [socketObj, sender_id, receiver_id])
+  }, [socketObj, sender_id, receiver_id]);
 
   useEffect(() => {
     if (socket) {
-      socket.addEventListener('message', (evt: MessageEvent) => {
+      socket.addEventListener("message", (evt: MessageEvent) => {
         const newMessage = JSON.parse(evt.data);
         if (newMessage.senderId === receiverId && !newMessage.chat) {
-          setEditorValue(newMessage.content)
+          setEditorValue(newMessage.content);
         }
       });
     }
-  }, [socket])
+  }, [socket]);
 
   useEffect(() => {
     async function updateMatchedUser() {
@@ -42,14 +47,14 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ height, socketObj, sender_id, r
             content: editorValue,
             receiverId: receiverId,
             senderId: senderId,
-            chat: false
+            chat: false,
           }),
         );
       }
     }
 
     updateMatchedUser();
-    }, [editorValue])
+  }, [editorValue]);
 
   const options: editor.IStandaloneEditorConstructionOptions = {
     fontSize: 14,

@@ -60,7 +60,7 @@ const WorkspacePage = () => {
     <>
       <Box w={"100dvw"} h={"100dvh"}>
         <LoadingWrapper isLoading={false} repeat={2}>
-          <NavBar withoutAnything activeLink={false} />
+          <NavBar withoutAnything activeLink={false} whereToGoOnClick={"/workspace"} />
           <Box h={"80%"} p={2} mt={6}>
             <Flex flexDirection={"row"}>
               <Box w={"35%"}>

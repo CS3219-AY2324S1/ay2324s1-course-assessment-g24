@@ -44,7 +44,7 @@ const UserProfile = () => {
 
   return (
     <Box w="100vw" h="100vh">
-      <NavBar withHomePage={false} />
+      <NavBar withHomePage={false} whereToGoOnClick={"/userprofile"} />
       <VStack
         w={"100%"}
         h={"80%"}

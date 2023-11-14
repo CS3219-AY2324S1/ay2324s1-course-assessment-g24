@@ -1,5 +1,5 @@
+import { Button, Flex, Input } from "@chakra-ui/react";
 import React from "react";
-import { Flex, Input, Button } from "@chakra-ui/react";
 
 interface FooterProps {
   inputMessage: string;
@@ -7,7 +7,11 @@ interface FooterProps {
   handleSendMessage: () => void;
 }
 
-const Footer:React.FC<FooterProps> = ({ inputMessage, setInputMessage, handleSendMessage }) => {
+const Footer: React.FC<FooterProps> = ({
+  inputMessage,
+  setInputMessage,
+  handleSendMessage,
+}) => {
   return (
     <Flex w="100%" mt="5">
       <Input

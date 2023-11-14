@@ -1,5 +1,6 @@
-import { useEffect, useState, ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+
 import { useAuth } from "../contexts/AuthContext";
 
 const Authenticated = (props: { children: ReactNode }) => {
