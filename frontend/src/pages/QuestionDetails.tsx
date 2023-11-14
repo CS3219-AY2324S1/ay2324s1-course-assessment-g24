@@ -3,7 +3,7 @@
 import { useParams } from "react-router-dom";
 import React, { useState, useEffect, useCallback } from "react";
 import { Box, Flex, Select, Text} from "@chakra-ui/react";
-import CodeEditor from "../components/CodeEditor";
+import FullCodeEditor from "../components/FullCodeEditor";
 import LoadingWrapper from "../components/LoadingWrapper";
 import NavBar from "../components/NavBar";
 import FullQuestionPanel from "../components/FullQuestionPanel";
@@ -88,7 +88,7 @@ const QuestionDetailsPage = () => {
                     </Select>
                   </Flex>
                   {/* Pass the selected language to CodeEditor */}
-                  <CodeEditor
+                  <FullCodeEditor
                     height={50}
                     onExecuteCode={handleExecuteCode}
                     selectedLanguage={selectedLanguage}
