@@ -4,8 +4,8 @@ import { createServer } from "http";
 import { Server, Socket } from "socket.io";
 
 import "./db";
-import { UserModel } from "./models/userModel";
 import matchHandler from "./handlers/matchHandler";
+import { UserModel } from "./models/userModel";
 
 const app = express();
 app.use(
@@ -36,9 +36,9 @@ io.on("connection", async (socket: Socket) => {
   });
 
   // events
-  socket.on("matchStart", data => matchHandler.matchStart(socket, data));
+  socket.on("matchStart", (data) => matchHandler.matchStart(socket, data));
   socket.on("prematureLeave", () => matchHandler.prematureLeave(socket, io));
-  socket.on("properLeave", data => matchHandler.properLeave(socket, data));
+  socket.on("properLeave", (data) => matchHandler.properLeave(socket, data));
   socket.on("exitQueue", () => matchHandler.exitQueue(socket));
   socket.on("disconnect", () => matchHandler.disconnect(socket, io));
 });

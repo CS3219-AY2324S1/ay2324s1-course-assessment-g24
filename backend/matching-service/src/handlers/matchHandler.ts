@@ -1,14 +1,21 @@
 import { Socket } from "socket.io";
+import { v4 as uuidv4 } from "uuid";
+
 import { InputOutput } from "..";
 import ormController from "../database/ormController";
+import { DIFFICULTY, STATUS } from "../utils/enums";
 import { timers } from "../utils/timers";
-import { v4 as uuidv4 } from "uuid";
-import { STATUS } from "../utils/enums";
+import { getQuestionsByDifficulty } from "../services/questionService";
 
 const matchHandler = {
   matchStart: async (socket: Socket, data: MatchParams) => {
     const { difficulty, language } = data;
-    const queueMembers = await ormController.getAllQueues(difficulty, language, [["createdAt", "ASC"]], 1);
+    const queueMembers = await ormController.getAllQueues(
+      difficulty,
+      language,
+      [["createdAt", "ASC"]],
+      1,
+    );
 
     if (queueMembers.length > 0) {
       const { id, queueingSocketId } = queueMembers[0];
@@ -17,15 +24,17 @@ const matchHandler = {
       await ormController.deleteQueueById(id);
       await ormController.createMatch(id, queueingSocketId, socket.id);
 
-      await ormController.updateUserStatusById(queueingSocketId, STATUS.MATCHED);
+      await ormController.updateUserStatusById(
+        queueingSocketId,
+        STATUS.MATCHED,
+      );
       await ormController.updateUserStatusById(socket.id, STATUS.MATCHED);
 
       socket.join(id);
-      //TODO: Fetch Questions From Question Service
-      let questions: Array<any> = [];
+      const questions = await getQuestionsByDifficulty(difficulty);
 
-      socket.to(queueingSocketId).emit('success', { id, questions });
-      socket.emit('success', { id, questions });
+      socket.to(queueingSocketId).emit("success", { id, questions });
+      socket.emit("success", { id, questions });
     } else {
       const id = uuidv4();
 
@@ -34,11 +43,11 @@ const matchHandler = {
       await ormController.createQueue(id, socket.id, language, difficulty);
       await ormController.updateUserStatusById(socket.id, STATUS.IN_QUEUE);
 
-      const countdownInterval = 1000; 
+      const countdownInterval = 1000;
       let ticker = 29;
 
       const timer = setInterval(() => {
-        socket.emit('countdown', ticker);
+        socket.emit("countdown", ticker);
         if (ticker === 0) clearTimer();
         ticker--;
       }, countdownInterval);
@@ -48,20 +57,22 @@ const matchHandler = {
         await ormController.deleteQueueById(id);
         await ormController.updateUserStatusById(socket.id, STATUS.DEFAULT);
         socket.leave(id);
-      }
+      };
 
       timers[id] = timer;
     }
   },
   prematureLeave: async (socket: Socket, io: InputOutput) => {
     const leavingSocketId = socket.id;
-    const { id, socketIdOne, socketIdTwo } = await ormController.getMatchWithMember(leavingSocketId);
-    const matchedSocketId = socketIdOne !== socket.id ? socketIdOne : socketIdTwo;
+    const { id, socketIdOne, socketIdTwo } =
+      await ormController.getMatchWithMember(leavingSocketId);
+    const matchedSocketId =
+      socketIdOne !== socket.id ? socketIdOne : socketIdTwo;
 
-    socket.broadcast.to(id).emit('matchLeave');
+    socket.broadcast.to(id).emit("matchLeave");
 
     socket.leave(id);
-    io.of('/').sockets.get(matchedSocketId)?.leave(id);
+    io.of("/").sockets.get(matchedSocketId)?.leave(id);
 
     await ormController.updateUserStatusById(leavingSocketId, STATUS.DEFAULT);
     await ormController.updateUserStatusById(matchedSocketId, STATUS.DEFAULT);
@@ -83,20 +94,20 @@ const matchHandler = {
     switch (user.status) {
       case STATUS.IN_QUEUE:
         await matchHandler.exitQueue(socket);
-        break
+        break;
       case STATUS.MATCHED:
         await matchHandler.prematureLeave(socket, io);
         break;
-      default: 
+      default:
         break;
     }
 
     await ormController.deleteUserById(socket.id);
-  }
-}
+  },
+};
 
 interface MatchParams {
-  difficulty: string;
+  difficulty: DIFFICULTY;
   language: string;
 }
 
