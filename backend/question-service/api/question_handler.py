@@ -69,13 +69,7 @@ async def add_leetcode_question(leetcode_question: str):
     test_case_text = " ".join(prompt_element[test_case_index:])
     test_case_text = test_case_text.split("Constraints")[0].strip()
     examples_list = test_case_text.split("Example ")
-    examples_list = [example.strip() for example in examples_list if example.strip()]
-
-    formatted_examples = []
-
-    for i, example in enumerate(examples_list):
-        formatted_example = f"Example {example}"
-        formatted_examples.append(formatted_example)
+    examples_list = [example[3:].strip() for example in examples_list if example.strip()]
 
     q_if_exists = await QuestionRepo.find(QuestionRepo.title == title_text).first_or_none()
     exists = q_if_exists is not None
@@ -88,7 +82,7 @@ async def add_leetcode_question(leetcode_question: str):
       difficulty_level=difficulty_level_text,
       title=title_text,
       question_prompt=prompt_element[:test_case_index],
-      examples=formatted_examples,
+      examples=examples_list,
       popularity=100.0,
       upvotes=0,
       downvotes=0
@@ -242,7 +236,7 @@ async def get_question_by_title(q_title: str):
             "$options": "i"  # Enable case-insensitive search
         }
     }).to_list()
-    return question
+    return question[0]
   except Exception as e:
     raise HTTPException(status_code=500, detail=f"Error retrieving question by title: {str(e)}")
 
