@@ -15,9 +15,6 @@ from schemas.user_schema import UserAuth, UserOut
 auth_router = APIRouter()
 
 
-from pydantic import BaseModel
-
-
 @auth_router.post(
     "/login",
     summary="Create access and refresh tokens for user",
