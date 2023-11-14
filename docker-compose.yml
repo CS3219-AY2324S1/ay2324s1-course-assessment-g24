@@ -1,0 +1,75 @@
+version: '3.9'
+
+services:
+
+  user-service:
+    container_name: user-service
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.user
+    volumes:
+      - ./backend/user-service:/app/backend/user-service
+      - /app/backend/user-service/node_modules
+    ports:
+      - '8000:8000'
+    environment:
+      JWT_SECRET: jwt-secret
+      DB_URI: mongodb://mongo_db:27017/user
+      HISTORY_URL: 'http://history-service:8005/history'
+    networks:
+      - cs3219-project-network
+
+  history-service:
+    container_name: history-service
+    depends_on:
+      - mongo_db
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.history
+    volumes:
+      - ./backend/history-service:/app/backend/history-service
+      - /app/backend/history-service/node_modules
+    ports:
+      - '8001:8001'
+    environment:
+      DB_URI: mongodb://mongo_db:27017/history
+      QUESTION_URL: http://question-service:8005
+    networks:
+      - cs3219-project-network
+
+  question-service:
+    container_name: question-service
+    depends_on:
+      - mongo_db
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.question
+    volumes:
+      - ./backend/question-service:/app/backend/question-service
+      - /app/backend/question-service/node_modules
+    ports:
+      - '8005:8005'
+    environment:
+      DB_URI: mongodb://mongo_db:27017/question
+    networks:
+      - cs3219-project-network
+
+  mongo_db:
+    container_name: mongo_db
+    image: mongo:latest
+    restart: always
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_db:/data/db
+    networks:
+      - cs3219-project-network
+    logging:
+      driver: 'none'
+
+volumes:
+  mongo_db: {}
+
+networks:
+  cs3219-project-network:
+    driver: bridge

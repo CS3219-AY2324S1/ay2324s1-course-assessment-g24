@@ -1,0 +1,54 @@
+FROM node:alpine AS deps
+
+WORKDIR /app
+
+COPY package.json package-lock.json ./
+
+RUN npm ci
+
+FROM node:alpine AS builder
+
+WORKDIR /app
+
+ARG USER_URL
+ARG QUESTION_URL
+ARG MATCHING_URL
+ARG HISTORY_URL
+ARG COMMUNICATION_URL
+ARG COLLABORATION_URL
+
+COPY next.config.js ./
+COPY tsconfig.json ./
+COPY package.json package-lock.json ./
+COPY --from=deps /app/node_modules ./node_modules
+
+COPY ./assets ./assets
+COPY ./components ./components
+COPY ./contexts ./contexts
+COPY ./pages ./pages
+COPY ./services ./services
+COPY ./utils ./utils
+
+ENV NEXT_PUBLIC_USER_ENDPOINT=${USER_URL}
+ENV NEXT_PUBLIC_QUESTION_ENDPOINT=${QUESTION_URL}
+ENV NEXT_PUBLIC_MATCHING_ENDPOINT=${MATCHING_URL}
+ENV NEXT_PUBLIC_HISTORY_ENDPOINT=${HISTORY_URL}
+ENV NEXT_PUBLIC_COMMUNICATION_ENDPOINT=${COMMUNICATION_URL}
+ENV NEXT_PUBLIC_COLLABORATION_ENDPOINT=${COLLABORATION_URL}
+ENV NEXT_PUBLIC_ENV=production
+
+RUN npm run build
+
+FROM node:alpine AS runner
+
+ENV NODE_ENV=production
+WORKDIR /app
+
+COPY --from=builder /app/public ./public
+
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
+
+ENV PORT=80
+
+CMD ["node", "server.js"]
