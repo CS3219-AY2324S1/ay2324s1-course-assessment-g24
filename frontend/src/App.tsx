@@ -30,8 +30,7 @@ const App = () => {
         <Route path="/resetpassword" element={<ResetPassword />} />
         <Route path="/verification" element={<VerificationEmail />} />
         <Route path="/chat" element={<Chat from={""} text={""} />} />
-        {/* <Route path="/question/:title" element={<Authenticated><QuestionDetails /></Authenticated>}/> */}
-        <Route path="/question/:title" element={<QuestionDetails />}/>
+        <Route path="/question/:title" element={<Authenticated><QuestionDetails /></Authenticated>}/>
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>

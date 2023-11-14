@@ -26,9 +26,9 @@ const WorkspacePage = () => {
                   ]}
                 />
               </Box>
-              {/* <Box w={"65%"}>
+              <Box w={"65%"}>
                 <CodeEditor height={70} />
-              </Box> */}
+              </Box>
             </Flex>
           </Box>
         </LoadingWrapper>

@@ -52,4 +52,3 @@ const CodeEditor = ({ height }: { height: number }) => {
 // }
 
 export default CodeEditor;
-
