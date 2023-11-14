@@ -104,28 +104,29 @@ async def add_leetcode_question(leetcode_question: str):
   finally:
     driver.quit()
 
-async def create_history_record(email1: str, email2: str, difficulty_level: str, question_title: str, question_id: PydanticObjectId):
-    history_data = {
-        "email": email1,
-        "matched_email": email2,
-        "difficulty_level": difficulty_level,
-        "question_title": question_title,
-        "question_id": str(question_id)  # Convert question_id to a string
-    }
+# COMMENTED THIS BECAUSE WE ARE UPDATING HISTORY FROM UI
+# async def create_history_record(email1: str, email2: str, difficulty_level: str, question_title: str, question_id: PydanticObjectId):
+#     history_data = {
+#         "email": email1,
+#         "matched_email": email2,
+#         "difficulty_level": difficulty_level,
+#         "question_title": question_title,
+#         "question_id": str(question_id)  # Convert question_id to a string
+#     }
 
-    async with httpx.AsyncClient() as client:
-        try:
-            historyServiceURL = "http://localhost:8001/history/"
-            response = await client.post(historyServiceURL,
-                json=history_data,
-                headers={"Content-Type": "application/json"}
-            )
+#     async with httpx.AsyncClient() as client:
+#         try:
+#             historyServiceURL = "http://localhost:8001/history/"
+#             response = await client.post(historyServiceURL,
+#                 json=history_data,
+#                 headers={"Content-Type": "application/json"}
+#             )
 
-            response.raise_for_status()
+#             response.raise_for_status()
 
-            return response.json()
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Error creating history record: {str(e)}")
+#             return response.json()
+#         except Exception as e:
+#             raise HTTPException(status_code=500, detail=f"Error creating history record: {str(e)}")
 
 @question_router.post("/test/{difficulty_level}/random")
 async def get_random_question_by_difficulty(difficulty_level: str, request_data: dict):
@@ -145,7 +146,7 @@ async def get_random_question_by_difficulty(difficulty_level: str, request_data:
         question_title = random_question.title
         question_id = random_question.id  # Assuming the question has an ID field
 
-        await create_history_record(email1, email2, difficulty_level, question_title, question_id)  # Pass question_id
+        #await create_history_record(email1, email2, difficulty_level, question_title, question_id)  # Pass question_id
 
         return random_question
     else:
@@ -174,7 +175,7 @@ async def get_n_question_by_difficulty(difficulty_level: str, n: int, request_da
             question_title = random_question.title
             question_id = random_question.id  # Assuming the question has an ID field
 
-            await create_history_record(email1, email2, difficulty_level, question_title, question_id)  # Pass question_id
+            # await create_history_record(email1, email2, difficulty_level, question_title, question_id)  # Pass question_id
 
             history_records.append(random_question)
 
@@ -184,7 +185,7 @@ async def get_n_question_by_difficulty(difficulty_level: str, n: int, request_da
 
 
 @question_router.post("/{difficulty_level}/{n}/popular")
-async def get_n_question_by_difficulty(difficulty_level: str, n: int, request_data: dict):
+async def get_n_popular_question_by_difficulty(difficulty_level: str, n: int, request_data: dict):
     email1 = request_data.get("email1")
     email2 = request_data.get("email2")
 
@@ -207,7 +208,7 @@ async def get_n_question_by_difficulty(difficulty_level: str, n: int, request_da
             question_title = random_question.title
             question_id = random_question.id  # Assuming the question has an ID field
 
-            await create_history_record(email1, email2, difficulty_level, question_title, question_id)  # Pass question_id
+            # await create_history_record(email1, email2, difficulty_level, question_title, question_id)  # Pass question_id
 
             history_records.append(random_question)
 
