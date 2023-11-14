@@ -9,12 +9,12 @@ import { AuthProvider } from "./contexts/AuthContext.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    {/* <AuthProvider> */}
+    <AuthProvider>
     <Router>
       <ChakraProvider>
         <App />
       </ChakraProvider>
     </Router>
-    {/* </AuthProvider> */}
+    </AuthProvider>
   </React.StrictMode>,
 );
