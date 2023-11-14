@@ -3,9 +3,11 @@ import express from "express";
 import { createServer } from "http";
 import { Server, Socket } from "socket.io";
 
-import "./db";
+import "./database/db";
 import matchHandler from "./handlers/matchHandler";
 import { UserModel } from "./models/userModel";
+import { getQuestionsByDifficulty } from "./services/questionService";
+import { DIFFICULTY } from "./utils/enums";
 
 const app = express();
 app.use(
@@ -35,7 +37,7 @@ io.on("connection", async (socket: Socket) => {
     isMatched: false,
   });
 
-  // events
+  // events and their handlers
   socket.on("matchStart", (data) => matchHandler.matchStart(socket, data));
   socket.on("prematureLeave", () => matchHandler.prematureLeave(socket, io));
   socket.on("properLeave", (data) => matchHandler.properLeave(socket, data));

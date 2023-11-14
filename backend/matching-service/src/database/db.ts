@@ -1,6 +1,9 @@
 import { Sequelize } from "sequelize";
 
-const sequelize = new Sequelize("sqlite::memory:");
+const sequelize = new Sequelize({
+  storage: ':memory:', 
+  dialect: 'sqlite',
+});
 
 const checkConnection = async () => {
   try {
@@ -12,5 +15,5 @@ const checkConnection = async () => {
 };
 
 checkConnection();
-await sequelize.sync({ force: true });
+(async () => await sequelize.sync({ force: true }))();
 export default sequelize;

@@ -190,10 +190,7 @@ async def get_random_question_by_difficulty(difficulty_level: str, request_data:
 
 
 @question_router.post("/{difficulty_level}/{n}")
-async def get_n_question_by_difficulty(difficulty_level: str, n: int, request_data: dict):
-  email1 = request_data.get("email1")
-  email2 = request_data.get("email2")
-
+async def get_n_question_by_difficulty(difficulty_level: str, n: str):
   questions = await QuestionRepo.find(
     {
       "difficulty_level": {
@@ -204,27 +201,10 @@ async def get_n_question_by_difficulty(difficulty_level: str, n: int, request_da
   ).to_list()
 
   if questions:
-    n = min(n, len(questions))
+    n = min(int(n), len(questions))
+    questions = random.sample(questions, n)  # Select n random questions
 
-    random_questions = random.sample(questions, n)  # Select n random questions
-
-    history_records = []  # List to store history records
-
-    for random_question in random_questions:
-      question_title = random_question.title
-      question_id = random_question.id  # Assuming the question has an ID field
-
-      await create_history_record(
-        email1, 
-        email2, 
-        difficulty_level, 
-        question_title, 
-        question_id # Pass question_id
-      )
-
-      history_records.append(random_question)
-
-    return history_records
+    return questions
   else:
     raise HTTPException(
       status_code=500, 

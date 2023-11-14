@@ -14,6 +14,6 @@ questionServiceAxiosInstance.interceptors.response.use(
 );
 
 export const getQuestionsByDifficulty = async (d: DIFFICULTY) => {
-  const response = await questionServiceAxiosInstance.get("/");
+  const response = await questionServiceAxiosInstance.get(`/questions/${d}/1`);
   return response.data.json();
 };
