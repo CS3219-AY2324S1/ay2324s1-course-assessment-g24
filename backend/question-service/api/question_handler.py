@@ -185,7 +185,7 @@ async def get_n_question_by_difficulty(difficulty_level: str, n: int, request_da
 
 
 @question_router.post("/{difficulty_level}/{n}/popular")
-async def get_n_question_by_difficulty(difficulty_level: str, n: int, request_data: dict):
+async def get_n_popular_question_by_difficulty(difficulty_level: str, n: int, request_data: dict):
     email1 = request_data.get("email1")
     email2 = request_data.get("email2")
 
