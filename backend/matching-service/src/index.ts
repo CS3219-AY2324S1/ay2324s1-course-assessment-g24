@@ -4,8 +4,8 @@ import { createServer } from "http";
 import { Server, Socket } from "socket.io";
 
 import "./db";
-import { UserModel } from "./model";
-import { registerMatchHandler } from "./socketHandler/matchHandler";
+import { UserModel } from "./models/userModel";
+import matchHandler from "./handlers/matchHandler";
 
 const app = express();
 app.use(
@@ -20,8 +20,8 @@ app.get("/", (_, res) => {
   res.send("Hello, from Matching Service!");
 });
 
-const httpServer = createServer(app);
-const io = new Server(httpServer, {
+const server = createServer(app);
+const io = new Server(server, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
@@ -29,18 +29,21 @@ const io = new Server(httpServer, {
 });
 
 export type InputOutput = typeof io;
-const onConnection = async (socket: Socket) => {
+io.on("connection", async (socket: Socket) => {
   await UserModel.create({
     socketId: socket.id,
     isMatched: false,
   });
-  registerMatchHandler(io, socket);
-};
 
-io.on("connection", onConnection);
-
-const port = process.env.PORT || 8002;
-httpServer.listen(port, () => {
-  console.log(`Server is running on port ${port}!`);
+  // events
+  socket.on("matchStart", data => matchHandler.matchStart(socket, data));
+  socket.on("prematureLeave", () => matchHandler.prematureLeave(socket, io));
+  socket.on("properLeave", data => matchHandler.properLeave(socket, data));
+  socket.on("exitQueue", () => matchHandler.exitQueue(socket));
+  socket.on("disconnect", () => matchHandler.disconnect(socket, io));
 });
 
+const port = process.env.PORT || 8002;
+server.listen(port, () => {
+  console.log(`Server is running on port ${port}!`);
+});
