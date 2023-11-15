@@ -13,6 +13,7 @@ import { Socket, io } from "socket.io-client";
 import { DIFFICULTY, LANGUAGE } from "../utils/enums";
 import { Question } from "../utils/types";
 import { useAuth } from "./AuthContext";
+import { createHistory } from "../services/historyService";
 
 interface MatchingState {
   count?: number;
@@ -76,7 +77,7 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
       setCount(counter);
     });
 
-    socket.on("success", ({ id, questions }) => {
+    socket.on("success", async ({ id, questions }) => {
       toast({
         title: "Hooray!",
         description: "Match Found!",
@@ -84,7 +85,8 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
         duration: 5000,
         isClosable: true,
       });
-
+      
+      await createHistory({ email: user.email, matched_email: "", difficulty_level: questions[0].difficulty, question_title: questions[0].difficulty_level, question_id: questions[0]._id });
       setCount(undefined);
       setRoomId(id);
       setQuestions(questions);

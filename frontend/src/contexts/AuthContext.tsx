@@ -153,8 +153,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       setSession(response.data.access_token, response.data.refresh_token);
-    } catch (error) {
-      throw error;
+    } catch (err) {
+      return Promise.reject(err);
     }
   };
 
