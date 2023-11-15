@@ -14,6 +14,7 @@ import { DIFFICULTY, LANGUAGE } from "../utils/enums";
 import { Question } from "../utils/types";
 import { useAuth } from "./AuthContext";
 import { createHistory } from "../services/historyService";
+import { ObjectId } from "bson";
 
 interface MatchingState {
   count?: number;
@@ -86,7 +87,6 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
         isClosable: true,
       });
       
-      await createHistory({ email: user.email, matched_email: "", difficulty_level: questions[0].difficulty, question_title: questions[0].difficulty_level, question_id: questions[0]._id });
       setCount(undefined);
       setRoomId(id);
       setQuestions(questions);
@@ -130,11 +130,25 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
     callback();
   };
 
-  const endSession = () => {
+  const endSession = async () => {
     reset(() => {
       socket?.emit("prematureLeave");
       socket?.emit("properLeave", roomId);
     });
+
+    if (questions) {
+      const q = questions[0];
+      if (q) {
+        await createHistory({ 
+          email: user.email, 
+          matched_email: "", 
+          difficulty_level: q.difficulty_level ?? DIFFICULTY.EASY,
+          question_title: q.question_prompt ?? "Two Sum", 
+          question_id: q._id ?? "6551e7bb537d6cffc7751bb1"
+        });
+      }
+    }
+    
     reset(() => {
       toast({
         title: "Coding Session Ended!",

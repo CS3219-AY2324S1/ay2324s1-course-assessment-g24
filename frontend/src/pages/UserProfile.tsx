@@ -20,20 +20,8 @@ import { useMatching } from "../contexts/MatchingContext";
 import { getHistoriesByUser } from "../services/historyService";
 
 const randomQuestions = [
-  "What is the capital of France?",
-  "How do you reverse a string in Python?",
-  "What is the largest planet in our solar system?",
-  "Write a function to find the factorial of a number.",
-  "Write a function to find the factorial of a number.",
-  "Write a function to find the factorial of a number.",
-  "Write a function to find the factorial of a number.",
-  "Write a function to find the factorial of a number.",
-  "What is the largest planet in our solar system?",
-  "Write a function to find the factorial of a number.",
-  "Write a function to find the factorial of a number.",
-  "Write a function to find the factorial of a number.",
-  "Write a function to find the factorial of a number.",
-  "Write a function to find the factorial of a number.",
+  "Two Sum",
+  "Find Median",
 ];
 
 export const difficultyToColorScheme = {

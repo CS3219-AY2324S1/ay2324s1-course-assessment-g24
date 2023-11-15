@@ -2,6 +2,7 @@ import { AxiosResponse } from "axios";
 import { ObjectId } from "bson";
 
 import historyServiceAxiosInstance from "./historyServiceHelper";
+import { DIFFICULTY } from "../utils/enums";
 
 // const BASE_URL = import.meta.env.VITE_HISTORY_SERVICE_URL
 
@@ -22,7 +23,9 @@ export const getHistoriesByUser = async (user: User): Promise<History[]> => {
 export const createHistory = async (history: History): Promise<History> => {
   try {
     const response: AxiosResponse<History> =
-      await historyServiceAxiosInstance.post("/", history, {});
+      await historyServiceAxiosInstance.post("/", {
+        data: history
+      });
 
     return response.data;
   } catch (error) {
@@ -49,7 +52,7 @@ interface User {
 interface History {
   email: string;
   matched_email: string;
-  difficulty_level: string;
+  difficulty_level: DIFFICULTY;
   question_title: string;
-  question_id: ObjectId;
+  question_id: string;
 }
