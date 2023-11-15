@@ -117,7 +117,7 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
     if (!socket.connected) socket.connect();
 
     setIsMatching(true);
-    socket.emit("matchStart", { difficulty, language: LANGUAGE.PYTHON });
+    socket.emit("matchStart", { difficulty, language: user.language });
     setCount(30);
   };
 

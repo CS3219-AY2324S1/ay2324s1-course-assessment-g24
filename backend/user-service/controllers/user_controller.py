@@ -17,6 +17,7 @@ class UserController:
         user_in = User(
             email=user.email,
             hashed_password=get_password(user.password),
+            language=user.language
         )
 
         await user_in.save()
@@ -50,3 +51,4 @@ class UserController:
 
         await user.update({"$set": data.dict(exclude_unset=True)})
         return user
+    
