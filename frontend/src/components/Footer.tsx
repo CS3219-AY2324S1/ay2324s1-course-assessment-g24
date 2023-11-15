@@ -3,7 +3,7 @@ import React from "react";
 
 interface FooterProps {
   inputMessage: string;
-  setInputMessage: React.Dispatch<React.SetStateAction<string>>;
+  setInputMessage: (value: string) => void;
   handleSendMessage: () => void;
 }
 
@@ -18,6 +18,7 @@ const Footer: React.FC<FooterProps> = ({
         placeholder="Type Something..."
         border="none"
         borderRadius="none"
+        color="white"
         _focus={{
           border: "1px solid black",
         }}

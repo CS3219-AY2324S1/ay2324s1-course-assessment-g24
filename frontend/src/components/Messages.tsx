@@ -2,10 +2,13 @@ import { Avatar, Flex, Text } from "@chakra-ui/react";
 import React, { useEffect, useRef } from "react";
 
 interface MessageProps {
-  messages: { from: string; text: string }[];
+  messages: { senderId: string, receiverId: string, content: string, messageId: number }[],
+  senderId: string,
+  // receiverId: string,
+  // hasReceiverDisconnected: () => boolean | null
 }
 
-const Messages: React.FC<MessageProps> = ({ messages }) => {
+const Messages:React.FC<MessageProps> = ({ messages, senderId }) => {
   const AlwaysScrollToBottom = () => {
     const elementRef = useRef<HTMLDivElement>(null);
     useEffect(() => {
@@ -19,18 +22,18 @@ const Messages: React.FC<MessageProps> = ({ messages }) => {
   return (
     <Flex w="100%" h="80%" overflowY="scroll" flexDirection="column" p="3">
       {messages.map((item, index) => {
-        if (item.from === "me") {
+        if (item.senderId === senderId) {
           return (
             <Flex key={index} w="100%" justify="flex-end">
               <Flex
-                bg="black"
+                bg="green"
                 color="white"
                 minW="100px"
                 maxW="350px"
                 my="1"
                 p="3"
               >
-                <Text>{item.text}</Text>
+                <Text>{item.content}</Text>
               </Flex>
             </Flex>
           );
@@ -44,13 +47,13 @@ const Messages: React.FC<MessageProps> = ({ messages }) => {
               ></Avatar>
               <Flex
                 bg="gray.100"
-                color="black"
+                color="blue"
                 minW="100px"
                 maxW="350px"
                 my="1"
                 p="3"
               >
-                <Text>{item.text}</Text>
+                <Text>{item.content}</Text>
               </Flex>
             </Flex>
           );

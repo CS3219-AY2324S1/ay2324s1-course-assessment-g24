@@ -19,14 +19,16 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
             senderId = message["senderId"]
             receiverId = message["receiverId"]
             content = message["content"]
+            isChat = message["chat"] # if the request is abt sending a chat msg
             
             # Send message to relevant client
-            dataToSend = json.dumps({ "senderId": senderId, "content": content })
+            dataToSend = json.dumps({ "senderId": senderId, "content": content, "chat": isChat })
             await manager.send_personal_message(dataToSend, receiverId)
 
             # Update database
-            message["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            await save_message(ChatModel(**message))
+            if (isChat):
+              message["timestamp"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+              await save_message(ChatModel(**message))
     except WebSocketDisconnect:
         print("Disconnected :/")
         manager.disconnect(websocket, client_id)
@@ -37,4 +39,18 @@ async def save_message(message: ChatModel):
     await ChatModel.insert_one(message)
   except Exception as e:
     raise HTTPException(status_code=500, detail=f"Error saving message to the db: {str(e)}")
-  
+
+# Mock API for returning matched ID (will remove once matching service is done)
+counter = 0
+
+@chat_router.get("/getSenderReceiver")
+async def get_sender_receiver():
+    global counter
+    counter += 1
+    val = counter % 4
+
+    # Check the current count of requests
+    if val == 1 or val == 2:
+        return ["user_a", "user_b"]
+    else:
+        return ["user_b", "user_a"]
