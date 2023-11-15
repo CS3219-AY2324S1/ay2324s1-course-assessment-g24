@@ -1,0 +1,27 @@
+export enum SERVICE {
+  USER = "USER",
+  MATCHING = "MATCHING",
+  QUESTION = "QUESTION",
+  HISTORY = "HISTORY",
+  COMMUNICATION = "COMMUNICATION",
+}
+
+export enum HTTP_METHOD {
+  GET = "GET",
+  POST = "POST",
+  PUT = "PUT",
+  DELETE = "DELETE",
+}
+
+export enum DIFFICULTY {
+  EASY = "EASY",
+  MEDIUM = "MEDIUM",
+  HARD = "HARD",
+  DEFAULT = "DEFAULT"
+}
+
+export enum LANGUAGE {
+  PYTHON = "PYTHON",
+  CPP = "C++",
+  JAVASCRIPT = "JAVASCRIPT",
+}
