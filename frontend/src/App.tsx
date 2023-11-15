@@ -20,18 +20,15 @@ const App = () => {
       <Routes>
         <Route path="/changepassword" element={<Authenticated><ChangePassword /></Authenticated>} />
         <Route path="/editprofile" element={<Authenticated><EditProfile /></Authenticated>} />
-        {/* <Route path="/userprofile" element={<Authenticated><UserProfile /></Authenticated>} /> */}
-        <Route path="/userprofile" element={<UserProfile />} />
-        {/* <Route path="/workspace" element={<Authenticated><WorkspacePage /></Authenticated>} /> */}
-        <Route path="/workspace" element={<WorkspacePage />} />
+        <Route path="/userprofile" element={<Authenticated><UserProfile /></Authenticated>} />
+        <Route path="/workspace" element={<Authenticated><WorkspacePage /></Authenticated>} />
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/forgotpassword" element={<ForgotPassword />} />
         <Route path="/resetpassword" element={<ResetPassword />} />
         <Route path="/verification" element={<VerificationEmail />} />
-        {/* <Route path="/question/:title" element={<Authenticated><QuestionDetails /></Authenticated>}/> */}
-        <Route path="/question/:title" element={<QuestionDetails />}></Route>
+        <Route path="/question/:title" element={<Authenticated><QuestionDetails /></Authenticated>}/>
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
