@@ -13,7 +13,6 @@ import SignUpPage from "./pages/SignUpPage/SignUpPage";
 import UserProfile from "./pages/UserProfile";
 import VerificationEmail from "./pages/VerificationEmail/VerificationEmail";
 import WorkspacePage from "./pages/WorkspacePage";
-import Authenticated from "./components/Authenticated";
 import QuestionDetails from "./pages/QuestionDetails"; // Import the new component
 
 const App = () => {
