@@ -2,13 +2,18 @@ import { Avatar, Flex, Text } from "@chakra-ui/react";
 import React, { useEffect, useRef } from "react";
 
 interface MessageProps {
-  messages: { senderId: string, receiverId: string, content: string, messageId: number }[],
-  senderId: string,
+  messages: {
+    senderId: string;
+    receiverId: string;
+    content: string;
+    messageId: number;
+  }[];
+  senderId: string;
   // receiverId: string,
   // hasReceiverDisconnected: () => boolean | null
 }
 
-const Messages:React.FC<MessageProps> = ({ messages, senderId }) => {
+const Messages: React.FC<MessageProps> = ({ messages, senderId }) => {
   const AlwaysScrollToBottom = () => {
     const elementRef = useRef<HTMLDivElement>(null);
     useEffect(() => {

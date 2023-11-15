@@ -1,4 +1,5 @@
 import {
+  ReactNode,
   createContext,
   useContext,
   useEffect,
@@ -81,7 +82,7 @@ const reducer = (state: AuthState, action: AuthAction): AuthState => {
   }
 };
 
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const isMounted = useRef(false);
 

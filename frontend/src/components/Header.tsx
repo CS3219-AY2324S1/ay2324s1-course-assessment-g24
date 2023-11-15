@@ -5,7 +5,7 @@ interface HeaderProps {
   receiverId: string;
 }
 
-const Header:React.FC<HeaderProps> = ({ receiverId }) => {
+const Header: React.FC<HeaderProps> = ({ receiverId }) => {
   return (
     <Flex w="100%">
       <Avatar size="lg" name="Dan Abrahmov" src="https://bit.ly/dan-abramov">

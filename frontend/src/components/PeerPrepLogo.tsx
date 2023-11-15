@@ -1,9 +1,15 @@
 import { Box, Text } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
-const PeerPrepLogo = ({ activeLink = true }: { activeLink?: boolean }) => {
+const PeerPrepLogo = ({
+  activeLink = true,
+  link = "/",
+}: {
+  activeLink?: boolean;
+  link: string;
+}) => {
   return (
-    <Link style={!activeLink ? { pointerEvents: "none" } : {}} to={"/"}>
+    <Link style={!activeLink ? { pointerEvents: "none" } : {}} to={link}>
       <Box transform={"rotate(-2deg)"} mx={4} my={1}>
         <Text
           fontSize={{

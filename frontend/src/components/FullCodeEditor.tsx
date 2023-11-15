@@ -1,8 +1,10 @@
+import { Box, Button, Text } from "@chakra-ui/react";
 import { Editor } from "@monaco-editor/react";
+import axios from "axios";
 import { editor } from "monaco-editor";
 import { useState } from "react";
-import axios from "axios";
-import { Button, Box, Text } from "@chakra-ui/react"; // You may need to adjust imports based on your Chakra UI setup
+
+// You may need to adjust imports based on your Chakra UI setup
 
 interface FullCodeEditorProps {
   height: number;
@@ -10,7 +12,11 @@ interface FullCodeEditorProps {
   selectedLanguage: string;
 }
 
-const FullCodeEditor = ({ height, onExecuteCode, selectedLanguage }: FullCodeEditorProps) => {
+const FullCodeEditor = ({
+  height,
+  onExecuteCode,
+  selectedLanguage,
+}: FullCodeEditorProps) => {
   const [editorValue, setEditorValue] = useState("");
   const [output, setOutput] = useState("");
 
@@ -42,20 +48,23 @@ const FullCodeEditor = ({ height, onExecuteCode, selectedLanguage }: FullCodeEdi
       });
 
       console.log(response);
-  
+
       // Use the error_detail field if present, otherwise use the regular error or output
-      const resultOutput = response.data.error_detail || response.data.error || response.data.output;
-  
+      const resultOutput =
+        response.data.error_detail ||
+        response.data.error ||
+        response.data.output;
+
       // Update the output state with the response error or regular error/output
       setOutput(resultOutput);
-  
+
       // Pass the output to the parent component
       onExecuteCode(resultOutput);
     } catch (error) {
       console.error("Error executing code:", error);
-  
+
       setOutput("Error executing code");
-  
+
       // Pass the error to the parent component
       onExecuteCode("Error executing code");
     }
@@ -102,11 +111,11 @@ const FullCodeEditor = ({ height, onExecuteCode, selectedLanguage }: FullCodeEdi
         >
           <pre
             style={{
-              whiteSpace: 'pre-wrap',
-              wordWrap: 'break-word',
-              margin: '0',
-              fontSize: '14px',
-              color: '#333',
+              whiteSpace: "pre-wrap",
+              wordWrap: "break-word",
+              margin: "0",
+              fontSize: "14px",
+              color: "#333",
             }}
           >
             {output}
@@ -118,4 +127,3 @@ const FullCodeEditor = ({ height, onExecuteCode, selectedLanguage }: FullCodeEdi
 };
 
 export default FullCodeEditor;
-

@@ -14,8 +14,8 @@ import {
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
-import { useAuth } from "../../contexts/AuthContext";
-import PeerPrepLogo from "../PeerPrepLogo";
+import { useAuth } from "../contexts/AuthContext";
+import PeerPrepLogo from "./PeerPrepLogo";
 
 const NavBar = ({
   withSettings,

@@ -11,8 +11,9 @@ questionServiceAxiosInstance.interceptors.response.use(
   },
 );
 
-export const getAllQuestions = async () => {
+export const getAllQuestions =  async () => {
   const response = await questionServiceAxiosInstance.get(`/`);
+  console.log(response?.data)
   return response.data;
 };
 

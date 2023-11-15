@@ -44,7 +44,7 @@ const ormController = {
       { status: status },
       {
         where: {
-          socketId: userId,
+          id: userId,
         },
       },
     );

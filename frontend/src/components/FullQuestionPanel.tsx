@@ -1,5 +1,4 @@
-import { Badge, Box, Code, Flex, Heading, Spacer, Text } from "@chakra-ui/react";
-import React from "react";
+import { Badge, Box, Code, Flex, Heading, Text } from "@chakra-ui/react";
 import { FaThumbsDown, FaThumbsUp } from "react-icons/fa";
 
 const FullQuestionPanel = ({

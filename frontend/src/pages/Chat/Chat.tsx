@@ -31,7 +31,7 @@ const Chat: React.FC<ChatProps> = ({ socketObj, sender_id, receiver_id }) => {
     setSocket(socketObj);
     setSenderId(sender_id);
     setReceiverId(receiver_id);
-  }, [socketObj, sender_id, receiver_id])
+  }, [socketObj, sender_id, receiver_id]);
 
   useEffect(() => {
     if (socket) {
@@ -50,7 +50,7 @@ const Chat: React.FC<ChatProps> = ({ socketObj, sender_id, receiver_id }) => {
         }
       };
     }
-  }, [socket])
+  }, [socket]);
 
   const handleInputChange = (val: string) => {
     setInputValue(val);
@@ -74,7 +74,7 @@ const Chat: React.FC<ChatProps> = ({ socketObj, sender_id, receiver_id }) => {
             content: inputValue,
             receiverId: receiverId,
             senderId: senderId,
-            chat: true
+            chat: true,
           }),
         );
       }
@@ -94,10 +94,7 @@ const Chat: React.FC<ChatProps> = ({ socketObj, sender_id, receiver_id }) => {
     >
       <Header receiverId={receiverId} />
       <Divider />
-      <Messages
-        messages={messages}
-        senderId={senderId}
-      />
+      <Messages messages={messages} senderId={senderId} />
       <Divider />
       <Footer
         inputMessage={inputValue}

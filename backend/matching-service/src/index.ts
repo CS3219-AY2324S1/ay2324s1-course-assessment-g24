@@ -6,8 +6,6 @@ import { Server, Socket } from "socket.io";
 import "./database/db";
 import matchHandler from "./handlers/matchHandler";
 import { UserModel } from "./models/userModel";
-import { getQuestionsByDifficulty } from "./services/questionService";
-import { DIFFICULTY } from "./utils/enums";
 
 const app = express();
 app.use(
@@ -33,7 +31,7 @@ const io = new Server(server, {
 export type InputOutput = typeof io;
 io.on("connection", async (socket: Socket) => {
   await UserModel.create({
-    socketId: socket.id,
+    id: socket.id,
     isMatched: false,
   });
 
@@ -47,5 +45,5 @@ io.on("connection", async (socket: Socket) => {
 
 const port = process.env.PORT || 8002;
 server.listen(port, () => {
-  console.log(`Server is running on port ${port}!`);
+  console.log(`Matching service is running on port ${port}!`);
 });
