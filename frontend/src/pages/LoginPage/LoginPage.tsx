@@ -16,15 +16,9 @@ import { Field, Formik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import { object, string } from "yup";
 
-<<<<<<< HEAD:frontend/src/pages/LoginPage.tsx
-import LinkButton from "../components/LinkButton";
-import PeerPrepLogo from "../components/PeerPrepLogo";
-import { useAuth } from "../contexts/AuthContext";
-=======
 import LinkButton from "../../components/LinkButton";
 import PeerPrepLogo from "../../components/PeerPrepLogo";
 import { useAuth } from "../../contexts/AuthContext";
->>>>>>> milestone1:frontend/src/pages/LoginPage/LoginPage.tsx
 
 const loginValidation = object().shape({
   email: string()
@@ -45,7 +39,7 @@ const LoginPage = () => {
       <Box w={"100dvw"} h={"100dvh"}>
         <AbsoluteCenter>
           <Box mb={5}>
-            <PeerPrepLogo />
+            <PeerPrepLogo link={"/"} />
           </Box>
           <Box bg="white" p={6} rounded={"md"} w={"sm"}>
             <Formik

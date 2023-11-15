@@ -1,6 +1,6 @@
 // QuestionDetailsPage.tsx
 import { Box, Flex, Select, Text } from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import FullCodeEditor from "../components/FullCodeEditor";
@@ -8,7 +8,6 @@ import FullQuestionPanel from "../components/FullQuestionPanel";
 import LoadingWrapper from "../components/LoadingWrapper";
 import { fetchQuestion } from "../services/questionService";
 import NavBar from "../components/NavBar/NavBar";
-import FullQuestionPanel from "../components/FullQuestionPanel";
 
 interface Question {
   title: string;
@@ -20,8 +19,6 @@ interface Question {
   upvotes: number;
   downvotes: number;
 }
-
-// ... (other imports)
 
 const QuestionDetailsPage = () => {
   const { title } = useParams();
@@ -52,7 +49,7 @@ const QuestionDetailsPage = () => {
   return (
     <Box w={"100vw"} h={"100vh"}>
       <LoadingWrapper isLoading={!question} repeat={2}>
-        <NavBar withoutAnything activeLink={false} />
+        <NavBar withoutAnything activeLink={false} whereToGoOnClick={"/userprofile"} />
         <Box h={"80%"} p={2} mt={6}>
           <Flex flexDirection={"row"}>
             <Box w={"35%"}>

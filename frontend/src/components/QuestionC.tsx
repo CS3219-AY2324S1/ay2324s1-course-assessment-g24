@@ -22,7 +22,7 @@ import { Link } from 'react-router-dom';
 
 import { DIFFICULTY } from "../utils/enums";
 
-const Question = ({
+const QuestionC = ({
   questionTitle,
   questionTopic,
   upVotes,
@@ -132,4 +132,4 @@ enum VoteStatus {
   DOWNVOTE = -1,
 }
 
-export default Question;
+export default QuestionC;

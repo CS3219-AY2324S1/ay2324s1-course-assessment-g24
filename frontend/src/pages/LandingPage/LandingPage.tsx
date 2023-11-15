@@ -25,7 +25,7 @@ const LandingPage = () => {
           >
             <Image src={hero} alt={"Person coding happily!"} mb={2} />
             <VStack spacing={5}>
-              <PeerPrepLogo />
+              <PeerPrepLogo link={"/"} />
               <HeadingWithGradient
                 preText={"The only"}
                 gradientText={"tech interview"}

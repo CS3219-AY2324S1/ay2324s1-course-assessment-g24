@@ -50,7 +50,7 @@ const ChangePassword = () => {
 
   return (
     <Box w={"100dvw"} h={"100dvh"}>
-      <NavBar />
+      <NavBar whereToGoOnClick={"/userprofile"} />
       <Container>
         <AbsoluteCenter>
           <VStack spacing={5}>

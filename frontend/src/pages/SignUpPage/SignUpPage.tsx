@@ -17,15 +17,9 @@ import { Field, Formik } from "formik";
 import { useNavigate } from "react-router-dom";
 import { object, ref, string } from "yup";
 
-<<<<<<< HEAD:frontend/src/pages/SignUpPage.tsx
-import LinkButton from "../components/LinkButton";
-import PeerPrepLogo from "../components/PeerPrepLogo";
-import userServiceAxiosInstance from "../services/userService";
-=======
 import LinkButton from "../../components/LinkButton";
 import PeerPrepLogo from "../../components/PeerPrepLogo";
 import userServiceAxiosInstance from "../../services/userService";
->>>>>>> milestone1:frontend/src/pages/SignUpPage/SignUpPage.tsx
 
 const signUpValidation = object().shape({
   email: string()
