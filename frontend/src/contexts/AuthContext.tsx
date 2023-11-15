@@ -21,6 +21,7 @@ interface AuthState {
 interface IAuthContext extends AuthState {
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
+  updatePreferredLanguage: (language: string) => void;
 }
 
 const initialState: AuthState = {
@@ -33,6 +34,7 @@ const AuthContext = createContext<IAuthContext>({
   ...initialState,
   login: () => Promise.resolve(),
   logout: () => Promise.resolve(),
+  updatePreferredLanguage: () => Promise.resolve(),
 });
 
 interface InitializeAction {
@@ -54,7 +56,14 @@ interface LogoutAction {
   type: "LOGOUT";
 }
 
-type AuthAction = InitializeAction | LoginAction | LogoutAction;
+interface UpdatePreferredLanguage {
+  type: "UPDATELANGUAGE",
+  payload: {
+    user: any;
+  }
+}
+
+type AuthAction = InitializeAction | LoginAction | LogoutAction | UpdatePreferredLanguage;
 
 const reducer = (state: AuthState, action: AuthAction): AuthState => {
   switch (action.type) {
@@ -77,6 +86,11 @@ const reducer = (state: AuthState, action: AuthAction): AuthState => {
         isAuthenticated: false,
         user: null,
       };
+    case "UPDATELANGUAGE":
+      return {
+        ...state,
+        user: action.payload.user
+      }
     default:
       return state;
   }
@@ -167,11 +181,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     dispatch({ type: "LOGOUT" });
   };
 
+  const updatePreferredLanguage = async (language: string) => {
+    try {
+      const response = await userServiceAxiosInstance.post("/users/update", {
+        language
+      });
+      const { data: user } = response;
+
+      dispatch({
+        type: "UPDATELANGUAGE",
+        payload: {
+          user,
+        },
+      });
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+
   const value = useMemo(
     () => ({
       ...state,
       login,
       logout,
+      updatePreferredLanguage,
     }),
     [state],
   );

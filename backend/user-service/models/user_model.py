@@ -11,6 +11,7 @@ class User(Document):
     email: Indexed(str, unique=True)
     hashed_password: str
     disabled: Optional[bool] = None
+    language: str
 
     def __repr__(self) -> str:
         return f"<User {self.email}>"

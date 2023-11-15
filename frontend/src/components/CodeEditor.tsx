@@ -4,6 +4,7 @@ import { io, Socket } from 'socket.io-client';
 import { MutableRefObject, useEffect, useRef, useState } from "react";
 import { LANGUAGE } from "../utils/enums";
 import { useMatching } from "../contexts/MatchingContext";
+import { useAuth } from "../contexts/AuthContext";
 
 const CodeEditor = ({
   language,
@@ -14,6 +15,8 @@ const CodeEditor = ({
   const { roomId } = useMatching();
   const isIncoming = useRef(false);
   const [socket, setSocket] = useState<Socket>();
+
+  const { user } = useAuth();
 
   const options: editor.IStandaloneEditorConstructionOptions = {
     fontSize: 14,
@@ -75,7 +78,7 @@ const CodeEditor = ({
     <div>
       <Editor
         language="javascript"
-        defaultLanguage={(language ?? LANGUAGE.PYTHON).toLowerCase()}
+        defaultLanguage={(language ?? user.language).toLowerCase()}
         onChange={handleChange}
         height={`${height}dvh`}
         options={options}

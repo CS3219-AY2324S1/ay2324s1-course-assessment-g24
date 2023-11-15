@@ -23,7 +23,7 @@ interface Question {
 const QuestionDetailsPage = () => {
   const { title } = useParams();
   const [question, setQuestion] = useState<Question>();
-  const [executionOutput, setExecutionOutput] = useState<string | null>(null);
+  const [_executionOutput, setExecutionOutput] = useState<string | null>(null);
   const [selectedLanguage, setSelectedLanguage] = useState("python"); // Default language is set to Python
 
   useEffect(() => {

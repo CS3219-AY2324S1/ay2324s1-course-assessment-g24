@@ -33,17 +33,16 @@ import HeadingWithGradient from "../../components/HeadingWithGradient";
 import LinkButton from "../../components/LinkButton";
 import NavBar from "../../components/NavBar/NavBar";
 import { LANGUAGE } from "../../utils/enums";
+import { useAuth } from "../../contexts/AuthContext";
 
 const EditProfile = () => {
   const deleteModalDisclosure = useDisclosure();
   const successAlert = useDisclosure({ defaultIsOpen: false });
   const sameValueAlert = useDisclosure({ defaultIsOpen: false });
-  // const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
   const cancelRef = useRef<HTMLButtonElement>(null);
+  const { updatePreferredLanguage, user } = useAuth();
 
-  const [currentLanguage, setCurrentLanguage] = useState<string>(
-    LANGUAGE.PYTHON,
-  );
+  const [currentLanguage, setCurrentLanguage] = useState<string>(user.language);
 
   const languageValidation = object().shape({
     language: string().required("Valid Language Required"),
@@ -51,7 +50,7 @@ const EditProfile = () => {
 
   return (
     <Box w={"100dvw"} h={"100dvh"}>
-      <NavBar />
+      <NavBar whereToGoOnClick={"/userprofile"} />
       <Container>
         <AbsoluteCenter>
           <VStack spacing={5}>
@@ -75,6 +74,7 @@ const EditProfile = () => {
                 onSubmit={(values) => {
                   if (values.language != currentLanguage) {
                     setCurrentLanguage(values.language);
+                    updatePreferredLanguage(values.language);
                     successAlert.onOpen();
                   } else {
                     sameValueAlert.onOpen();

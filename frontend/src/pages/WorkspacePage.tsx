@@ -72,7 +72,7 @@ const WorkspacePage = () => {
                 <CodeEditor
                   height={70}
                   editorRef={editorRef}
-                  language={LANGUAGE.PYTHON}
+                  language={user.language}
                   editorContent={editorRef.current?.getValue()}
                 />
               </Box>
