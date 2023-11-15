@@ -9,7 +9,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import HeadingWithGradient from "../components/HeadingWithGradient";
 import NavBar from "../components/NavBar";
@@ -17,22 +17,11 @@ import QuestionC from "../components/QuestionC"
 import { useAuth } from "../contexts/AuthContext";
 import { DIFFICULTY } from "../utils/enums";
 import { useMatching } from "../contexts/MatchingContext";
+import { getHistoriesByUser } from "../services/historyService";
 
 const randomQuestions = [
-  "What is the capital of France?",
-  "How do you reverse a string in Python?",
-  "What is the largest planet in our solar system?",
-  "Write a function to find the factorial of a number.",
-  "Write a function to find the factorial of a number.",
-  "Write a function to find the factorial of a number.",
-  "Write a function to find the factorial of a number.",
-  "Write a function to find the factorial of a number.",
-  "What is the largest planet in our solar system?",
-  "Write a function to find the factorial of a number.",
-  "Write a function to find the factorial of a number.",
-  "Write a function to find the factorial of a number.",
-  "Write a function to find the factorial of a number.",
-  "Write a function to find the factorial of a number.",
+  "Two Sum",
+  "Find Median",
 ];
 
 export const difficultyToColorScheme = {
@@ -46,6 +35,16 @@ const UserProfile = () => {
   const [diffcultySearchedFor, setDifficultySearchedFor] = useState<DIFFICULTY>(DIFFICULTY.EASY);
   const { user } = useAuth();
   const { startMatch, isMatching, count, stopQueuing } = useMatching();
+  const [numberOfQuestionsSolved, setNumberQuestionsSolved] = useState<number>(0);
+
+  useEffect(() => {
+    const questionsSolved = async () => {
+      return await getHistoriesByUser({ email: user.email });
+    }
+    questionsSolved().then(
+      response => setNumberQuestionsSolved(response.length)
+    )
+  }, []);
 
   return (
     <Box w="100vw" h="100vh">
@@ -142,8 +141,7 @@ const UserProfile = () => {
                 <Heading size={"lg"} p={2} mx={4} bg={"white"}>
                   Statistics
                 </Heading>
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. 
+                <Text>Number of Questions Solved: {numberOfQuestionsSolved}</Text>
               </Box>
             </VStack>
           </Box>
