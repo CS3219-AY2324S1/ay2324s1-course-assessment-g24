@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 
 import CodeEditor from "../components/CodeEditor";
 import LoadingWrapper from "../components/LoadingWrapper";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/NavBar/NavBar";
 import QuestionPanel from "../components/QuestionPanel";
 import { DIFFICULTY, LANGUAGE } from "../utils/enums";
 

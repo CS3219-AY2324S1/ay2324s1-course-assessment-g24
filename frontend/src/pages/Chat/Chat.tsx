@@ -1,10 +1,11 @@
 import { Flex } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
-import Divider from "../components/Divider";
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-import Messages from "../components/Messages";
+
+import Divider from "../../components/Divider";
+import Footer from "../../components/Footer";
+import Header from "../../components/Header";
+import Messages from "../../components/Messages";
 
 type Message = {
   senderId: string;

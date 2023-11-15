@@ -4,6 +4,7 @@ import {
   Button,
   ButtonGroup,
   Divider,
+  Input,
   HStack,
   Heading,
   Text,
@@ -12,39 +13,71 @@ import {
 import { useState } from "react";
 
 import HeadingWithGradient from "../components/HeadingWithGradient";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/NavBar/NavBar";
 import Question from "../components/Question";
 import { useAuth } from "../contexts/AuthContext";
-import { DIFFICULTY } from "../utils/enums";
 import { useMatching } from "../contexts/MatchingContext";
+import { getAllQuestions } from "../services/questionService"
+import { DIFFICULTY } from "../utils/enums";
 
-const randomQuestions = [
-  "What is the capital of France?",
-  "How do you reverse a string in Python?",
-  "What is the largest planet in our solar system?",
-  "Write a function to find the factorial of a number.",
-  "Write a function to find the factorial of a number.",
-  "Write a function to find the factorial of a number.",
-  "Write a function to find the factorial of a number.",
-  "Write a function to find the factorial of a number.",
-  "What is the largest planet in our solar system?",
-  "Write a function to find the factorial of a number.",
-  "Write a function to find the factorial of a number.",
-  "Write a function to find the factorial of a number.",
-  "Write a function to find the factorial of a number.",
-  "Write a function to find the factorial of a number.",
-];
+const questionRepo = await getAllQuestions();
 
 export const difficultyToColorScheme = {
   [DIFFICULTY.EASY]: "green",
-  [DIFFICULTY.MEDIUM]: "yellow",
+  [DIFFICULTY.MEDIUM]: "orange",
   [DIFFICULTY.HARD]: "red",
+  [DIFFICULTY.DEFAULT]: "grey",
 };
+
+interface QuestionType {
+  title: string;
+  topic: string;
+  upvotes: number;
+  downvotes: number;
+  difficulty_level: string;
+}
 
 const UserProfile = () => {
   const [diffcultySearchedFor, setDifficultySearchedFor] = useState<DIFFICULTY>(DIFFICULTY.EASY);
   const { user } = useAuth();
-  const { startMatch, isMatching, count, stopQueuing } = useMatching();
+  const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
+  const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
+
+  const mapDifficultyToEnum = (difficultyString: string) => {
+    const upperCaseDifficulty = difficultyString.toUpperCase();
+
+    switch (upperCaseDifficulty) {
+      case 'EASY':
+        return DIFFICULTY.EASY;
+      case 'MEDIUM':
+        return DIFFICULTY.MEDIUM;
+      case 'HARD':
+        return DIFFICULTY.HARD;
+      default:
+        return DIFFICULTY.DEFAULT;
+    }
+  };
+
+  const handleDifficultyChange = (difficulty: string) => {
+    setSelectedDifficulty(difficulty);
+  };
+
+  const handleTopicChange = (topic: string | null) => {
+    setSelectedTopic(topic);
+  };
+
+  // Filter questions based on selected difficulty and topic
+  const filteredQuestions = questionRepo.filter((question: QuestionType) => {
+    const matchesDifficulty = selectedDifficulty ? question.difficulty_level.toLowerCase().includes(selectedDifficulty.toLowerCase()) : true;
+
+    const lowerCaseTopic = question.topic.toLowerCase();
+    const lowerCaseSelectedTopic = selectedTopic ? selectedTopic.toLowerCase() : "";
+
+    const matchesTopic = selectedTopic ? lowerCaseTopic.includes(lowerCaseSelectedTopic) : true;
+
+    return matchesDifficulty && matchesTopic;
+  });
+
 
   return (
     <Box w="100vw" h="100vh">
@@ -87,44 +120,23 @@ const UserProfile = () => {
                 rounded={"lg"}
                 boxShadow={"lg"}
               >
-                {!isMatching ? (
-                  <>
-                  <Heading size={"lg"} p={2} mx={4} bg={"white"}>
-                    Get A Match!
-                  </Heading>
-                  <ButtonGroup isAttached>
-                    {Object.values(DIFFICULTY).map((d, i) => {
-                      const tcolor = difficultyToColorScheme[d];
-                      return (
-                        <Button
-                          key={`badge-${i}`}
-                          variant={"outline"}
-                          colorScheme={tcolor}
-                          onClick={() => {
-                            startMatch(d);
-                            setDifficultySearchedFor(d);
-                          }}
-                        >
-                          <Badge colorScheme={tcolor}>{d}</Badge>
-                        </Button>
-                      );
-                    })}
-                  </ButtonGroup>
-                  </>
-                ): (
-                  <>
-                  <VStack spacing={2}>
-                    <Text>Let's wait for</Text>
-                    <Heading>{count}s</Heading>
-                    <Divider my={2} />
-                    <Badge colorScheme={difficultyToColorScheme[diffcultySearchedFor]}>{diffcultySearchedFor}</Badge>
-                    <Divider my={2} />
-                    <Button colorScheme={"red"} onClick={stopQueuing}>
-                      Cancel
-                    </Button>
-                  </VStack>
-                  </>
-                )}
+                <Heading size={"lg"} p={2} mx={4} bg={"white"}>
+                  Get A Match!
+                </Heading>
+                <ButtonGroup isAttached>
+                  {Object.values(DIFFICULTY).map((d, i) => {
+                    const tcolor = difficultyToColorScheme[d];
+                    return (
+                      <Button
+                        key={`badge-${i}`}
+                        variant={"outline"}
+                        colorScheme={tcolor}
+                      >
+                        <Badge colorScheme={tcolor}>{d}</Badge>
+                      </Button>
+                    );
+                  })}
+                </ButtonGroup>
                 <Divider my={3} />
                 You're
                 <Text as={"b"}> {user.email}</Text>
@@ -153,17 +165,40 @@ const UserProfile = () => {
             alignItems={"center"}
           >
             <Box w={"100%"} py={4} px={2} m={4} rounded={"lg"} boxShadow={"lg"}>
+              <Box display="flex" justifyContent="space-between">
+                <Box w="48%" py={4} px={2} m={4} rounded="lg" boxShadow="lg" display="flex" flexDirection="row" alignItems="center">
+                  <Text mr={2} fontWeight="bold" minW="160px">
+                    Filter by Topic:
+                  </Text>
+                  <Input
+                    placeholder="Enter topic..."
+                    value={selectedTopic || ""}
+                    onChange={(e) => handleTopicChange(e.target.value)}
+                  />
+                </Box>
+                <Box w="48%" py={4} px={2} m={4} rounded="lg" boxShadow="lg" display="flex" flexDirection="row" alignItems="center">
+                  <Text mr={2} fontWeight="bold" minW="160px">
+                    Filter by Difficulty:
+                  </Text>
+                  <Input
+                    placeholder="Enter difficulty..."
+                    value={selectedDifficulty !== null ? selectedDifficulty.toString() : ""}
+                    onChange={(e) => handleDifficultyChange(e.target.value)}
+                  />
+                </Box>
+              </Box>
               <Heading size={"lg"} p={2} mx={4} mb={4} bg={"white"}>
                 Questions Repository
               </Heading>
               <Box maxH={"400px"} p={4} overflowY="auto">
-                {randomQuestions.map((question, index) => (
+                {filteredQuestions.map((question: QuestionType, index: number) => (
                   <Question
                     key={index}
-                    questionTitle={question}
-                    upVotes={1}
-                    downVotes={2}
-                    difficulty={DIFFICULTY.HARD}
+                    questionTitle={question.title}
+                    questionTopic={question.topic}
+                    upVotes={question.upvotes}
+                    downVotes={question.downvotes}
+                    difficulty={mapDifficultyToEnum(question.difficulty_level)}
                   />
                 ))}
               </Box>

@@ -16,8 +16,8 @@ import {
 import { Field, Formik } from "formik";
 import { object, ref, string } from "yup";
 
-import LinkButton from "../components/LinkButton";
-import PeerPrepLogo from "../components/PeerPrepLogo";
+import LinkButton from "../../components/LinkButton";
+import PeerPrepLogo from "../../components/PeerPrepLogo";
 
 const newPasswordValidation = object().shape({
   password: string()

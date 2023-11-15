@@ -18,35 +18,34 @@ import {
   Container,
   FormControl,
   FormErrorMessage,
+  FormLabel,
   HStack,
   Heading,
-  Select,
+  Input,
   Spacer,
   VStack,
   useDisclosure,
 } from "@chakra-ui/react";
-import { Field, FieldProps, Formik } from "formik";
-import { useRef, useState } from "react";
-import { object, string } from "yup";
+import { Field, Formik } from "formik";
+import { useRef } from "react";
+import { object, ref, string } from "yup";
 
-import HeadingWithGradient from "../components/HeadingWithGradient";
-import LinkButton from "../components/LinkButton";
-import NavBar from "../components/NavBar";
-import { LANGUAGE } from "../utils/enums";
+import HeadingWithGradient from "../../components/HeadingWithGradient";
+import LinkButton from "../../components/LinkButton";
+import NavBar from "../../components/NavBar/NavBar";
 
-const EditProfile = () => {
+const ChangePassword = () => {
   const deleteModalDisclosure = useDisclosure();
   const successAlert = useDisclosure({ defaultIsOpen: false });
-  const sameValueAlert = useDisclosure({ defaultIsOpen: false });
-  // const [hasSubmitted, setHasSubmitted] = useState<boolean>(false);
   const cancelRef = useRef<HTMLButtonElement>(null);
 
-  const [currentLanguage, setCurrentLanguage] = useState<string>(
-    LANGUAGE.PYTHON,
-  );
-
-  const languageValidation = object().shape({
-    language: string().required("Valid Language Required"),
+  const newPasswordValidation = object().shape({
+    password: string()
+      .min(8, "Password length cannot be smaller than 8")
+      .required("Required"),
+    confirmPassword: string()
+      .required("Please confirm your password")
+      .oneOf([ref("password")], "Passwords must match!"),
   });
 
   return (
@@ -56,56 +55,71 @@ const EditProfile = () => {
         <AbsoluteCenter>
           <VStack spacing={5}>
             <HeadingWithGradient
-              preText={"User"}
-              gradientText={"Settings"}
+              preText={"Change"}
+              gradientText={"Password"}
               postText={""}
               bgGradient={"linear(to-r, orange.400, red.500)"}
             />
             <Card minW={"lg"} variant={"outline"} px={6} pb={6}>
               <CardHeader>
                 <Heading size="md" color={"black"}>
-                  Preferred Programming Language
+                  Password
                 </Heading>
               </CardHeader>
 
               <Formik
                 initialValues={{
-                  language: currentLanguage,
+                  password: "",
+                  confirmPassword: "",
                 }}
-                onSubmit={(values) => {
-                  if (values.language != currentLanguage) {
-                    setCurrentLanguage(values.language);
-                    successAlert.onOpen();
-                  } else {
-                    sameValueAlert.onOpen();
-                  }
+                onSubmit={(values, { resetForm }) => {
+                  alert(JSON.stringify(values, null, 2));
+                  successAlert.onOpen();
+                  resetForm();
                 }}
-                validationSchema={languageValidation}
+                validationSchema={newPasswordValidation}
               >
-                {({ handleSubmit, errors }) => (
+                {({ handleSubmit, errors, touched, values }) => (
                   <Box as={"form"} onSubmit={handleSubmit}>
-                    <VStack spacing={4}>
-                      <FormControl>
-                        <Field>
-                          {({ field }: FieldProps) => (
-                            <Select
-                              id="language"
-                              onChange={field.onChange}
-                              defaultValue={currentLanguage}
-                            >
-                              <Box as={"option"} value={LANGUAGE.PYTHON}>
-                                Python
-                              </Box>
-                              <Box as={"option"} value={LANGUAGE.CPP}>
-                                C++
-                              </Box>
-                              <Box as={"option"} value={LANGUAGE.JAVASCRIPT}>
-                                JavaScript
-                              </Box>
-                            </Select>
-                          )}
-                        </Field>
-                        <FormErrorMessage>{errors.language}</FormErrorMessage>
+                    <VStack spacing={4} align="flex-start">
+                      <FormControl
+                        isInvalid={!!errors.password && touched.password}
+                      >
+                        <FormLabel htmlFor={"password"}>Password</FormLabel>
+                        <Field
+                          as={Input}
+                          id="password"
+                          name="password"
+                          type="password"
+                          variant="filled"
+                          size={"lg"}
+                          placeholder={"New Password"}
+                        />
+                        <FormErrorMessage>{errors.password}</FormErrorMessage>
+                      </FormControl>
+                      <FormControl
+                        isInvalid={
+                          !!errors.confirmPassword && touched.confirmPassword
+                        }
+                        isDisabled={
+                          values.password == "" || values.password.length < 8
+                        }
+                      >
+                        <FormLabel htmlFor={"password"}>
+                          Confirm Password
+                        </FormLabel>
+                        <Field
+                          as={Input}
+                          id="confirmPassword"
+                          name="confirmPassword"
+                          type="password"
+                          variant="filled"
+                          size={"lg"}
+                          placeholder={"Confirm Password"}
+                        />
+                        <FormErrorMessage>
+                          {errors.confirmPassword}
+                        </FormErrorMessage>
                       </FormControl>
 
                       {successAlert.isOpen ? (
@@ -115,7 +129,7 @@ const EditProfile = () => {
                           <Box>
                             <AlertTitle>Success!</AlertTitle>
                             <AlertDescription>
-                              Preferred language changed!
+                              Password Changed!
                             </AlertDescription>
                           </Box>
                           <Spacer />
@@ -127,35 +141,17 @@ const EditProfile = () => {
                             />
                           </Box>
                         </Alert>
-                      ) : sameValueAlert.isOpen ? (
-                        <Alert status="info">
-                          <AlertIcon />
-                          <Spacer />
-                          <Box>
-                            <AlertTitle>Info!</AlertTitle>
-                            <AlertDescription>
-                              Same language identified, no need to change!
-                            </AlertDescription>
-                          </Box>
-                          <Spacer />
-                          <Box>
-                            <CloseButton
-                              onClick={() => {
-                                sameValueAlert.onClose();
-                              }}
-                            />
-                          </Box>
-                        </Alert>
                       ) : (
                         <Button
-                          loadingText={"Updating..."}
+                          loadingText={"Logging in..."}
+                          width={"full"}
                           variant={"solid"}
                           colorScheme={"orange"}
                           type={"submit"}
                           size={"lg"}
                           mb={6}
                         >
-                          Update
+                          Reset Password
                         </Button>
                       )}
                     </VStack>
@@ -166,9 +162,9 @@ const EditProfile = () => {
 
             <VStack spacing={2}>
               <LinkButton
-                link={"/changepassword"}
+                link={"/editprofile"}
                 size={"lg"}
-                content={"Change Password"}
+                content={"Change Language"}
                 variant={"outline"}
               />
               <Button
@@ -222,4 +218,4 @@ const EditProfile = () => {
   );
 };
 
-export default EditProfile;
+export default ChangePassword;

@@ -1,5 +1,4 @@
 import { Badge, Box, Code, Flex, Heading, Text } from "@chakra-ui/react";
-import React from "react";
 import { FaThumbsDown, FaThumbsUp } from "react-icons/fa";
 
 const FullQuestionPanel = ({
@@ -49,7 +48,7 @@ const FullQuestionPanel = ({
             {paragraph}
           </Text>
         ))}
-        <Flex align="center" mt={2}>
+        <Flex align="center" mt={2} mb={4}>
           <Box mr={4} display="flex" alignItems="center">
             <FaThumbsUp style={{ color: "green", marginRight: "4px" }} />
             <Text>
@@ -63,17 +62,15 @@ const FullQuestionPanel = ({
             </Text>
           </Box>
           <Text>
-            Popularity: <strong style={{ color: "blue" }}>{popularity}%</strong>
+            Popularity: <strong style={{ color: 'blue' }}>{popularity.toFixed(3)}%</strong>
           </Text>
         </Flex>
-        {examples.map((example, i) => (
-          <Box key={i} mt={4}>
+        {examples.map((e, i) => (
+          <Box key={i} mt={i > 0 ? 4 : 0}>
             <Text fontWeight="bold">Example {i + 1}</Text>
-            {example.split("\n").map((line, j) => (
-              <Text key={j} mt={j > 0 ? 2 : 0}>
-                {line}
-              </Text>
-            ))}
+            <Box as="pre">
+              <Code whiteSpace="pre-wrap">{e}</Code>
+            </Box>
           </Box>
         ))}
       </Box>

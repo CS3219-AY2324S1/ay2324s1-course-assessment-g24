@@ -1,12 +1,14 @@
 // QuestionDetailsPage.tsx
 import { Box, Flex, Select, Text } from "@chakra-ui/react";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import FullCodeEditor from "../components/FullCodeEditor";
 import FullQuestionPanel from "../components/FullQuestionPanel";
 import LoadingWrapper from "../components/LoadingWrapper";
-import NavBar from "../components/NavBar";
+import { fetchQuestion } from "../services/questionService";
+import NavBar from "../components/NavBar/NavBar";
+import FullQuestionPanel from "../components/FullQuestionPanel";
 
 interface Question {
   title: string;
@@ -23,33 +25,25 @@ interface Question {
 
 const QuestionDetailsPage = () => {
   const { title } = useParams();
-  const [question, setQuestion] = useState<any>(null);
-  const [executionResult, setExecutionResult] = useState<string | null>(null);
+  const [question, setQuestion] = useState<Question>();
   const [executionOutput, setExecutionOutput] = useState<string | null>(null);
   const [selectedLanguage, setSelectedLanguage] = useState("python"); // Default language is set to Python
 
-  const fetchQuestion = useCallback(async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:8000/questions/title/${title}`,
-      );
-      if (!response.ok) {
-        throw new Error(`Failed to fetch question details: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setQuestion(data);
-      console.log("The question is: ", data);
-    } catch (error) {
-      console.error("Error fetching question details:", error);
-    }
-  }, [title]);
-
   useEffect(() => {
-    if (title) {
-      fetchQuestion();
-    }
-  }, [title, fetchQuestion]);
+    const loadQuestion = async () => {
+      try {
+        if (title) {
+          const questionData = await fetchQuestion(title);
+          setQuestion(questionData);
+          console.log("The question is: ", questionData);
+        }
+      } catch (error) {
+        console.error("Error fetching question details:", error);
+      }
+    };
+
+    loadQuestion();
+  }, [title]); // This will re-run when the title prop changes
 
   const handleExecuteCode = (output: string) => {
     setExecutionOutput(output);

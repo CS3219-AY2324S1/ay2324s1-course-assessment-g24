@@ -1,7 +1,7 @@
 import { AbsoluteCenter, Box, Text, VStack } from "@chakra-ui/react";
 
-import LinkButton from "../components/LinkButton";
-import PeerPrepLogo from "../components/PeerPrepLogo";
+import LinkButton from "../../components/LinkButton";
+import PeerPrepLogo from "../../components/PeerPrepLogo";
 
 const VerificationEmail = () => {
   return (

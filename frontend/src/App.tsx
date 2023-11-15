@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 
 import Authenticated from "./components/Authenticated";
+<<<<<<< HEAD
 import ChangePassword from "./pages/ChangePassword";
 import EditProfile from "./pages/EditProfile";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -15,6 +16,21 @@ import VerificationEmail from "./pages/VerificationEmail";
 import WorkspacePage from "./pages/WorkspacePage";
 
 // Import the new component
+=======
+import ChangePassword from "./pages/ChangePassword/ChangePassword";
+import Chat from "./pages/Chat/Chat";
+import EditProfile from "./pages/EditProfile/EditProfile";
+import ForgotPassword from "./pages/ForgotPassword";
+import LandingPage from "./pages/LandingPage/LandingPage";
+import LoginPage from "./pages/LoginPage/LoginPage";
+import NotFound from "./pages/NotFound/NotFound";
+import ResetPassword from "./pages/ResetPassword/ResetPassword";
+import SignUpPage from "./pages/SignUpPage/SignUpPage";
+import UserProfile from "./pages/UserProfile";
+import VerificationEmail from "./pages/VerificationEmail/VerificationEmail";
+import WorkspacePage from "./pages/WorkspacePage";
+import QuestionDetails from "./pages/QuestionDetails"; // Import the new component
+>>>>>>> milestone1
 
 const App = () => {
   return (
@@ -47,9 +63,9 @@ const App = () => {
         <Route
           path="/ww"
           element={
-            // <Authenticated>
+            <Authenticated>
               <WorkspacePage />
-            // </Authenticated>
+            </Authenticated>
           }
         />
         <Route
@@ -65,7 +81,8 @@ const App = () => {
         <Route path="/forgotpassword" element={<ForgotPassword />} />
         <Route path="/resetpassword" element={<ResetPassword />} />
         <Route path="/verification" element={<VerificationEmail />} />
-        <Route path="/" element={<LandingPage />} />
+        <Route path="/chat" element={<Chat from={""} text={""} />} />
+        <Route path="/question/:title" element={<Authenticated><QuestionDetails /></Authenticated>}/>
         <Route path="*" element={<NotFound />} />
       </Routes>
     </>
