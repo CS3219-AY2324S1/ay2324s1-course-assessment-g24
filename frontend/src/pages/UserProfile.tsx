@@ -20,10 +20,6 @@ import { getAllQuestions } from "../services/questionService"
 import React, { useState } from "react";
 import { DIFFICULTY } from "../utils/enums";
 
-type DifficultyColorScheme = { 
-  [key in DIFFICULTY]: string;
-};
-
 const questionRepo = await getAllQuestions();
 
 export const difficultyToColorScheme = {
