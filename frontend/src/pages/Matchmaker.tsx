@@ -10,7 +10,7 @@ import {
 } from "@chakra-ui/react";
 
 import HeadingWithGradient from "../components/HeadingWithGradient";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/NavBar/NavBar";
 
 const MatchMaker = () => {
   return (

@@ -13,12 +13,12 @@ import {
 } from "@chakra-ui/react";
 
 import HeadingWithGradient from "../components/HeadingWithGradient";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/NavBar/NavBar";
 import Question from "../components/Question";
-import { DIFFICULTY } from "../utils/enums";
 import { useAuth } from "../contexts/AuthContext";
 import { getAllQuestions } from "../services/questionService"
 import React, { useState } from "react";
+import { DIFFICULTY } from "../utils/enums";
 
 const questionRepo = await getAllQuestions();
 
@@ -126,18 +126,19 @@ const UserProfile = () => {
                   {Object.values(DIFFICULTY).map((d, i) => {
                     const tcolor = difficultyToColorScheme[d];
                     return (
-                      <Button key={`badge-${i}`} variant={"outline"} colorScheme={tcolor}>
+                      <Button
+                        key={`badge-${i}`}
+                        variant={"outline"}
+                        colorScheme={tcolor}
+                      >
                         <Badge colorScheme={tcolor}>{d}</Badge>
                       </Button>
                     );
                   })}
                 </ButtonGroup>
                 <Divider my={3} />
-
                 You're
-                <Text as={"b"}>
-                  {" "} hello
-                </Text>
+                <Text as={"b"}> {user.email}</Text>
               </Box>
               <Box
                 w={"100%"}

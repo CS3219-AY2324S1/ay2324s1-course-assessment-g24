@@ -6,8 +6,9 @@ import { useParams } from "react-router-dom";
 import FullCodeEditor from "../components/FullCodeEditor";
 import FullQuestionPanel from "../components/FullQuestionPanel";
 import LoadingWrapper from "../components/LoadingWrapper";
-import NavBar from "../components/NavBar";
 import { fetchQuestion } from "../services/questionService";
+import NavBar from "../components/NavBar/NavBar";
+import FullQuestionPanel from "../components/FullQuestionPanel";
 
 interface Question {
   title: string;
