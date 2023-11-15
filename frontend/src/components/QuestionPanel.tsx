@@ -2,7 +2,6 @@ import { Badge, Box, Button, Code, Divider, Heading, Text, VStack } from "@chakr
 
 import { DIFFICULTY } from "../utils/enums";
 
-import { difficultyToColorScheme } from "../pages/UserProfile";
 import { useMatching } from "../contexts/MatchingContext";
 
 const QuestionPanel = ({
@@ -18,7 +17,7 @@ const QuestionPanel = ({
       <VStack spacing={2} p={2}>
         <Box textAlign={"left"}>
         <Heading size={"lg"} mb={2}>{questionTitle}</Heading>
-        <Badge colorScheme={difficultyToColorScheme[difficulty]}>{difficulty}</Badge>
+        <Badge>{difficulty}</Badge>
         <Divider my={2}/>
         <Text mb={2}>{questionDescription}</Text>
         {examples.map((e, i) => {
