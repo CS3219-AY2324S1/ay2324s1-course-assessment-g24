@@ -59,7 +59,6 @@ const Question = ({
   };
 
   return (
-    <Link to={`/question/${questionTitle}`} style={{ textDecoration: 'none' }}>
       <Box
         textAlign={"left"}
         rounded={"lg"}
@@ -73,7 +72,9 @@ const Question = ({
       >
         <Flex flexDirection={"row"} gap="1.5rem" alignItems={"center"}>
           <Badge colorScheme={tcolor} minWidth="100px" textAlign="center">{questionTopic}</Badge> 
+          <Link to={`/question/${questionTitle}`} style={{ textDecoration: 'none' }}>
           <Text as={"b"}>{questionTitle}</Text>
+          </Link>
           <Spacer />
               
           <Badge colorScheme={tcolor}>{difficulty}</Badge>
@@ -107,7 +108,6 @@ const Question = ({
           </HStack>
         </Flex>
       </Box>
-    </Link>
   );
 };
 

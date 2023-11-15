@@ -7,6 +7,7 @@ import {
   Input,
   HStack,
   Heading,
+  Select,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -33,17 +34,17 @@ interface QuestionType {
   topic: string;
   upvotes: number;
   downvotes: number;
-  difficulty_level: DIFFICULTY;
+  difficulty_level: string;
 }
 
 const UserProfile = () => {
   const { user } = useAuth();
-  const [selectedDifficulty, setSelectedDifficulty] = useState<DIFFICULTY | null>(null);
+  const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
 
   const mapDifficultyToEnum = (difficultyString: string) => {
     const upperCaseDifficulty = difficultyString.toUpperCase();
-  
+
     switch (upperCaseDifficulty) {
       case 'EASY':
         return DIFFICULTY.EASY;
@@ -51,12 +52,12 @@ const UserProfile = () => {
         return DIFFICULTY.MEDIUM;
       case 'HARD':
         return DIFFICULTY.HARD;
-      default: 
+      default:
         return DIFFICULTY.DEFAULT;
     }
   };
 
-  const handleDifficultyChange = (difficulty: DIFFICULTY | null) => {
+  const handleDifficultyChange = (difficulty: string) => {
     setSelectedDifficulty(difficulty);
   };
 
@@ -66,10 +67,16 @@ const UserProfile = () => {
 
   // Filter questions based on selected difficulty and topic
   const filteredQuestions = questionRepo.filter((question: QuestionType) => {
-    const matchesDifficulty = selectedDifficulty ? question.difficulty_level === selectedDifficulty : true;
-    const matchesTopic = selectedTopic ? question.topic === selectedTopic : true;
+    const matchesDifficulty = selectedDifficulty ? question.difficulty_level.toLowerCase().includes(selectedDifficulty.toLowerCase()) : true;
+
+    const lowerCaseTopic = question.topic.toLowerCase();
+    const lowerCaseSelectedTopic = selectedTopic ? selectedTopic.toLowerCase() : "";
+
+    const matchesTopic = selectedTopic ? lowerCaseTopic.includes(lowerCaseSelectedTopic) : true;
+
     return matchesDifficulty && matchesTopic;
   });
+
 
   return (
     <Box w="100vw" h="100vh">
@@ -119,13 +126,7 @@ const UserProfile = () => {
                   {Object.values(DIFFICULTY).map((d, i) => {
                     const tcolor = difficultyToColorScheme[d];
                     return (
-                      <Button
-                      key={`badge-${i}`}
-                      variant="outline"
-                      colorScheme={tcolor}
-                      onClick={() => handleDifficultyChange(d)}
-                      isActive={selectedDifficulty === d}
-                    >
+                      <Button key={`badge-${i}`} variant={"outline"} colorScheme={tcolor}>
                         <Badge colorScheme={tcolor}>{d}</Badge>
                       </Button>
                     );
@@ -169,17 +170,29 @@ const UserProfile = () => {
             justifyContent={"center"}
             alignItems={"center"}
           >
-            <Box w="100%" h="20%" py={4} px={2} m={4} rounded="lg" boxShadow="lg">
-              <Heading size="lg" p={2} mx={4} bg="white">
-                Select Topic
-              </Heading>
-              <Input
-                placeholder="Enter topic..."
-                value={selectedTopic || ""}
-                onChange={(e) => handleTopicChange(e.target.value)}
-              />
-            </Box>
             <Box w={"100%"} py={4} px={2} m={4} rounded={"lg"} boxShadow={"lg"}>
+              <Box display="flex" justifyContent="space-between">
+                <Box w="48%" py={4} px={2} m={4} rounded="lg" boxShadow="lg" display="flex" flexDirection="row" alignItems="center">
+                  <Text mr={2} fontWeight="bold" minW="160px">
+                    Filter by Topic:
+                  </Text>
+                  <Input
+                    placeholder="Enter topic..."
+                    value={selectedTopic || ""}
+                    onChange={(e) => handleTopicChange(e.target.value)}
+                  />
+                </Box>
+                <Box w="48%" py={4} px={2} m={4} rounded="lg" boxShadow="lg" display="flex" flexDirection="row" alignItems="center">
+                  <Text mr={2} fontWeight="bold" minW="160px">
+                    Filter by Difficulty:
+                  </Text>
+                  <Input
+                    placeholder="Enter difficulty..."
+                    value={selectedDifficulty !== null ? selectedDifficulty.toString() : ""}
+                    onChange={(e) => handleDifficultyChange(e.target.value)}
+                  />
+                </Box>
+              </Box>
               <Heading size={"lg"} p={2} mx={4} mb={4} bg={"white"}>
                 Questions Repository
               </Heading>
