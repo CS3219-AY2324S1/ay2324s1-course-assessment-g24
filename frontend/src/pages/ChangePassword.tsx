@@ -32,7 +32,7 @@ import { object, ref, string } from "yup";
 
 import HeadingWithGradient from "../components/HeadingWithGradient";
 import LinkButton from "../components/LinkButton";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/NavBar/NavBar";
 
 const ChangePassword = () => {
   const deleteModalDisclosure = useDisclosure();

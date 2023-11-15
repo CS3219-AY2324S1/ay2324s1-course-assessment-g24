@@ -2,7 +2,7 @@ import { Box, Flex } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import CodeEditor from "../components/CodeEditor";
 import LoadingWrapper from "../components/LoadingWrapper";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/NavBar/NavBar";
 import QuestionPanel from "../components/QuestionPanel";
 import { DIFFICULTY } from "../utils/enums";
 import {

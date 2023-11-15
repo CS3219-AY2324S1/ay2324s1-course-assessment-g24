@@ -29,10 +29,10 @@ import { Field, FieldProps, Formik } from "formik";
 import { useRef, useState } from "react";
 import { object, string } from "yup";
 
-import HeadingWithGradient from "../components/HeadingWithGradient";
-import LinkButton from "../components/LinkButton";
-import NavBar from "../components/NavBar";
-import { LANGUAGE } from "../utils/enums";
+import HeadingWithGradient from "../../components/HeadingWithGradient";
+import LinkButton from "../../components/LinkButton";
+import NavBar from "../../components/NavBar/NavBar";
+import { LANGUAGE } from "../../utils/enums";
 
 const EditProfile = () => {
   const deleteModalDisclosure = useDisclosure();
@@ -63,7 +63,7 @@ const EditProfile = () => {
             />
             <Card minW={"lg"} variant={"outline"} px={6} pb={6}>
               <CardHeader>
-                <Heading size="md" color={"black"}>
+                <Heading size="md" color={"black"} data-testid={"form-title"}>
                   Preferred Programming Language
                 </Heading>
               </CardHeader>
@@ -92,14 +92,15 @@ const EditProfile = () => {
                               id="language"
                               onChange={field.onChange}
                               defaultValue={currentLanguage}
+                              data-testid={"language-selector"}
                             >
-                              <Box as={"option"} value={LANGUAGE.PYTHON}>
+                              <Box as={"option"} data-testid={"language-option"} value={LANGUAGE.PYTHON}>
                                 Python
                               </Box>
-                              <Box as={"option"} value={LANGUAGE.CPP}>
+                              <Box as={"option"} data-testid={"language-option"} value={LANGUAGE.CPP}>
                                 C++
                               </Box>
-                              <Box as={"option"} value={LANGUAGE.JAVASCRIPT}>
+                              <Box as={"option"} data-testid={"language-option"} value={LANGUAGE.JAVASCRIPT}>
                                 JavaScript
                               </Box>
                             </Select>
@@ -109,7 +110,7 @@ const EditProfile = () => {
                       </FormControl>
 
                       {successAlert.isOpen ? (
-                        <Alert status="success">
+                        <Alert data-testid={"language-change-successful"} status="success">
                           <AlertIcon />
                           <Spacer />
                           <Box>
@@ -154,6 +155,7 @@ const EditProfile = () => {
                           type={"submit"}
                           size={"lg"}
                           mb={6}
+                          data-testid={"update-button"}
                         >
                           Update
                         </Button>

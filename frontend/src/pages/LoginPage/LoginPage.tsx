@@ -13,28 +13,24 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { Field, Formik } from "formik";
-import { object, ref, string } from "yup";
-import userServiceAxiosInstance from "../services/userService";
-import { AxiosError } from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import { object, string } from "yup";
 
-import LinkButton from "../components/LinkButton";
-import PeerPrepLogo from "../components/PeerPrepLogo";
-import { useNavigate } from "react-router-dom";
+import LinkButton from "../../components/LinkButton";
+import PeerPrepLogo from "../../components/PeerPrepLogo";
+import { useAuth } from "../../contexts/AuthContext";
 
-const signUpValidation = object().shape({
+const loginValidation = object().shape({
   email: string()
     .required("Valid Email Required")
-    .email("Valid Email Required")
-    .required("Required"),
+    .email("Valid Email Required"),
   password: string()
     .min(8, "Password length cannot be smaller than 8")
     .required("Required"),
-  confirmPassword: string()
-    .required("Please confirm your password")
-    .oneOf([ref("password")], "Passwords do not match"),
 });
 
-const SignUpPage = () => {
+const LoginPage = () => {
+  const { login } = useAuth();
   const toast = useToast();
   const navigate = useNavigate();
 
@@ -50,31 +46,29 @@ const SignUpPage = () => {
               initialValues={{
                 email: "",
                 password: "",
-                confirmPassword: "",
               }}
               onSubmit={async (values) => {
                 try {
-                  await userServiceAxiosInstance.post("/users/create", values);
+                  await login(values.email, values.password);
                   toast({
-                    title: "Account Created Successfully! Proceed to Log In!",
+                    title: "Log In Successful!",
                     status: "success",
                     isClosable: true,
                     duration: 1500,
                   });
-                  navigate("/login", { replace: true });
+                  navigate("/userprofile");
                 } catch (error) {
-                  console.log(error);
                   toast({
-                    title: `${error instanceof AxiosError ? error.response?.data.detail : String(error)}`,
+                    title: "Invalid Email or Password!",
                     status: "error",
                     isClosable: true,
                     duration: 1500,
                   });
                 }
               }}
-              validationSchema={signUpValidation}
+              validationSchema={loginValidation}
             >
-              {({ handleSubmit, errors, touched, values }) => (
+              {({ handleSubmit, errors, touched }) => (
                 <Box as={"form"} onSubmit={handleSubmit}>
                   <VStack spacing={4} align="flex-start">
                     <FormControl>
@@ -104,30 +98,13 @@ const SignUpPage = () => {
                       />
                       <FormErrorMessage>{errors.password}</FormErrorMessage>
                     </FormControl>
-                    <FormControl
-                      isInvalid={
-                        !!errors.confirmPassword && touched.confirmPassword
-                      }
-                      isDisabled={
-                        values.password == "" || values.password.length < 8
-                      }
-                    >
-                      <FormLabel htmlFor={"password"}>
-                        Confirm Password
-                      </FormLabel>
-                      <Field
-                        as={Input}
-                        id="confirmPassword"
-                        name="confirmPassword"
-                        type="password"
-                        variant="filled"
-                        size={"lg"}
-                        placeholder={"Confirm Password"}
-                      />
-                      <FormErrorMessage>
-                        {errors.confirmPassword}
-                      </FormErrorMessage>
-                    </FormControl>
+
+                    <Link to={"/forgotpassword"} style={{ marginLeft: "auto" }}>
+                      <Button colorScheme="orange" variant="link" size={"md"}>
+                        Forgot Password?
+                      </Button>
+                    </Link>
+
                     <Button
                       loadingText={"Logging in..."}
                       width={"full"}
@@ -135,19 +112,18 @@ const SignUpPage = () => {
                       colorScheme={"orange"}
                       type={"submit"}
                       size={"lg"}
-                      mt={4}
                     >
-                      Sign Up
+                      Login
                     </Button>
                     <HStack w={"md"}>
                       <Text fontSize={"sm"} whiteSpace={"nowrap"}>
-                        Already have an account?
+                        Don't have an account?
                       </Text>
                       <Spacer />
                       <LinkButton
-                        link={"/login"}
+                        link={"/signup"}
                         size={"md"}
-                        content={"Login"}
+                        content={"Sign Up"}
                         variant={"link"}
                       />
                     </HStack>
@@ -162,4 +138,4 @@ const SignUpPage = () => {
   );
 };
 
-export default SignUpPage;
+export default LoginPage;
