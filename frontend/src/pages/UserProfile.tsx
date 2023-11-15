@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 
 import HeadingWithGradient from "../components/HeadingWithGradient";
-import NavBar from "../components/NavBar/NavBar";
+import NavBar from "../components/NavBar";
 import QuestionC from "../components/QuestionC";
 import { useAuth } from "../contexts/AuthContext";
 import { getAllQuestions } from "../services/questionService"
@@ -204,7 +204,7 @@ const UserProfile = () => {
               <Box maxH={"400px"} p={4} overflowY="auto">
                 {filteredQuestions.map((question: QuestionType, index: number) => (
                   <QuestionC
-                    key={index}
+                    key={question.title}
                     questionTitle={question.title}
                     questionTopic={question.topic}
                     upVotes={question.upvotes}
