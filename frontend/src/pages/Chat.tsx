@@ -7,47 +7,49 @@ import Header from "../components/Header";
 import Messages from "../components/Messages";
 
 type Message = {
-  senderId: string;
-  receiverId: string;
+  roomId: number | undefined;
   content: string;
   messageId: number;
+  senderId: string;
 };
 
 interface ChatProps {
   socketObj: WebSocket | null;
+  collabId: number | undefined;
   sender_id: string;
-  receiver_id: string;
 }
 
-const Chat: React.FC<ChatProps> = ({ socketObj, sender_id, receiver_id }) => {
+const Chat: React.FC<ChatProps> = ({ socketObj, collabId, sender_id }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
-  const [senderId, setSenderId] = useState("");
-  const [receiverId, setReceiverId] = useState("");
+  const [roomId, setRoomId] = useState<number>(); // roomId
   const [socket, setSocket] = useState<WebSocket | null>(null);
+  const [senderId, setSenderId] = useState("") // id of the sender
 
   useEffect(() => {
-    setSocket(socketObj);
-    setSenderId(sender_id);
-    setReceiverId(receiver_id);
-  }, [socketObj, sender_id, receiver_id])
+    if (socketObj && collabId && sender_id) {
+      setSocket(socketObj);
+      setRoomId(collabId);
+      setSenderId(sender_id);
+    }
+  }, [collabId, socketObj, sender_id])
 
   useEffect(() => {
     if (socket) {
-      socket.onmessage = (evt: MessageEvent) => {
+      socket.addEventListener("message", (evt: MessageEvent) => {
         const newMessage = JSON.parse(evt.data);
-        if (newMessage.senderId === receiverId && newMessage.chat) {
+        if (newMessage.chat && newMessage.senderId != senderId) {
           setMessages((prevMessages) => [
             ...prevMessages,
             {
               messageId: prevMessages.length,
-              senderId: receiverId,
-              receiverId: senderId,
+              roomId: newMessage.roomId,
               content: newMessage.content,
+              senderId: newMessage.senderId
             },
           ]);
         }
-      };
+      });
     }
   }, [socket])
 
@@ -61,9 +63,9 @@ const Chat: React.FC<ChatProps> = ({ socketObj, sender_id, receiver_id }) => {
         ...messages,
         {
           messageId: messages.length,
-          senderId: senderId,
-          receiverId: receiverId,
+          roomId: roomId,
           content: inputValue,
+          senderId: senderId // user.email
         },
       ]);
 
@@ -71,9 +73,9 @@ const Chat: React.FC<ChatProps> = ({ socketObj, sender_id, receiver_id }) => {
         await socket.send(
           JSON.stringify({
             content: inputValue,
-            receiverId: receiverId,
-            senderId: senderId,
-            chat: true
+            roomId: roomId,
+            chat: true,
+            senderId: senderId // senderId is basically user.email
           }),
         );
       }
@@ -91,11 +93,11 @@ const Chat: React.FC<ChatProps> = ({ socketObj, sender_id, receiver_id }) => {
       style={{ position: "relative" }}
       flexDir="column"
     >
-      <Header receiverId={receiverId} />
+      <Header roomId={roomId} />
       <Divider />
       <Messages
         messages={messages}
-        senderId={senderId}
+        senderId={senderId} // senderId is basically user.email
       />
       <Divider />
       <Footer

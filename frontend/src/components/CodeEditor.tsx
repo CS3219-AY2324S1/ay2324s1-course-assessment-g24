@@ -7,32 +7,35 @@ type EditorValue = string | undefined;
 interface CodeEditorProps {
   height: number;
   socketObj: WebSocket | null;
+  collabId: number | undefined;
   sender_id: string;
-  receiver_id: string;
 }
 
 const CodeEditor: React.FC<CodeEditorProps> = ({
   height,
   socketObj,
-  sender_id,
-  receiver_id,
+  collabId,
+  sender_id
 }) => {
   const [editorValue, setEditorValue] = useState<EditorValue>("");
   const [socket, setSocket] = useState<WebSocket | null>(null);
-  const [senderId, setSenderId] = useState("");
-  const [receiverId, setReceiverId] = useState("");
-
+  const [roomId, setRoomId] = useState<number>(); // roomId
+  const [senderId, setSenderId] = useState("") 
+  
   useEffect(() => {
-    setSocket(socketObj);
-    setSenderId(sender_id);
-    setReceiverId(receiver_id);
-  }, [socketObj, sender_id, receiver_id]);
+    if (socketObj && collabId && sender_id) {
+      setSocket(socketObj);
+      setRoomId(collabId);
+      setSenderId(sender_id);
+    }
+  }, [collabId, socketObj, sender_id])
 
   useEffect(() => {
     if (socket) {
       socket.addEventListener("message", (evt: MessageEvent) => {
         const newMessage = JSON.parse(evt.data);
-        if (newMessage.senderId === receiverId && !newMessage.chat) {
+        // replace senderId with user.email
+        if (!newMessage.chat && newMessage.senderId != senderId) {
           setEditorValue(newMessage.content);
         }
       });
@@ -45,8 +48,8 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
         await socket.send(
           JSON.stringify({
             content: editorValue,
-            receiverId: receiverId,
-            senderId: senderId,
+            roomId: roomId,
+            senderId: senderId, // user.email
             chat: false,
           }),
         );

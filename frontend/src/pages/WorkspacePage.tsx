@@ -13,27 +13,39 @@ import {
   AccordionPanel,
 } from '@chakra-ui/react';
 import Chat from "./Chat";
+import { useMatching } from "../contexts/MatchingContext";
+import { useAuth } from "../contexts/AuthContext";
 
 const WorkspacePage = () => {
   const [socket, setSocket] = useState<WebSocket | null>(null);
-  const [senderId, setSenderId] = useState("");
-  const [receiverId, setReceiverId] = useState("");
-  // const [connected, setConnected] = useState<boolean>(false);
+  const [collabId, setCollabId] = useState<number | undefined>(); // roomId
+  const { roomId } = useMatching();
+  const { user } = useAuth();
+  // const [senderId, setSenderId] = useState("") // mock variable - use instead of user for testing if needed
+
+  // Use this for getting sample sender id if user.email doesn't work but this is for test purpose only
+  // Mock API is implemented in communication service
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await fetch("http://localhost:5000/chat/getSenderReceiver");
+  //       const data = await response.json();
+  //       setSenderId(data[0]);
+  //     } catch (error) {
+  //       console.error("Error:", error);
+  //     }
+  //   };
   
-  // Fetch senderId and receiverId from API (matching service)
-  useEffect(() => {
-    fetch("http://localhost:5000/chat/getSenderReceiver")
-      .then((response) => response.json())
-      .then((data) => {
-        setSenderId(data[0]);
-        setReceiverId(data[1]);
-      })
-      .catch((error) => console.error("Error:", error));
-  }, []);
+  //   fetchData();
+  // }, []);
 
   useEffect(() => {
-    if (senderId && receiverId) {
-      const wsUrl = `ws://localhost:5000/chat/ws/${senderId}`;
+    setCollabId(roomId);
+  }, [roomId]);
+
+  useEffect(() => {
+    if (collabId) {
+      const wsUrl = `ws://localhost:5000/chat/ws/${collabId}`;
       const socket = new WebSocket(wsUrl);
       setSocket(socket);
       // setConnected(true);
@@ -41,20 +53,20 @@ const WorkspacePage = () => {
       if (socket) {
         socket.onopen = () => {
           console.log(
-            "Websocket connection for user " + senderId + " is established!",
+            "Websocket connection for room " + collabId + " is established!",
           );
         };
 
         socket.onclose = (evt: CloseEvent) => {
           console.log(
-            "Websocket connection for user " + senderId + " is disconnected!",
+            "Websocket connection for room " + collabId + " is disconnected!",
           );
           console.log(evt.reason);
           // setConnected(false);
         };
       }
     }
-  }, [senderId, receiverId]);
+  }, [collabId]);
 
   return (
     <>
@@ -86,14 +98,14 @@ const WorkspacePage = () => {
                     </h2>
                     <AccordionPanel>
                       <Box maxHeight="80vh" overflowY="auto">
-                        <Chat socketObj={socket} sender_id={senderId} receiver_id={receiverId} />
+                        <Chat socketObj={socket} collabId={collabId} sender_id={user.email} />
                       </Box>
                     </AccordionPanel>
                   </AccordionItem>
               </Accordion>
               </Box>
               <Box w={"65%"}>
-                <CodeEditor socketObj={socket} sender_id={senderId} receiver_id={receiverId} height={70} />
+                <CodeEditor socketObj={socket} collabId={collabId} sender_id={user.email} height={70} />
               </Box>
             </Flex>
           </Box>

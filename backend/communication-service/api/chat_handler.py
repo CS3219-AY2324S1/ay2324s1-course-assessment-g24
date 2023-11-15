@@ -8,22 +8,22 @@ from models.chat_model import ChatModel
 
 chat_router = APIRouter()
 
-@chat_router.websocket("/ws/{client_id}")
-async def websocket_endpoint(websocket: WebSocket, client_id: str):
-    await manager.connect(websocket, client_id)
+@chat_router.websocket("/ws/{room_id}")
+async def websocket_endpoint(websocket: WebSocket, room_id: str):
+    await manager.connect(websocket, room_id)
     try:
         while True:
             # Receive and parse data from client
             data = await websocket.receive_text()
             message = json.loads(data)
             senderId = message["senderId"]
-            receiverId = message["receiverId"]
+            roomId = message["roomId"]
             content = message["content"]
-            isChat = message["chat"] # if the request is abt sending a chat msg
-            
+            isChat = message["chat"] # if the request is abt sending a chat msg, then true
+
             # Send message to relevant client
             dataToSend = json.dumps({ "senderId": senderId, "content": content, "chat": isChat })
-            await manager.send_personal_message(dataToSend, receiverId)
+            await manager.send_personal_message(dataToSend, roomId)
 
             # Update database
             if (isChat):
@@ -31,7 +31,7 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
               await save_message(ChatModel(**message))
     except WebSocketDisconnect:
         print("Disconnected :/")
-        manager.disconnect(websocket, client_id)
+        manager.disconnect(websocket, room_id)
 
 async def save_message(message: ChatModel):
   try:
@@ -48,6 +48,7 @@ async def get_sender_receiver():
     global counter
     counter += 1
     val = counter % 4
+    print(counter)
 
     # Check the current count of requests
     if val == 1 or val == 2:
