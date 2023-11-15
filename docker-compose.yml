@@ -54,6 +54,19 @@ services:
     networks:
       - cs3219-project-network
 
+  communication-service:
+    container_name: communication-service
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.communication
+    volumes:
+      - ./backend/communication-service:/app/backend/communication-service
+      - /app/backend/communication-service/node_modules
+    ports:
+      - '8003:8003'
+    networks:
+      - cs3219-project-network
+
   mongo_db:
     container_name: mongo_db
     image: mongo:latest
