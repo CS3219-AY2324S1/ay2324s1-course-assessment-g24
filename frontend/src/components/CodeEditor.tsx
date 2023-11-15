@@ -1,60 +1,19 @@
 import { Editor } from "@monaco-editor/react";
 import { editor } from "monaco-editor";
-import { useEffect, useState } from "react";
+import { io, Socket } from 'socket.io-client';
+import { MutableRefObject, useEffect, useRef, useState } from "react";
+import { LANGUAGE } from "../utils/enums";
+import { useMatching } from "../contexts/MatchingContext";
 
-type EditorValue = string | undefined;
-
-interface CodeEditorProps {
-  height: number;
-  socketObj: WebSocket | null;
-  sender_id: string;
-  receiver_id: string;
-}
-
-const CodeEditor: React.FC<CodeEditorProps> = ({
+const CodeEditor = ({
+  language,
+  editorRef,
   height,
-  socketObj,
-  sender_id,
-  receiver_id,
-}) => {
-  const [editorValue, setEditorValue] = useState<EditorValue>("");
-  const [socket, setSocket] = useState<WebSocket | null>(null);
-  const [senderId, setSenderId] = useState("");
-  const [receiverId, setReceiverId] = useState("");
-
-  useEffect(() => {
-    setSocket(socketObj);
-    setSenderId(sender_id);
-    setReceiverId(receiver_id);
-  }, [socketObj, sender_id, receiver_id]);
-
-  useEffect(() => {
-    if (socket) {
-      socket.addEventListener("message", (evt: MessageEvent) => {
-        const newMessage = JSON.parse(evt.data);
-        if (newMessage.senderId === receiverId && !newMessage.chat) {
-          setEditorValue(newMessage.content);
-        }
-      });
-    }
-  }, [socket]);
-
-  useEffect(() => {
-    async function updateMatchedUser() {
-      if (socket) {
-        await socket.send(
-          JSON.stringify({
-            content: editorValue,
-            receiverId: receiverId,
-            senderId: senderId,
-            chat: false,
-          }),
-        );
-      }
-    }
-
-    updateMatchedUser();
-  }, [editorValue]);
+  editorContent
+}: CodeEditorProps) => {
+  const { roomId } = useMatching();
+  const isIncoming = useRef(false);
+  const [socket, setSocket] = useState<Socket>();
 
   const options: editor.IStandaloneEditorConstructionOptions = {
     fontSize: 14,
@@ -75,31 +34,64 @@ const CodeEditor: React.FC<CodeEditorProps> = ({
     },
   };
 
+  useEffect(() => {
+    const url = "http://localhost:8004";
+    const sock = io(url || '', {
+      autoConnect: false,
+    });
+
+    if (!roomId) return;
+
+    sock.auth = { roomId };
+    sock.connect();
+    setSocket(sock);
+
+    sock.on('editorChange', (event) => {
+      isIncoming.current = true;
+      editorRef.current?.getModel()?.applyEdits(event.changes);
+    });
+
+    return () => {
+      sock.disconnect();
+    };
+  }, [roomId]);
+
+  const handleChange = (
+    _value = '',
+    event: editor.IModelContentChangedEvent
+  ) => {
+    if (isIncoming.current) {
+      isIncoming.current = false;
+      return;
+    }
+    socket?.emit('editorChange', event);
+  };
+
+  const handleOnMount = (editor: editor.IStandaloneCodeEditor) => {
+    editorRef.current = editor;
+  }
+
   return (
     <div>
       <Editor
         language="javascript"
-        value={editorValue}
-        onChange={(newValue: string | undefined) => {
-          setEditorValue(newValue);
-        }}
+        defaultLanguage={(language ?? LANGUAGE.PYTHON).toLowerCase()}
+        onChange={handleChange}
         height={`${height}dvh`}
         options={options}
+        defaultValue={editorContent}
+        onMount={handleOnMount}
       />
     </div>
   );
 };
 
-// interface Props {
-//   language?: LANGUAGE;
-//   questionNumber: number;
-//   editorContent?: string;
-//   editorRef: MutableRefObject<editor.IStandaloneCodeEditor | undefined>;
-//   userSelect: string;
-//   pointerEvents: string;
-//   shouldDisplay: boolean;
-//   readOnly?: boolean;
-//   isLoading: boolean;
-// }
+interface CodeEditorProps {
+  language?: LANGUAGE;
+  editorContent?: string;
+  editorRef: MutableRefObject<editor.IStandaloneCodeEditor | undefined>;
+  readOnly?: boolean;
+  height: number;
+}
 
 export default CodeEditor;

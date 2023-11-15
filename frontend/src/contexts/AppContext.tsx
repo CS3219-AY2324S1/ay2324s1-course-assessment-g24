@@ -6,9 +6,7 @@ import { MatchingProvider } from "./MatchingContext";
 const AppContext = ({ children }: { children: ReactNode }) => {
   return (
     <AuthProvider>
-      <MatchingProvider>
-        {children}
-      </MatchingProvider>
+      <MatchingProvider>{children}</MatchingProvider>
     </AuthProvider>
   );
 };

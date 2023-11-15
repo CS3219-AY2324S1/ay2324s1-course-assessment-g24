@@ -45,18 +45,13 @@ const App = () => {
           }
         />
         <Route
-          path="/workspace"
+          path="/ww"
           element={
-            <Authenticated>
+            // <Authenticated>
               <WorkspacePage />
-            </Authenticated>
+            // </Authenticated>
           }
         />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/forgotpassword" element={<ForgotPassword />} />
-        <Route path="/resetpassword" element={<ResetPassword />} />
-        <Route path="/verification" element={<VerificationEmail />} />
         <Route
           path="/question/:title"
           element={
@@ -65,6 +60,11 @@ const App = () => {
             </Authenticated>
           }
         />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/forgotpassword" element={<ForgotPassword />} />
+        <Route path="/resetpassword" element={<ResetPassword />} />
+        <Route path="/verification" element={<VerificationEmail />} />
         <Route path="/" element={<LandingPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

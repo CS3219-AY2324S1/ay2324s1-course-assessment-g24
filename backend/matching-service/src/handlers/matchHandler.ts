@@ -9,6 +9,7 @@ import { getQuestionsByDifficulty } from "../services/questionService";
 
 const matchHandler = {
   matchStart: async (socket: Socket, data: MatchParams) => {
+    console.log("match start receivedddd", data);
     const { difficulty, language } = data;
     const queueMembers = await ormController.getAllQueues(
       difficulty,
@@ -22,6 +23,8 @@ const matchHandler = {
       clearInterval(timers[id] as NodeJS.Timeout);
 
       await ormController.deleteQueueById(id);
+      if (queueingSocketId == socket.id) return;
+
       await ormController.createMatch(id, queueingSocketId, socket.id);
 
       await ormController.updateUserStatusById(
@@ -69,7 +72,7 @@ const matchHandler = {
     const matchedSocketId =
       socketIdOne !== socket.id ? socketIdOne : socketIdTwo;
 
-    socket.broadcast.to(id).emit("matchLeave");
+    socket.broadcast.to(id).emit("prematureLeave");
 
     socket.leave(id);
     io.of("/").sockets.get(matchedSocketId)?.leave(id);

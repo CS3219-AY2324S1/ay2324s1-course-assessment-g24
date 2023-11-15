@@ -9,12 +9,14 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
+import { useState } from "react";
 
 import HeadingWithGradient from "../components/HeadingWithGradient";
 import NavBar from "../components/NavBar";
 import Question from "../components/Question";
-import { DIFFICULTY } from "../utils/enums";
 import { useAuth } from "../contexts/AuthContext";
+import { DIFFICULTY } from "../utils/enums";
+import { useMatching } from "../contexts/MatchingContext";
 
 const randomQuestions = [
   "What is the capital of France?",
@@ -33,14 +35,16 @@ const randomQuestions = [
   "Write a function to find the factorial of a number.",
 ];
 
-const difficultyToColorScheme = {
+export const difficultyToColorScheme = {
   [DIFFICULTY.EASY]: "green",
   [DIFFICULTY.MEDIUM]: "yellow",
   [DIFFICULTY.HARD]: "red",
 };
 
 const UserProfile = () => {
+  const [diffcultySearchedFor, setDifficultySearchedFor] = useState<DIFFICULTY>(DIFFICULTY.EASY);
   const { user } = useAuth();
+  const { startMatch, isMatching, count, stopQueuing } = useMatching();
 
   return (
     <Box w="100vw" h="100vh">
@@ -83,25 +87,47 @@ const UserProfile = () => {
                 rounded={"lg"}
                 boxShadow={"lg"}
               >
-                <Heading size={"lg"} p={2} mx={4} bg={"white"}>
-                  Get A Match!
-                </Heading>
-                <ButtonGroup isAttached>
-                  {Object.values(DIFFICULTY).map((d, i) => {
-                    const tcolor = difficultyToColorScheme[d];
-                    return (
-                      <Button key={`badge-${i}`} variant={"outline"} colorScheme={tcolor}>
-                        <Badge colorScheme={tcolor}>{d}</Badge>
-                      </Button>
-                    );
-                  })}
-                </ButtonGroup>
+                {!isMatching ? (
+                  <>
+                  <Heading size={"lg"} p={2} mx={4} bg={"white"}>
+                    Get A Match!
+                  </Heading>
+                  <ButtonGroup isAttached>
+                    {Object.values(DIFFICULTY).map((d, i) => {
+                      const tcolor = difficultyToColorScheme[d];
+                      return (
+                        <Button
+                          key={`badge-${i}`}
+                          variant={"outline"}
+                          colorScheme={tcolor}
+                          onClick={() => {
+                            startMatch(d);
+                            setDifficultySearchedFor(d);
+                          }}
+                        >
+                          <Badge colorScheme={tcolor}>{d}</Badge>
+                        </Button>
+                      );
+                    })}
+                  </ButtonGroup>
+                  </>
+                ): (
+                  <>
+                  <VStack spacing={2}>
+                    <Text>Let's wait for</Text>
+                    <Heading>{count}s</Heading>
+                    <Divider my={2} />
+                    <Badge colorScheme={difficultyToColorScheme[diffcultySearchedFor]}>{diffcultySearchedFor}</Badge>
+                    <Divider my={2} />
+                    <Button colorScheme={"red"} onClick={stopQueuing}>
+                      Cancel
+                    </Button>
+                  </VStack>
+                  </>
+                )}
                 <Divider my={3} />
-
                 You're
-                <Text as={"b"}>
-                  {" "} {user.email}
-                </Text>
+                <Text as={"b"}> {user.email}</Text>
               </Box>
               <Box
                 w={"100%"}
@@ -116,15 +142,7 @@ const UserProfile = () => {
                   Statistics
                 </Heading>
                 Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry's standard dummy
-                text ever since the 1500s, when an unknown printer took a galley
-                of type and scrambled it to make a type specimen book. It has
-                survived not only five centuries, but also the leap into
-                electronic typesetting, remaining essentially unchanged. It was
-                popularised in the 1960s with the release of Letraset sheets
-                containing Lorem Ipsum passages, and more recently with desktop
-                publishing software like Aldus PageMaker including versions of
-                Lorem Ipsum.
+                industry. 
               </Box>
             </VStack>
           </Box>

@@ -4,7 +4,7 @@ import sequelize from "../database/db";
 import { STATUS } from "../utils/enums";
 
 const UserModel = sequelize.define("User", {
-  socketId: {
+  id: {
     type: DataTypes.STRING,
     primaryKey: true,
     allowNull: false,

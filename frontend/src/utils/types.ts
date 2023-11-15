@@ -11,4 +11,3 @@ export type Question = Partial<{
   downvotes: number;
   topic: string;
 }>;
-

@@ -3,7 +3,10 @@ import axios from "axios";
 import { DIFFICULTY } from "../utils/enums";
 
 const questionServiceAxiosInstance = axios.create({
-  baseURL: process.env.QUESTION_SERVICE,
+  baseURL: "http://localhost:8010",
+  headers: {
+    "Content-Type": "application/json"
+  }
 });
 
 questionServiceAxiosInstance.interceptors.response.use(
@@ -14,6 +17,7 @@ questionServiceAxiosInstance.interceptors.response.use(
 );
 
 export const getQuestionsByDifficulty = async (d: DIFFICULTY) => {
-  const response = await questionServiceAxiosInstance.get(`/questions/${d}/1`);
-  return response.data.json();
+  const response = await questionServiceAxiosInstance.post(`/questions/${d}/1`);
+  return response.data
 };
+
