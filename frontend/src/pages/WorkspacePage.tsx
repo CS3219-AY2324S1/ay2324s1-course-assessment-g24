@@ -12,7 +12,7 @@ import {
   AccordionIcon,
   AccordionPanel,
 } from '@chakra-ui/react';
-import Chat from "./Chat";
+import Chat from "./Chat/Chat";
 
 const WorkspacePage = () => {
   const [socket, setSocket] = useState<WebSocket | null>(null);

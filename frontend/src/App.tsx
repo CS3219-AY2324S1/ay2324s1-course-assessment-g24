@@ -1,17 +1,17 @@
 import { Route, Routes } from "react-router-dom";
 
 import Authenticated from "./components/Authenticated";
-import ChangePassword from "./pages/ChangePassword";
-import Chat from "./pages/Chat";
+import ChangePassword from "./pages/ChangePassword/ChangePassword";
+import Chat from "./pages/Chat/Chat";
 import EditProfile from "./pages/EditProfile/EditProfile";
 import ForgotPassword from "./pages/ForgotPassword";
 import LandingPage from "./pages/LandingPage/LandingPage";
 import LoginPage from "./pages/LoginPage/LoginPage";
-import NotFound from "./pages/NotFound";
-import ResetPassword from "./pages/ResetPassword";
+import NotFound from "./pages/NotFound/NotFound";
+import ResetPassword from "./pages/ResetPassword/ResetPassword";
 import SignUpPage from "./pages/SignUpPage/SignUpPage";
 import UserProfile from "./pages/UserProfile";
-import VerificationEmail from "./pages/VerificationEmail";
+import VerificationEmail from "./pages/VerificationEmail/VerificationEmail";
 import WorkspacePage from "./pages/WorkspacePage";
 import Authenticated from "./components/Authenticated";
 import QuestionDetails from "./pages/QuestionDetails"; // Import the new component

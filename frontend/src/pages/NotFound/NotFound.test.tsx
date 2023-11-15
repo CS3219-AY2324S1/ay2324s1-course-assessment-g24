@@ -5,7 +5,7 @@ import { render, screen} from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 
 // Import userEvent for simulating user interactions
-import SignUpPage from "./SignUpPage";
+import NotFoundPage from "./NotFound";
 
 jest.mock("@chakra-ui/react", () => ({
   ...jest.requireActual("@chakra-ui/react"),
@@ -19,14 +19,11 @@ test("renders SignUpPage component", () => {
   render(
     <ChakraProvider>
       <MemoryRouter>
-        <SignUpPage />
+        <NotFoundPage />
       </MemoryRouter>
     </ChakraProvider>,
   );
-  expect(screen.getByLabelText("Email Address")).toBeInTheDocument();
-  expect(screen.getByLabelText("Password")).toBeInTheDocument();
-  expect(screen.getByLabelText("Confirm Password")).toBeInTheDocument();
-  expect(screen.getByText("Sign Up")).toBeInTheDocument();
+  expect(screen.getByText("This is the NotFound Page!")).toBeInTheDocument();
 });
 
 

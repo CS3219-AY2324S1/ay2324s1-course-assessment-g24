@@ -30,9 +30,9 @@ import { Field, Formik } from "formik";
 import { useRef } from "react";
 import { object, ref, string } from "yup";
 
-import HeadingWithGradient from "../components/HeadingWithGradient";
-import LinkButton from "../components/LinkButton";
-import NavBar from "../components/NavBar/NavBar";
+import HeadingWithGradient from "../../components/HeadingWithGradient";
+import LinkButton from "../../components/LinkButton";
+import NavBar from "../../components/NavBar/NavBar";
 
 const ChangePassword = () => {
   const deleteModalDisclosure = useDisclosure();
