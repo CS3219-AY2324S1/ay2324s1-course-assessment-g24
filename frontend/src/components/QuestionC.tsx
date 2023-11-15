@@ -9,15 +9,14 @@ import {
   Spacer,
   Text,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   BiDownvote,
   BiSolidDownvote,
   BiSolidUpvote,
   BiUpvote,
 } from "react-icons/bi";
-import { updateUpvote } from "../services/questionService";
-import { updateDownvote } from "../services/questionService"
+import { incrementUpvote, incrementDownvote, decrementUpvote, decrementDownvote } from "../services/questionService";
 import { Link } from 'react-router-dom';
 
 import { DIFFICULTY } from "../utils/enums";
@@ -33,6 +32,8 @@ const QuestionC = ({
   const tcolor = difficultyToColorScheme[difficulty];
   const [uvs, setUvs] = useState<number>(upVotes);
   const [dvs, setDvs] = useState<number>(downVotes);
+  const [upvoted, setUpvoted] = useState<boolean>(false);
+  const [downvoted, setDownvoted] = useState<boolean>(false);
 
   const [voteStatus, setVoteStatus] = useState<VoteStatus>(VoteStatus.NOVOTE);
 
@@ -46,12 +47,29 @@ const QuestionC = ({
 
     switch (vs) {
       case VoteStatus.UPVOTE:
-        updateUpvote(questionTitle);
-        setUvs(uvs+1);
+        // if already upvoted, then reduce upvote upon click (like a toggle feature)
+        if (upvoted) {
+          decrementUpvote(questionTitle);
+          setUpvoted(false);
+          setUvs(uvs-1);
+        } else {
+          incrementUpvote(questionTitle);
+          setUpvoted(true);
+          setUvs(uvs+1);
+        }
+        
         break;
       case VoteStatus.DOWNVOTE:
-        updateDownvote(questionTitle);
-        setDvs(dvs+1);
+        // if already downvoted, then reduce downvote upon click (toggle feature)
+        if (downvoted) {
+          decrementDownvote(questionTitle);
+          setDownvoted(false);
+          setDvs(dvs-1);
+        } else {
+          incrementDownvote(questionTitle);
+          setDownvoted(true);
+          setDvs(dvs+1);
+        }
         break;
       default:
         setVoteStatus(VoteStatus.NOVOTE);

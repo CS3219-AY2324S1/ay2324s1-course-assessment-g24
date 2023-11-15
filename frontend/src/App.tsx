@@ -47,17 +47,17 @@ const App = () => {
         <Route
           path="/ww"
           element={
-            <Authenticated>
+            // <Authenticated>
               <WorkspacePage />
-            </Authenticated>
+            // </Authenticated>
           }
         />
         <Route
           path="/question/:title"
           element={
-            <Authenticated>
+            //<Authenticated>
               <QuestionDetails />
-            </Authenticated>
+            //</Authenticated>
           }
         />
         <Route path="/login" element={<LoginPage />} />
