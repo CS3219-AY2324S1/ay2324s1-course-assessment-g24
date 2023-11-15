@@ -10,4 +10,4 @@ COPY ./history-service ./
 
 EXPOSE 8001
 
-CMD ["nohup", "uvicorn", "main:app", "--reload", "--port", "8001"]
+CMD ["uvicorn", "main:app", "--reload", "--port", "8001"]

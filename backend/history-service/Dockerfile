@@ -13,6 +13,12 @@ RUN pip install -r requirements.txt
 # Copy the application code to the working directory
 COPY . .
 
+ARG DB_URI
+ARG QUESTION_URL
+
+ENV DB_URI=${DB_URI}
+ENV QUESTION_URL${QUESTION_URL}
+
 # Expose the port on which the application will run
 EXPOSE 8001
 

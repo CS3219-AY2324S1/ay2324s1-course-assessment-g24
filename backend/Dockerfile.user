@@ -10,4 +10,4 @@ COPY ./user-service ./
 
 EXPOSE 8000
 
-CMD ["nohup", "uvicorn", "main:app", "--reload", "--port", "8000"]
+CMD ["uvicorn", "main:app", "--reload", "--port", "8000"]

@@ -13,15 +13,17 @@ RUN pip install -r requirements.txt
 # Copy the application code to the working directory
 COPY . .
 
-# Set environment variables
-ENV STATISTICS_CREATION_URL="your_statistics_creation_url"
-ENV HISTORY_URL="your_history_url"
-ENV STATISTICS_URL="your_statistics_url"
-ENV JWT_SECRET="your_jwt_secret"
-ENV DB_URI="your_db_uri"
+ARG JWT_SECRET
+ARG DB_URI
+ARG JWT_REFRESH_SECRET_KEY="08b7d5a146b83a57d9e59339ba3b5ade"
+ARG HASHING_ALGORITHM="HS256"
 
+ENV JWT_SECRET=${JWT_SECRET}
+ENV DB_URI=${DB_URI}
+ENV JWT_REFRESH_SECRET_KEY=${JWT_REFRESH_SECRET_KEY}
+ENV HASHING_ALGORITHM=${HASHING_ALGORITHM}
 # Expose the port on which the application will run
 EXPOSE 8000
 
 # Run the FastAPI application using uvicorn server
-CMD ["nohup", "uvicorn", "main:app", "--reload", "--port", "8000"]
+CMD  ["echo", "Hello, Docker!"]

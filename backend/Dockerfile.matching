@@ -1,0 +1,13 @@
+FROM node:16
+
+WORKDIR /app/backend/matching-service
+
+COPY ./matching-service/package.json ./
+COPY ./matching-service/package-lock.json ./  
+RUN npm ci  
+
+COPY ./matching-service ./
+
+EXPOSE 8004
+
+CMD ["npm", "run", "dev"]  

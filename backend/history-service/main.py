@@ -33,3 +33,7 @@ app.add_middleware(
 )
 
 app.include_router(history_router, prefix=settings.API_STR, tags=["history"])
+
+@app.get("/")
+def test():
+    return "Hello from History Service"
