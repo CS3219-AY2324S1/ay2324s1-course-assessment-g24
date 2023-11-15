@@ -1,5 +1,5 @@
+import { Avatar, Flex, Text } from "@chakra-ui/react";
 import React, { useEffect, useRef } from "react";
-import { Avatar, Flex, Text } from "@chakra-ui/react"; 
 
 interface MessageProps {
   messages: { senderId: string, receiverId: string, content: string, messageId: number }[],

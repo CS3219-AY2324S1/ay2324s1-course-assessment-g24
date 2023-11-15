@@ -5,7 +5,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Box, Flex, Select, Text} from "@chakra-ui/react";
 import FullCodeEditor from "../components/FullCodeEditor";
 import LoadingWrapper from "../components/LoadingWrapper";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/NavBar/NavBar";
 import FullQuestionPanel from "../components/FullQuestionPanel";
 
 interface Question {

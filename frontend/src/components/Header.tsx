@@ -1,5 +1,5 @@
+import { Avatar, AvatarBadge, Flex, Text } from "@chakra-ui/react";
 import React from "react";
-import { Flex, Avatar, AvatarBadge, Text } from "@chakra-ui/react";
 
 interface HeaderProps {
   receiverId: string;
