@@ -8,11 +8,12 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from api.router import router
 from core.config import settings
 from models.user_model import User
+import certifi
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    app.db = AsyncIOMotorClient(settings.MONGODB_CONNECTION_STRING).test
+    app.db = AsyncIOMotorClient(settings.MONGODB_CONNECTION_STRING, tlsCAFile=certifi.where()).test
     await init_beanie(app.db, document_models=[User])
     print("Startup complete")
     yield

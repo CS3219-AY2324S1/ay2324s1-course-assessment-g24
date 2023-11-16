@@ -1,8 +1,8 @@
 import { Box, Button, Text } from "@chakra-ui/react";
 import { Editor } from "@monaco-editor/react";
-import axios from "axios";
 import { editor } from "monaco-editor";
 import { useState } from "react";
+import { getCodeExecutionOutput } from "../services/codeExecuteService"
 
 // You may need to adjust imports based on your Chakra UI setup
 
@@ -42,12 +42,7 @@ const FullCodeEditor = ({
   const executeCode = async () => {
     try {
       // Make API call to execute code on the server
-      const response = await axios.post("http://localhost:5001/execute", {
-        code: editorValue,
-        language: selectedLanguage,
-      });
-
-      console.log(response);
+      const response = await getCodeExecutionOutput(editorValue, selectedLanguage);
 
       // Use the error_detail field if present, otherwise use the regular error or output
       const resultOutput =

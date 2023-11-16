@@ -18,7 +18,7 @@ const Footer: React.FC<FooterProps> = ({
         placeholder="Type Something..."
         border="none"
         borderRadius="none"
-        color="white"
+        color="black"
         _focus={{
           border: "1px solid black",
         }}

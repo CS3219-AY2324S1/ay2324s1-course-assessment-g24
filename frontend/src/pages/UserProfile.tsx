@@ -157,7 +157,7 @@ const UserProfile = () => {
                 )}
                 <Divider my={3} />
                 You're
-                <Text as={"b"}> hello</Text>
+                <Text as={"b"}> {user.email}</Text>
               </Box>
               <Box
                 w={"100%"}

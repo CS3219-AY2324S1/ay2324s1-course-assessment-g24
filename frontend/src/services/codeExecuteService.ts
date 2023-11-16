@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const codeExecutionService = axios.create({
-  baseURL: "http://localhost:5001", // Set your base URL here
+  baseURL: import.meta.env.VITE_CODE_EXECUTION_SERVICE_URL, // Set your base URL here
 });
 
 codeExecutionService.interceptors.response.use(

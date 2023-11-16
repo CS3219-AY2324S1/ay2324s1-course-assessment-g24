@@ -30,8 +30,7 @@ const WorkspacePage = () => {
   const [executionOutput, setExecutionOutput] = useState<string | null>(null);
 
   useEffect(() => {
-    // location.pathname === '/ww' && roomId === undefined
-    if (false) {
+    if (location.pathname === '/ww' && roomId === undefined) {
       navigate("/userprofile");
     }
   }, [roomId, navigate]);
@@ -43,6 +42,22 @@ const WorkspacePage = () => {
   const handleExecuteCode = (output: string) => {
     setExecutionOutput(output);
   };
+
+  // const [senderId, setSenderId] = useState("");
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await fetch("http://localhost:5002/chat/getSenderReceiver");
+  //       const data = await response.json();
+  //       setSenderId(data[0]);
+  //     } catch (error) {
+  //       console.error("Error:", error);
+  //     }
+  //   };
+  
+  //   fetchData();
+  // }, []);
 
   return (
     <>
@@ -74,11 +89,8 @@ const WorkspacePage = () => {
                     </h2>
                     <AccordionPanel>
                       <Box maxHeight="80vh" overflowY="auto">
-                        {/* <Chat
-                          socketObj={socket}
-                          sender_id={senderId}
-                          receiver_id={receiverId}
-                        /> */}
+                        <Chat collabId={roomId} userId={user.email} />
+                        {/* <Chat collabId={10} userId={senderId} /> (For testing)*/}
                       </Box>
                     </AccordionPanel>
                   </AccordionItem>
@@ -88,7 +100,7 @@ const WorkspacePage = () => {
                 <WorkspaceCodeEditor
                   height={70}
                   editorRef={editorRef}
-                  language={LANGUAGE.CPP} // user.language
+                  language={user.language}
                   editorContent={editorRef.current?.getValue()}
                   onExecuteCode={handleExecuteCode}
                 />
