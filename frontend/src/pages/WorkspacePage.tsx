@@ -1,7 +1,6 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 
-//import CodeEditor from "../components/CodeEditor";
 import WorkspaceCodeEditor from "../components/WorkspaceCodeEditor";
 import LoadingWrapper from "../components/LoadingWrapper";
 import NavBar from "../components/NavBar/NavBar";
@@ -72,7 +71,7 @@ const WorkspacePage = () => {
             <Flex flexDirection={"row"}>
               <Box w={"35%"}>
                 <QuestionPanel
-                  questionTitle={currentQuestion.title ?? "Placeholder Question Title"}
+                  questionTitle={currentQuestion.title ?? "Two Sum"}
                   questionDescription={currentQuestion.question_prompt ?? "Placeholder Question Prompt"}
                   difficulty={currentQuestion.difficulty_level ?? DIFFICULTY.EASY}
                   examples={currentQuestion.examples ?? placeholderExamples}

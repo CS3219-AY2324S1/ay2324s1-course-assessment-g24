@@ -5,7 +5,7 @@ from uuid import UUID, uuid4
 class ChatModel(Document):
   message_id: UUID = Field(default_factory=uuid4)
   senderId: str
-  roomId: int
+  roomId: str
   content: str
   timestamp: str
   
