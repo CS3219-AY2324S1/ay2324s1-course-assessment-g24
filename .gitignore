@@ -296,6 +296,3 @@ cython_debug/
 
 # In-memory databases 
 *.db
-
-# Package lock
-package-lock.json
