@@ -9,7 +9,7 @@ import {
   Spacer,
   Text,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   BiDownvote,
   BiSolidDownvote,
@@ -29,7 +29,7 @@ const QuestionC = ({
   difficulty,
   ...props
 }: QuestionProps & BoxProps) => {
-  const tcolor = difficultyToColorScheme[difficulty];
+  const tcolor = difficulty ? difficultyToColorScheme[difficulty] : DIFFICULTY.DEFAULT;
   const [uvs, setUvs] = useState<number>(upVotes);
   const [dvs, setDvs] = useState<number>(downVotes);
   const [upvoted, setUpvoted] = useState<boolean>(false);

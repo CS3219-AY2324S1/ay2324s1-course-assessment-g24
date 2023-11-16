@@ -1,11 +1,21 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import CodeEditor from "../components/CodeEditor";
+//import CodeEditor from "../components/CodeEditor";
+import WorkspaceCodeEditor from "../components/WorkspaceCodeEditor";
 import LoadingWrapper from "../components/LoadingWrapper";
 import NavBar from "../components/NavBar/NavBar";
 import QuestionPanel from "../components/QuestionPanel";
 import { DIFFICULTY, LANGUAGE } from "../utils/enums";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionIcon,
+  AccordionPanel,
+} from '@chakra-ui/react';
+
+import Chat from "./Chat/Chat";
 
 import { useMatching } from "../contexts/MatchingContext";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -17,9 +27,11 @@ const WorkspacePage = () => {
   const { roomId, questions } = useMatching();
   const navigate = useNavigate();
   const location = useLocation();
+  const [executionOutput, setExecutionOutput] = useState<string | null>(null);
 
   useEffect(() => {
-    if (location.pathname === '/ww' && roomId === undefined) {
+    // location.pathname === '/ww' && roomId === undefined
+    if (false) {
       navigate("/userprofile");
     }
   }, [roomId, navigate]);
@@ -27,6 +39,10 @@ const WorkspacePage = () => {
   const editorRef = useRef<editor.IStandaloneCodeEditor>();
   const currentQuestion = questions[0];
   const placeholderExamples = ["Placeholder Example 1", "Placeholder Example 2"];
+
+  const handleExecuteCode = (output: string) => {
+    setExecutionOutput(output);
+  };
 
   return (
     <>
@@ -46,7 +62,7 @@ const WorkspacePage = () => {
                   difficulty={currentQuestion.difficulty_level ?? DIFFICULTY.EASY}
                   examples={currentQuestion.examples ?? placeholderExamples}
                 />
-                {/* <Accordion allowToggle>
+                <Accordion allowToggle>
                   <AccordionItem>
                     <h2>
                       <AccordionButton>
@@ -58,22 +74,23 @@ const WorkspacePage = () => {
                     </h2>
                     <AccordionPanel>
                       <Box maxHeight="80vh" overflowY="auto">
-                        <Chat
+                        {/* <Chat
                           socketObj={socket}
                           sender_id={senderId}
                           receiver_id={receiverId}
-                        />
+                        /> */}
                       </Box>
                     </AccordionPanel>
                   </AccordionItem>
-                </Accordion> */}
+                </Accordion>
               </Box>
               <Box w={"65%"}>
-                <CodeEditor
+                <WorkspaceCodeEditor
                   height={70}
                   editorRef={editorRef}
-                  language={user.language}
+                  language={LANGUAGE.CPP} // user.language
                   editorContent={editorRef.current?.getValue()}
+                  onExecuteCode={handleExecuteCode}
                 />
               </Box>
             </Flex>

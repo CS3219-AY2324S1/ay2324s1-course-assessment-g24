@@ -24,22 +24,6 @@ import { getAllQuestions } from "../services/questionService"
 // Gets all questions from question service
 const questionRepo = await getAllQuestions();
 
-// Maps difficulty string from question service to difficulty enum item
-const mapDifficultyToEnum = (difficultyString: string) => {
-  const upperCaseDifficulty = difficultyString.toUpperCase();
-
-  switch (upperCaseDifficulty) {
-    case 'EASY':
-      return DIFFICULTY.EASY;
-    case 'MEDIUM':
-      return DIFFICULTY.MEDIUM;
-    case 'HARD':
-      return DIFFICULTY.HARD;
-    default:
-      return DIFFICULTY.DEFAULT;
-  }
-};
-
 interface QuestionType {
   title: string;
   topic: string;
@@ -50,7 +34,7 @@ interface QuestionType {
 
 export const difficultyToColorScheme = {
   [DIFFICULTY.EASY]: "green",
-  [DIFFICULTY.MEDIUM]: "yellow",
+  [DIFFICULTY.MEDIUM]: "orange",
   [DIFFICULTY.HARD]: "red",
   [DIFFICULTY.DEFAULT]: "gray"
 };
@@ -231,7 +215,7 @@ const UserProfile = () => {
                     questionTopic={question.topic}
                     upVotes={question.upvotes}
                     downVotes={question.downvotes}
-                    difficulty={mapDifficultyToEnum(question.difficulty_level)}
+                    difficulty={DIFFICULTY[question.difficulty_level.toUpperCase() as keyof typeof DIFFICULTY]} // mapDifficultyToEnum(question.difficulty_level)
                   />
                 ))}
               </Box>
