@@ -24,7 +24,7 @@ async def root():
 
 @app.on_event("startup")
 async def app_init():
-  db_client = AsyncIOMotorClient(settings.MONGODB_CONNECTION_STRING, tlsCAFile=certifi.where()).test
+  db_client = AsyncIOMotorClient(settings.MONGODB_CONNECTION_STRING).test
   await init_beanie(database=db_client, document_models=[ChatModel])
 
 app.include_router(chat_router, prefix="/chat", tags=["chat"])
