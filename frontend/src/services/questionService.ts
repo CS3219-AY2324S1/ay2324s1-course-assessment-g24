@@ -17,13 +17,23 @@ export const getAllQuestions =  async () => {
   return response.data;
 };
 
-export const updateUpvote = async (title: string) => {
+export const incrementUpvote = async (title: string) => {
   const response = await questionServiceAxiosInstance.post(`/popular/upvote/${title}`);
   return response.data;
 };
 
-export const updateDownvote = async (title: string) => {
+export const decrementUpvote = async (title: string) => {
+  const response = await questionServiceAxiosInstance.post(`/popular/reduce/upvote/${title}`);
+  return response.data;
+};
+
+export const incrementDownvote = async (title: string) => {
   const response = await questionServiceAxiosInstance.post(`/popular/downvote/${title}`);
+  return response.data;
+};
+
+export const decrementDownvote = async (title: string) => {
+  const response = await questionServiceAxiosInstance.post(`/popular/reduce/downvote/${title}`);
   return response.data;
 };
 

@@ -11,6 +11,7 @@ const Authenticated = (props: { children: ReactNode }) => {
   const [isVerified, setIsVerified] = useState(false);
 
   useEffect(() => {
+    console.log(auth)
     if (!auth.isAuthenticated) {
       navigate("/", { replace: true, state: { from: location } });
     } else {

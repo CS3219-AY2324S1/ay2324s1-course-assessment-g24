@@ -6,6 +6,7 @@ import {
   Divider,
   HStack,
   Heading,
+  Input,
   Text,
   VStack,
 } from "@chakra-ui/react";
@@ -18,15 +19,22 @@ import { useAuth } from "../contexts/AuthContext";
 import { DIFFICULTY } from "../utils/enums";
 import { useMatching } from "../contexts/MatchingContext";
 import { getHistoriesByUser } from "../services/historyService";
+import { getAllQuestions } from "../services/questionService"
 
-const randomQuestions = [
-  "Two Sum",
-  "Find Median",
-];
+// Gets all questions from question service
+const questionRepo = await getAllQuestions();
+
+interface QuestionType {
+  title: string;
+  topic: string;
+  upvotes: number;
+  downvotes: number;
+  difficulty_level: string;
+}
 
 export const difficultyToColorScheme = {
   [DIFFICULTY.EASY]: "green",
-  [DIFFICULTY.MEDIUM]: "yellow",
+  [DIFFICULTY.MEDIUM]: "orange",
   [DIFFICULTY.HARD]: "red",
   [DIFFICULTY.DEFAULT]: "gray"
 };
@@ -36,6 +44,8 @@ const UserProfile = () => {
   const { user } = useAuth();
   const { startMatch, isMatching, count, stopQueuing } = useMatching();
   const [numberOfQuestionsSolved, setNumberQuestionsSolved] = useState<number>(0);
+  const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
+  const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
 
   useEffect(() => {
     const questionsSolved = async () => {
@@ -45,6 +55,26 @@ const UserProfile = () => {
       response => setNumberQuestionsSolved(response.length)
     )
   }, []);
+
+  const handleDifficultyChange = (difficulty: string) => {
+    setSelectedDifficulty(difficulty);
+  };
+  
+  const handleTopicChange = (topic: string | null) => {
+    setSelectedTopic(topic);
+  };
+
+  // Filter questions based on selected difficulty and topic
+  const filteredQuestions = questionRepo.filter((question: QuestionType) => {
+    const matchesDifficulty = selectedDifficulty ? question.difficulty_level.toLowerCase().includes(selectedDifficulty.toLowerCase()) : true;
+
+    const lowerCaseTopic = question.topic.toLowerCase();
+    const lowerCaseSelectedTopic = selectedTopic ? selectedTopic.toLowerCase() : "";
+
+    const matchesTopic = selectedTopic ? lowerCaseTopic.includes(lowerCaseSelectedTopic) : true;
+
+    return matchesDifficulty && matchesTopic;
+  });
 
   return (
     <Box w="100vw" h="100vh">
@@ -152,18 +182,40 @@ const UserProfile = () => {
             alignItems={"center"}
           >
             <Box w={"100%"} py={4} px={2} m={4} rounded={"lg"} boxShadow={"lg"}>
+            <Box display="flex" justifyContent="space-between">
+                <Box w="48%" py={4} px={2} m={4} rounded="lg" boxShadow="lg" display="flex" flexDirection="row" alignItems="center">
+                  <Text mr={2} fontWeight="bold" minW="160px">
+                    Filter by Topic:
+                  </Text>
+                  <Input
+                    placeholder="Enter topic..."
+                    value={selectedTopic || ""}
+                    onChange={(e) => handleTopicChange(e.target.value)}
+                  />
+                </Box>
+                <Box w="48%" py={4} px={2} m={4} rounded="lg" boxShadow="lg" display="flex" flexDirection="row" alignItems="center">
+                  <Text mr={2} fontWeight="bold" minW="160px">
+                    Filter by Difficulty:
+                  </Text>
+                  <Input
+                    placeholder="Enter difficulty..."
+                    value={selectedDifficulty !== null ? selectedDifficulty.toString() : ""}
+                    onChange={(e) => handleDifficultyChange(e.target.value)}
+                  />
+                </Box>
+              </Box>
               <Heading size={"lg"} p={2} mx={4} mb={4} bg={"white"}>
                 Questions Repository
               </Heading>
               <Box maxH={"400px"} p={4} overflowY="auto">
-                {randomQuestions.map((question, index) => (
+                {filteredQuestions.map((question: QuestionType) => (
                   <QuestionC
-                    key={index}
-                    questionTitle={question}
-                    questionTopic={"asdf"}
-                    upVotes={1}
-                    downVotes={2}
-                    difficulty={DIFFICULTY.HARD}
+                    key={question.title}
+                    questionTitle={question.title}
+                    questionTopic={question.topic}
+                    upVotes={question.upvotes}
+                    downVotes={question.downvotes}
+                    difficulty={DIFFICULTY[question.difficulty_level.toUpperCase() as keyof typeof DIFFICULTY]} // mapDifficultyToEnum(question.difficulty_level)
                   />
                 ))}
               </Box>

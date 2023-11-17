@@ -4,7 +4,7 @@ import React, { useEffect, useRef } from "react";
 interface MessageProps {
   messages: {
     senderId: string;
-    receiverId: string;
+    roomId: number | undefined;
     content: string;
     messageId: number;
   }[];
@@ -27,7 +27,7 @@ const Messages: React.FC<MessageProps> = ({ messages, senderId }) => {
   return (
     <Flex w="100%" h="80%" overflowY="scroll" flexDirection="column" p="3">
       {messages.map((item, index) => {
-        if (item.senderId === senderId) {
+        if (senderId !== "" && item.senderId === senderId) {
           return (
             <Flex key={index} w="100%" justify="flex-end">
               <Flex

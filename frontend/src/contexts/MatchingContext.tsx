@@ -10,11 +10,10 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Socket, io } from "socket.io-client";
 
-import { DIFFICULTY, LANGUAGE } from "../utils/enums";
+import { DIFFICULTY } from "../utils/enums";
 import { Question } from "../utils/types";
 import { useAuth } from "./AuthContext";
 import { createHistory } from "../services/historyService";
-import { ObjectId } from "bson";
 
 interface MatchingState {
   count?: number;
@@ -130,16 +129,15 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
     callback();
   };
 
-  const endSession = async () => {
+  const endSession = () => {
     reset(() => {
       socket?.emit("prematureLeave");
       socket?.emit("properLeave", roomId);
-    });
 
-    if (questions) {
+      if (questions) {
       const q = questions[0];
       if (q) {
-        await createHistory({ 
+        createHistory({
           email: user.email, 
           matched_email: "", 
           difficulty_level: q.difficulty_level ?? DIFFICULTY.EASY,
@@ -148,6 +146,7 @@ export const MatchingProvider = ({ children }: { children: ReactNode }) => {
         });
       }
     }
+    });
     
     reset(() => {
       toast({

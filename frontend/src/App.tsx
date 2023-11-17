@@ -14,8 +14,6 @@ import UserProfile from "./pages/UserProfile";
 import VerificationEmail from "./pages/VerificationEmail/VerificationEmail"
 import WorkspacePage from "./pages/WorkspacePage";
 
-// Import the new component
-
 const App = () => {
   return (
     <>
@@ -39,9 +37,9 @@ const App = () => {
         <Route
           path="/userprofile"
           element={
-            // <Authenticated>
+            <Authenticated>
               <UserProfile />
-            // </Authenticated>
+            </Authenticated>
           }
         />
         <Route

@@ -1,54 +1,76 @@
 import { Flex } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 
-
 import Divider from "../../components/Divider";
 import Footer from "../../components/Footer";
 import Header from "../../components/Header";
 import Messages from "../../components/Messages";
 
 type Message = {
-  senderId: string;
-  receiverId: string;
+  roomId: number | undefined;
   content: string;
   messageId: number;
+  senderId: string;
 };
 
 interface ChatProps {
-  socketObj: WebSocket | null;
-  sender_id: string;
-  receiver_id: string;
+  collabId: number | undefined;
+  userId: string;
 }
 
-const Chat: React.FC<ChatProps> = ({ socketObj, sender_id, receiver_id }) => {
+const Chat: React.FC<ChatProps> = ({ collabId, userId }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [senderId, setSenderId] = useState("");
-  const [receiverId, setReceiverId] = useState("");
+  const [roomId, setRoomId] = useState<number>();
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
   useEffect(() => {
-    setSocket(socketObj);
-    setSenderId(sender_id);
-    setReceiverId(receiver_id);
-  }, [socketObj, sender_id, receiver_id]);
+    if (roomId) { 
+      const wsUrl = `${import.meta.env.VITE_COMMUNICATION_SERVICE_URL}/${roomId}`;
+      const socket = new WebSocket(wsUrl);
+      setSocket(socket);
+
+      if (socket) {
+        socket.onopen = () => {
+          console.log(
+            "Websocket connection for room " + roomId + " is established!",
+          );
+        };
+
+        socket.onclose = (evt: CloseEvent) => {
+          console.log(
+            "Websocket connection for room " + roomId + " is disconnected!",
+          );
+          console.log(evt.reason);
+        };
+      }
+    }
+  }, [roomId]);
+
+  useEffect(() => {
+    if (collabId && userId) {
+      setRoomId(collabId);
+      setSenderId(userId);
+    }
+  }, [collabId, userId]);
 
   useEffect(() => {
     if (socket) {
-      socket.onmessage = (evt: MessageEvent) => {
+      socket.addEventListener("message", (evt: MessageEvent) => {
         const newMessage = JSON.parse(evt.data);
-        if (newMessage.senderId === receiverId && newMessage.chat) {
+        if (newMessage.chat && newMessage.senderId != senderId) {
           setMessages((prevMessages) => [
             ...prevMessages,
             {
               messageId: prevMessages.length,
-              senderId: receiverId,
-              receiverId: senderId,
+              roomId: newMessage.roomId,
               content: newMessage.content,
+              senderId: newMessage.senderId
             },
           ]);
         }
-      };
+      });
     }
   }, [socket]);
 
@@ -62,9 +84,9 @@ const Chat: React.FC<ChatProps> = ({ socketObj, sender_id, receiver_id }) => {
         ...messages,
         {
           messageId: messages.length,
-          senderId: senderId,
-          receiverId: receiverId,
+          roomId: roomId,
           content: inputValue,
+          senderId: senderId // user.email
         },
       ]);
 
@@ -72,9 +94,9 @@ const Chat: React.FC<ChatProps> = ({ socketObj, sender_id, receiver_id }) => {
         await socket.send(
           JSON.stringify({
             content: inputValue,
-            receiverId: receiverId,
-            senderId: senderId,
+            roomId: roomId,
             chat: true,
+            senderId: senderId // senderId is basically user.email
           }),
         );
       }
@@ -92,7 +114,7 @@ const Chat: React.FC<ChatProps> = ({ socketObj, sender_id, receiver_id }) => {
       style={{ position: "relative" }}
       flexDir="column"
     >
-      <Header receiverId={receiverId} />
+      <Header roomId={roomId} />
       <Divider />
       <Messages messages={messages} senderId={senderId} />
       <Divider />

@@ -1,10 +1,18 @@
 import { Box, Button, Text } from "@chakra-ui/react";
 import { Editor } from "@monaco-editor/react";
-import axios from "axios";
 import { editor } from "monaco-editor";
 import { useState } from "react";
+import { getCodeExecutionOutput } from "../services/codeExecuteService"
+
+import { LANGUAGE } from "../utils/enums";
 
 // You may need to adjust imports based on your Chakra UI setup
+
+const mmap = {
+  [LANGUAGE.PYTHON]: "python",
+  [LANGUAGE.CPP]: "cpp",
+  [LANGUAGE.JAVASCRIPT]: "javascript"
+}
 
 interface FullCodeEditorProps {
   height: number;
@@ -42,12 +50,7 @@ const FullCodeEditor = ({
   const executeCode = async () => {
     try {
       // Make API call to execute code on the server
-      const response = await axios.post("http://localhost:5001/execute", {
-        code: editorValue,
-        language: selectedLanguage,
-      });
-
-      console.log(response);
+      const response = await getCodeExecutionOutput(editorValue, selectedLanguage);
 
       // Use the error_detail field if present, otherwise use the regular error or output
       const resultOutput =
@@ -86,7 +89,7 @@ const FullCodeEditor = ({
     <Box>
       <Box style={containerStyle}>
         <Editor
-          language={selectedLanguage} // Use the selected language
+          language={mmap[selectedLanguage]} // Use the selected language
           value={editorValue}
           onChange={(value) => setEditorValue(value || "")}
           height={`${height}dvh`}

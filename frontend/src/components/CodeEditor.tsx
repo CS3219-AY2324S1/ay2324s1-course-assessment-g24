@@ -77,7 +77,7 @@ const CodeEditor = ({
   return (
     <div>
       <Editor
-        language="javascript"
+        language={(language ?? user.language).toLowerCase()}
         defaultLanguage={(language ?? user.language).toLowerCase()}
         onChange={handleChange}
         height={`${height}dvh`}

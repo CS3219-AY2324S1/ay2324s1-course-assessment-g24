@@ -340,6 +340,29 @@ async def upvote_question(title: str):
 
   return question
 
+# decrement upvote of a particular question
+@question_router.post("/popular/reduce/upvote/{title}", response_model=QuestionRepo)
+async def upvote_question(title: str):
+  #title = title.replace("_", " ")
+  question = await QuestionRepo.find_one(
+    {
+      "title": {
+        "$regex": title, 
+        "$options": "i" # Enable case-insensitive search
+      }
+    }
+  )
+  if not question:
+    raise HTTPException(
+      status_code=404, 
+      detail="Question not found"
+    )
+
+  question.upvotes -= 1
+  question.popularity = (question.upvotes / (question.upvotes + question.downvotes)) * 100
+  await question.save()
+
+  return question
 
 # downvote a particular question
 @question_router.post("/popular/downvote/{title}", response_model=QuestionRepo)
@@ -357,6 +380,26 @@ async def downvote_question(title: str):
     raise HTTPException(status_code=404, detail="Question not found")
 
   question.downvotes += 1
+  question.popularity = (question.upvotes / (question.upvotes + question.downvotes)) * 100
+  await question.save()
+  return question
+
+# decrement downvote of a particular question
+@question_router.post("/popular/reduce/downvote/{title}", response_model=QuestionRepo)
+async def downvote_question(title: str):
+  title = title.replace("_", " ")
+  question = await QuestionRepo.find_one(
+    {
+      "title": {
+        "$regex": title, 
+        "$options": "i" # Enable case-insensitive search
+      }
+    }
+  )
+  if not question:
+    raise HTTPException(status_code=404, detail="Question not found")
+
+  question.downvotes -= 1
   question.popularity = (question.upvotes / (question.upvotes + question.downvotes)) * 100
   await question.save()
   return question

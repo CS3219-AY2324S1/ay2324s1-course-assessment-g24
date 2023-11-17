@@ -17,13 +17,13 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
             data = await websocket.receive_text()
             message = json.loads(data)
             senderId = message["senderId"]
-            receiverId = message["receiverId"]
+            roomId = message["roomId"]
             content = message["content"]
-            isChat = message["chat"] # if the request is abt sending a chat msg
+            isChat = message["chat"] # if the request is abt sending a chat msg, then true
             
             # Send message to relevant client
             dataToSend = json.dumps({ "senderId": senderId, "content": content, "chat": isChat })
-            await manager.send_personal_message(dataToSend, receiverId)
+            await manager.send_personal_message(dataToSend, roomId)
 
             # Update database
             if (isChat):

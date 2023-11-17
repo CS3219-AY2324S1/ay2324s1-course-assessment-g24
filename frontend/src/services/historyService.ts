@@ -1,19 +1,22 @@
 import { AxiosResponse } from "axios";
-import { ObjectId } from "bson";
 
 import historyServiceAxiosInstance from "./historyServiceHelper";
 import { DIFFICULTY } from "../utils/enums";
 
-// const BASE_URL = import.meta.env.VITE_HISTORY_SERVICE_URL
-
 export const getHistoriesByUser = async (user: User): Promise<History[]> => {
   try {
     const response: AxiosResponse<History[]> =
-      await historyServiceAxiosInstance.get("/", {
-        data: user,
-      });
+    await historyServiceAxiosInstance.get("/history", {
+      params: {
+        email: user.email
+      },
+    });
 
-    return response.data;
+    if ("histories" in response.data) {
+      return response.data.histories as unknown as History[];
+    }
+
+    return [];
   } catch (error) {
     console.error("Error fetching histories by user:", error);
     throw error;
@@ -23,8 +26,14 @@ export const getHistoriesByUser = async (user: User): Promise<History[]> => {
 export const createHistory = async (history: History): Promise<History> => {
   try {
     const response: AxiosResponse<History> =
-      await historyServiceAxiosInstance.post("/", {
-        data: history
+      await historyServiceAxiosInstance.post("/history", {
+        params: {
+          email: history.email,
+          matched_email: history.matched_email,
+          difficulty_level: history.difficulty_level,
+          question_title: history.question_title,
+          question_id: history.question_id,
+        }
       });
 
     return response.data;
@@ -36,8 +45,10 @@ export const createHistory = async (history: History): Promise<History> => {
 
 export const deleteHistoriesByUser = async (user: User): Promise<void> => {
   try {
-    await historyServiceAxiosInstance.delete("/", {
-      data: user,
+    await historyServiceAxiosInstance.delete("/history", {
+      params: {
+        email: user.email
+      },
     });
   } catch (error) {
     console.error("Error deleting histories by user:", error);
