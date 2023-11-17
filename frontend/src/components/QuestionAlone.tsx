@@ -2,14 +2,11 @@ import {
     Badge,
     Box,
     BoxProps,
-    Divider,
     Flex,
-    HStack,
     IconButton,
     Spacer,
     Text,
   } from "@chakra-ui/react";
-  import { Link } from 'react-router-dom';
   import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
   
   import { DIFFICULTY } from "../utils/enums";
@@ -30,24 +27,26 @@ import {
   
     return (
       <Box
-      textAlign={"left"}
-      rounded={"lg"}
-      p={2}
-      my={2}
-      borderWidth={2}
-      bg={`${tcolor}.50`}
-      borderColor={`${tcolor}.200`}
-      color={`${tcolor}.500`}
-      cursor="pointer" // Add cursor: pointer style
-      {...props}
-      onClick={onClick} // Call the onClick function when clicked
+        textAlign={"left"}
+        rounded={"lg"}
+        p={2}
+        my={2}
+        borderWidth={2}
+        bg={`${tcolor}.50`}
+        borderColor={`${tcolor}.200`}
+        color={`${tcolor}.500`}
+        cursor="pointer" // Add cursor: pointer style
+        {...props}
       >
         <Flex flexDirection={"row"} gap="1.5rem" alignItems={"center"}>
-        <Text as="span" mr={2}>{`ID: ${questionId}`}</Text>
+          <Text as="span" mr={2}>{`ID: ${questionId}`}</Text>
           <Badge colorScheme={tcolor} minWidth="100px" textAlign="center">
             {questionTopic}
           </Badge>
-            <Text as={"b"}>{questionTitle}</Text>
+          {/* Separate onClick handler for the title */}
+          <Text as={"b"} onClick={onClick}>
+            {questionTitle}
+          </Text>
           <Spacer />
           <Badge colorScheme={tcolor}>{difficulty}</Badge>
           <IconButton
