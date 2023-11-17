@@ -6,7 +6,7 @@ class History(Document):
     matched_email: str
     difficulty_level: str
     question_title: str
-    question_id: PydanticObjectId
+    question_id: str
 
     class Settings:
         name = "history"
