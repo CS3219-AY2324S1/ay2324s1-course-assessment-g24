@@ -13,6 +13,7 @@ import SignUpPage from "./pages/SignUpPage/SignUpPage";
 import UserProfile from "./pages/UserProfile";
 import VerificationEmail from "./pages/VerificationEmail/VerificationEmail"
 import WorkspacePage from "./pages/WorkspacePage";
+import StandaloneQuestions from "./pages/StandaloneQuestions";
 
 const App = () => {
   return (
@@ -40,6 +41,14 @@ const App = () => {
             <Authenticated>
               <UserProfile />
             </Authenticated>
+          }
+        />
+        <Route
+          path="/questionslist"
+          element={
+            // <Authenticated>
+              <StandaloneQuestions />
+            // </Authenticated>
           }
         />
         <Route
