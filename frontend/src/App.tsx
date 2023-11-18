@@ -46,9 +46,9 @@ const App = () => {
         <Route
           path="/questionslist"
           element={
-            // <Authenticated>
+            <Authenticated>
               <StandaloneQuestions />
-            // </Authenticated>
+            </Authenticated>
           }
         />
         <Route

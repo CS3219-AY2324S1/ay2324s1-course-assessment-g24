@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import QuestionAlone from "../components/QuestionAlone";
 import { DIFFICULTY } from "../utils/enums";
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter } from "@chakra-ui/react";
+import { useAuth } from "../contexts/AuthContext";
 
 
 interface QuestionType {
@@ -92,6 +93,8 @@ const StandaloneQuestions = () => {
     setIsUpdateModalOpen(true);
   };
 
+  const { user } = useAuth();
+
   const handleUpdateQuestion = () => {
     // Ensure that id is always a number
     if (updatedQuestion?.id !== undefined) {
@@ -146,7 +149,10 @@ const StandaloneQuestions = () => {
   };
 
   return (
-    <Box w="100vw" h="100vh" mx="auto" overflowY="auto">
+    <>
+    {user.is_admin ? (
+      <Box>
+        <Box w="100vw" h="100vh" mx="auto" overflowY="auto">
       <Box
         w={"100%"}
         display={"flex"}
@@ -340,6 +346,13 @@ const StandaloneQuestions = () => {
         </ModalContent>
       </Modal>
     </Box>
+      </Box>
+    ): (
+      <Box w="100vw" h="100vh" mx="auto" overflowY="auto">
+        You are not authorized!!
+      </Box>
+    )}
+    </>
   );
 };
 
