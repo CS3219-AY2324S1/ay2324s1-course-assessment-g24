@@ -6,13 +6,13 @@ from motor.motor_asyncio import AsyncIOMotorClient
 
 from api.question_handler import question_router
 from core.config import settings
-from models.question_model import QuestionRepo
+from models.question_model import QuestionRepo, QuestionCrudRepo
 import certifi
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     app.db = AsyncIOMotorClient(settings.MONGODB_CONNECTION_STRING, tlsCAFile=certifi.where()).test
-    await init_beanie(database=app.db, document_models=[QuestionRepo])
+    await init_beanie(database=app.db, document_models=[QuestionRepo, QuestionCrudRepo])
     print("Startup complete!")
     yield 
     print("Shutdown complete")

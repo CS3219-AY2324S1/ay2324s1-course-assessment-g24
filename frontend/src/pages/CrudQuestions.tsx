@@ -16,13 +16,14 @@ import { useEffect, useState } from "react";
 import QuestionAlone from "../components/QuestionAlone";
 import { DIFFICULTY } from "../utils/enums";
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter } from "@chakra-ui/react";
+import { createCrudQuestion, getCrudQuestions, updateCrudQuestion, deleteCrudQuestion } from "../services/questionService";
 
 interface QuestionType {
-  id: number,
+  qid: number,
   title: string;
   topic: string;
   difficulty_level: string;
-  description: string;
+  question_description: string;
 }
 
 export const difficultyToColorScheme = {
@@ -32,59 +33,57 @@ export const difficultyToColorScheme = {
   [DIFFICULTY.DEFAULT]: "gray",
 };
 
-const StandaloneQuestions = () => {
-  const initialQuestions = JSON.parse(localStorage.getItem("questions") as string) || [];
-  const initialInputId = JSON.parse(localStorage.getItem("inputId") as string) || 1;
-  const [questions, setQuestions] = useState<QuestionType[]>(initialQuestions);
+const CrudQuestions = () => {
+  const [questions, setQuestions] = useState<QuestionType[]>();
   const [newQuestion, setNewQuestion] = useState({
-    id: initialInputId,
+    qid: 1,
     title: "",
     topic: "",
     difficulty_level: "",
-    description: "",
+    question_description: "",
   });
   const [selectedQuestion, setSelectedQuestion] = useState<QuestionType | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [errorModal, setErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
-  const [updatedQuestion, setUpdatedQuestion] = useState<Partial<QuestionType> | null>(null);
+  const [updatedQuestion, setUpdatedQuestion] = useState<QuestionType | null>(null);
+  const [update, setUpdate] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem("questions", JSON.stringify(questions));
-  }, [questions]);
+    async function retrieveQuestions() {
+      const initialQuestions: QuestionType[] = await getCrudQuestions();
+      return initialQuestions;
+    }
+
+    retrieveQuestions().then(questions => {
+      setQuestions(questions)
+    });
+    
+  }, [update]);
 
   useEffect(() => {
-    localStorage.setItem("inputId", JSON.stringify(newQuestion.id));
-  }, [newQuestion.id]);
+    localStorage.setItem("inputId", JSON.stringify(newQuestion.qid));
+  }, [newQuestion.qid]);
 
   const isAddQuestionDisabled =
     !newQuestion.title ||
     !newQuestion.topic ||
     !newQuestion.difficulty_level ||
-    !newQuestion.description;
+    !newQuestion.question_description;
 
   const handleInputChange = (key: string, value: string) => {
     setNewQuestion((prevQuestion) => ({ ...prevQuestion, [key]: value }));
   };
 
-  const handleDeleteQuestion = (id: number) => {
-    const updatedQuestions = questions.filter((q) => q.id !== id);
-
-    // Find the maximum ID from the remaining questions
-    const maxID = Math.max(...updatedQuestions.map((q) => q.id), 0);
-
-    // Update the IDs for the remaining questions
-    const updatedQuestionsWithIDs = updatedQuestions.map((q, index) => ({
-      ...q,
-      id: index + 1,
-    }));
-
-    setQuestions(updatedQuestionsWithIDs);
-
-    // Set the new ID for the input box
-    setNewQuestion((prevQuestion) => ({ ...prevQuestion, id: maxID + 1 }));
+  const handleDeleteQuestion = (qid: number) => {
+    deleteCrudQuestion(qid)
+    handleQuestionChange()
   };
+
+  function handleQuestionChange() {
+    setUpdate(prevState => !prevState);
+  }
 
   const handleUpdateQuestionClick = (question: QuestionType) => {
     setUpdatedQuestion(question);
@@ -92,31 +91,27 @@ const StandaloneQuestions = () => {
   };
 
   const handleUpdateQuestion = () => {
-    // Ensure that id is always a number
-    if (updatedQuestion?.id !== undefined) {
-      const updatedQuestions = questions.map((q) =>
-        q.id === updatedQuestion.id ? updatedQuestion as QuestionType : q
-      );
-      setQuestions(updatedQuestions);
-
-      // Close the update modal
+    if (updatedQuestion?.qid !== undefined) {
+      updateCrudQuestion(updatedQuestion.qid, updatedQuestion);
       setIsUpdateModalOpen(false);
+      handleQuestionChange();
     }
   };
 
+  // Opens question
   const handleQuestionClick = (question: QuestionType) => {
     setSelectedQuestion(question);
     setIsModalOpen(true);
   };
 
   const handleAddQuestion = () => {
-    if (!newQuestion.title || !newQuestion.topic || !newQuestion.difficulty_level || !newQuestion.description) {
+    if (!newQuestion.title || !newQuestion.topic || !newQuestion.difficulty_level || !newQuestion.question_description) {
       setErrorMessage("All fields are required");
       setErrorModal(true);
       return;
     }
     // Check if a question with the same title already exists
-    const isQuestionExists = questions.some(
+    const isQuestionExists = questions?.some(
       (existingQuestion) => existingQuestion.title === newQuestion.title
     );
 
@@ -126,21 +121,17 @@ const StandaloneQuestions = () => {
       setErrorModal(true);
     } else {
       // Add the new question to the UI
-      const updatedQuestions = [...questions, newQuestion];
-      setQuestions(updatedQuestions);
-      setNewQuestion((prevQuestion) => ({
-        ...prevQuestion,
-        id: prevQuestion.id + 1,
-      }));
+      createCrudQuestion(newQuestion)
 
       // Clear the input fields
       setNewQuestion({
-        id: newQuestion.id + 1,
+        qid: newQuestion.qid + 1,
         title: "",
         topic: "",
         difficulty_level: "",
-        description: "",
+        question_description: "",
       });
+      handleQuestionChange()
     }
   };
 
@@ -166,7 +157,7 @@ const StandaloneQuestions = () => {
                 <FormLabel minW="200px" my="auto">Question ID</FormLabel>
                 <Input
                   placeholder="ID"
-                  value={newQuestion.id.toString()}
+                  value={newQuestion.qid.toString()}
                   isReadOnly
                 />
               </Flex>
@@ -211,8 +202,8 @@ const StandaloneQuestions = () => {
                 <FormLabel minW="200px" my="auto">Enter Question Description</FormLabel>
                 <Textarea
                   placeholder="Question Description"
-                  value={newQuestion.description}
-                  onChange={(e) => handleInputChange("description", e.target.value)}
+                  value={newQuestion.question_description}
+                  onChange={(e) => handleInputChange("question_description", e.target.value)}
                   rows={2.5} // Set an appropriate number of rows
                   resize="vertical" // Allow vertical resizing
                 />
@@ -224,10 +215,10 @@ const StandaloneQuestions = () => {
           <Divider />
 
           <Box maxH={"400px"} p={4} overflowY="auto">
-            {questions.map((question: QuestionType) => (
+            {questions?.map((question: QuestionType) => (
               <QuestionAlone
                 key={question.title}
-                questionId={question.id}
+                questionId={question.qid}
                 questionTitle={question.title}
                 questionTopic={question.topic}
                 difficulty={
@@ -236,7 +227,7 @@ const StandaloneQuestions = () => {
                   ]
                 }
                 onClick={() => handleQuestionClick(question)}
-                onDelete={() => handleDeleteQuestion(question.id)}
+                onDelete={() => handleDeleteQuestion(question.qid)}
                 onUpdate={() => handleUpdateQuestionClick(question)}
               />
             ))}
@@ -250,7 +241,7 @@ const StandaloneQuestions = () => {
               <ModalBody>
                 {/* Use Textarea instead of Text */}
                 <Textarea
-                  value={selectedQuestion?.description}
+                  value={selectedQuestion?.question_description}
                   isReadOnly
                   fontSize="md"
                   fontFamily="monospace"
@@ -291,7 +282,7 @@ const StandaloneQuestions = () => {
               <FormLabel minW="100px" my="auto">ID:</FormLabel>
               <Input
                 placeholder="ID"
-                value={updatedQuestion?.id?.toString() || ''}
+                value={updatedQuestion?.qid?.toString() || ''}
                 isReadOnly
               />
               </Flex>
@@ -300,7 +291,7 @@ const StandaloneQuestions = () => {
               <Input
                 placeholder="Question Title"
                 value={updatedQuestion?.title || ''}
-                onChange={(e) => setUpdatedQuestion((prev) => ({ ...prev, title: e.target.value }))}
+                onChange={(e) => setUpdatedQuestion((prev) => prev ? ({ ...prev, title: e.target.value }) : prev)}
               />
               </Flex>
               <Flex>
@@ -308,7 +299,7 @@ const StandaloneQuestions = () => {
               <Input
                 placeholder="Question Topic"
                 value={updatedQuestion?.topic || ''}
-                onChange={(e) => setUpdatedQuestion((prev) => ({ ...prev, topic: e.target.value }))}
+                onChange={(e) => setUpdatedQuestion((prev) => prev ? ({ ...prev, topic: e.target.value }) : prev)}
               />
               </Flex>
               <Flex>
@@ -316,15 +307,15 @@ const StandaloneQuestions = () => {
               <Input
                 placeholder="Difficulty Level"
                 value={updatedQuestion?.difficulty_level || ''}
-                onChange={(e) => setUpdatedQuestion((prev) => ({ ...prev, difficulty_level: e.target.value }))}
+                onChange={(e) => setUpdatedQuestion((prev) => prev ? ({ ...prev, difficulty_level: e.target.value }) : prev)}
               />
               </Flex>
               <Flex>
               <FormLabel minW="100px" my="auto">Description:</FormLabel>
               <Textarea
                   placeholder="Question Description"
-                  value={updatedQuestion?.description || ''}
-                  onChange={(e) => setUpdatedQuestion((prev) => ({ ...prev, description: e.target.value }))}
+                  value={updatedQuestion?.question_description || ''}
+                  onChange={(e) => setUpdatedQuestion((prev) => prev ? ({ ...prev, description: e.target.value }) : prev)}
                   rows={3} // Set an appropriate number of rows
                   resize="vertical" // Allow vertical resizing
                 />
@@ -342,4 +333,4 @@ const StandaloneQuestions = () => {
   );
 };
 
-export default StandaloneQuestions;
+export default CrudQuestions;

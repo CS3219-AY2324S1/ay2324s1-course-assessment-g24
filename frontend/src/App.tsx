@@ -14,6 +14,7 @@ import UserProfile from "./pages/UserProfile";
 import VerificationEmail from "./pages/VerificationEmail/VerificationEmail"
 import WorkspacePage from "./pages/WorkspacePage";
 import StandaloneQuestions from "./pages/StandaloneQuestions";
+import CrudQuestions from "./pages/CrudQuestions";
 
 // Import the new component
 
@@ -50,6 +51,14 @@ const App = () => {
           element={
             // <Authenticated>
               <StandaloneQuestions />
+            // </Authenticated>
+          }
+        />
+        <Route
+          path="/questionsCrudlist"
+          element={
+            // <Authenticated>
+              <CrudQuestions />
             // </Authenticated>
           }
         />
