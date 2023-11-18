@@ -20,3 +20,6 @@ class UserOut(BaseModel):
 class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
     language: Optional[str] = None
+
+class UserDelete(BaseModel):
+    email: EmailStr
