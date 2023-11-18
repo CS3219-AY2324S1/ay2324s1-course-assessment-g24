@@ -20,7 +20,7 @@ const ForgotPassword = () => {
       <Box w={"100dvw"} h={"100dvh"}>
         <AbsoluteCenter>
           <Box mb={5}>
-            <PeerPrepLogo />
+            <PeerPrepLogo link={"/"} />
           </Box>
           <Box bg="white" p={6} rounded={"md"} w={"sm"}>
             <Formik

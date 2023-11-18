@@ -1,0 +1,14 @@
+FROM python:3.11.0-bullseye
+
+WORKDIR  /app/backend/history-service
+
+# Install dependencies:
+COPY ./history-service/requirements.txt .
+ENV VIRTUAL_ENV=/opt/venv
+RUN python3 -m venv $VIRTUAL_ENV
+RUN . /opt/venv/bin/activate && pip install -r requirements.txt
+
+COPY ./history-service ./
+
+EXPOSE 8020
+CMD /opt/venv/bin/python3 -m uvicorn main:app --host 0.0.0.0 --port 8020

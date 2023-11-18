@@ -16,8 +16,6 @@ import WorkspacePage from "./pages/WorkspacePage";
 import StandaloneQuestions from "./pages/StandaloneQuestions";
 import CrudQuestions from "./pages/CrudQuestions";
 
-// Import the new component
-
 const App = () => {
   return (
     <>
@@ -41,17 +39,17 @@ const App = () => {
         <Route
           path="/userprofile"
           element={
-            // <Authenticated>
+            <Authenticated>
               <UserProfile />
-            // </Authenticated>
+            </Authenticated>
           }
         />
         <Route
           path="/questionslist"
           element={
-            // <Authenticated>
+            <Authenticated>
               <StandaloneQuestions />
-            // </Authenticated>
+            </Authenticated>
           }
         />
         <Route

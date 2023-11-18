@@ -13,7 +13,7 @@ import certifi
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    app.db = AsyncIOMotorClient(settings.MONGODB_CONNECTION_STRING, tlsCAFile=certifi.where()).test
+    app.db = AsyncIOMotorClient(settings.MONGODB_CONNECTION_STRING).test
     await init_beanie(app.db, document_models=[User])
     print("Startup complete")
     yield

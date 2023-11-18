@@ -4,7 +4,15 @@ import { editor } from "monaco-editor";
 import { useState } from "react";
 import { getCodeExecutionOutput } from "../services/codeExecuteService"
 
+import { LANGUAGE } from "../utils/enums";
+
 // You may need to adjust imports based on your Chakra UI setup
+
+const mmap = {
+  [LANGUAGE.PYTHON]: "python",
+  [LANGUAGE.CPP]: "cpp",
+  [LANGUAGE.JAVASCRIPT]: "javascript"
+}
 
 interface FullCodeEditorProps {
   height: number;
@@ -81,7 +89,7 @@ const FullCodeEditor = ({
     <Box>
       <Box style={containerStyle}>
         <Editor
-          language={selectedLanguage} // Use the selected language
+          language={mmap[selectedLanguage]} // Use the selected language
           value={editorValue}
           onChange={(value) => setEditorValue(value || "")}
           height={`${height}dvh`}

@@ -5,7 +5,7 @@ import WorkspaceCodeEditor from "../components/WorkspaceCodeEditor";
 import LoadingWrapper from "../components/LoadingWrapper";
 import NavBar from "../components/NavBar/NavBar";
 import QuestionPanel from "../components/QuestionPanel";
-import { DIFFICULTY, LANGUAGE } from "../utils/enums";
+import { DIFFICULTY } from "../utils/enums";
 import {
   Accordion,
   AccordionItem,
@@ -26,7 +26,7 @@ const WorkspacePage = () => {
   const { roomId, questions } = useMatching();
   const navigate = useNavigate();
   const location = useLocation();
-  const [executionOutput, setExecutionOutput] = useState<string | null>(null);
+  const [_executionOutput, setExecutionOutput] = useState<string | null>(null);
 
   useEffect(() => {
     if (location.pathname === '/ww' && roomId === undefined) {
