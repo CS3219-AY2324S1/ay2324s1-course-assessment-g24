@@ -10,7 +10,6 @@ class UserAuth(BaseModel):
     language: str = "PYTHON"
     is_admin: bool = False
 
-
 class UserOut(BaseModel):
     user_id: UUID
     email: EmailStr
