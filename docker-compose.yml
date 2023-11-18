@@ -1,0 +1,172 @@
+version: '3.9'
+
+services:
+  frontend:
+    depends_on:
+      - user-service
+      - matching-service
+      - collaboration-service
+      - history-service
+      - communication-service
+      - question-service
+      - code-execution-service
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.frontend
+    volumes:
+      - ./frontend:/app/frontend
+      - /app/frontend/node_modules
+    ports:
+      - '5173:5173'
+    environment:
+      VITE_USER_SERVICE_URL: 'http://localhost:8000/api/'
+      VITE_HISTORY_SERVICE_URL: 'http://localhost:8020/api/'
+      VITE_QUESTION_SERVICE_URL: 'http://localhost:8010/questions/'
+      VITE_CODE_EXECUTION_SERVICE_URL: 'http://localhoste:5001/'
+      VITE_COMMUNICATION_SERVICE_URL: 'ws://localhost:5002/chat/ws/'
+      VITE_MATCHING_SERVICE_URL: 'http://localhost:8002/'
+      VITE_COLLABORATION_SERVICE_URL: 'http://localhost:8004/'
+    networks:
+      - cs3219-project-network
+
+  user-service:
+    container_name: user-service
+    hostname: user-service
+    depends_on:
+      - mongo_db
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.user
+    volumes:
+      - ./backend/user-service:/app/backend/user-service
+      - /app/backend/user-service/.venv
+    ports:
+      - '8000:8000'
+    environment:
+      MONGODB_CONNECTION_STRING: "mongodb+srv://naranghardik16:y7QZmq01hhbquvEl@development.vy7vthu.mongodb.net/?retryWrites=true&w=majority"
+      JWT_SECRET_KEY: fa75420757c0f905d126c3b2a626c0db
+      JWT_REFRESH_SECRET_KEY: 08b7d5a146b83a57d9e59339ba3b5ade
+      HASHING_ALGORITHM: HS256
+    networks:
+      - cs3219-project-network
+
+  question-service:
+    container_name: question-service
+    hostname: question-service
+    depends_on:
+      - mongo_db
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.question
+    volumes:
+      - ./backend/question-service:/app/backend/question-service
+      - /app/backend/question-service/.venv
+    ports:
+      - '8010:8010'
+    environment:
+      MONGODB_CONNECTION_STRING: "mongodb+srv://naranghardik16:y7QZmq01hhbquvEl@development.vy7vthu.mongodb.net/?retryWrites=true&w=majority"
+    networks:
+      - cs3219-project-network
+    
+  history-service:
+    container_name: history-service
+    hostname: history-service
+    depends_on:
+      - mongo_db
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.history
+    volumes:
+      - ./backend/history-service:/app/backend/history-service
+      - /app/backend/history-service/.venv
+    ports:
+      - '8020:8020'
+    environment:
+      MONGODB_CONNECTION_STRING: "mongodb+srv://naranghardik16:y7QZmq01hhbquvEl@development.vy7vthu.mongodb.net/?retryWrites=true&w=majority"
+    networks:
+      - cs3219-project-network
+  
+  code-execution-service:
+    container_name: code-execution-service
+    hostname: code-execution-service
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.codeexec
+    volumes:
+      - ./backend/code-execution-service:/app/backend/code-execution-service
+      - /app/backend/code-execution-service/.venv
+    ports:
+      - '5001:5001'
+    networks:
+      - cs3219-project-network
+  
+  communication-service:
+    container_name: communication-service
+    hostname: communication-service
+    depends_on:
+      - mongo_db
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.communication
+    volumes:
+      - ./backend/communication-service:/app/backend/communication-service
+      - /app/backend/communication-service/.venv
+    ports:
+      - '5002:5002'
+    environment:
+      MONGODB_CONNECTION_STRING: "mongodb+srv://naranghardik16:y7QZmq01hhbquvEl@development.vy7vthu.mongodb.net/?retryWrites=true&w=majority"
+    networks:
+      - cs3219-project-network
+
+  matching-service:
+    container_name: matching-service
+    hostname: matching-service
+    depends_on:
+      - question-service
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.matching
+    volumes:
+      - ./backend/matching-service:/app/backend/matching-service
+      - /app/backend/matching-service/node_modules
+    ports:
+      - '8002:8002'
+    environment:
+      QUESTION_SERVICE: http://question-service:8010/
+    networks:
+      - cs3219-project-network
+
+  collaboration-service:
+    container_name: collaboration-service
+    hostname: collaboration-service
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.collaboration
+    volumes:
+      - ./backend/collaboration-service:/app/backend/collaboration-service
+      - /app/backend/collaboration-service/node_modules
+    ports:
+      - '8004:8004'
+    networks:
+      - cs3219-project-network
+    
+  mongo_db:
+    container_name: mongo_db
+    image: mongo:latest
+    restart: always
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_db:/data/db
+    networks:
+      - cs3219-project-network
+    logging:
+      driver: 'none'
+
+networks:
+  cs3219-project-network:
+    driver: bridge
+
+volumes:
+  mongo_db: {}

@@ -3,7 +3,7 @@ import axios from "axios";
 import { DIFFICULTY } from "../utils/enums";
 
 const questionServiceAxiosInstance = axios.create({
-  baseURL: "http://localhost:8010",
+  baseURL: process.env.QUESTION_SERVICE,
   headers: {
     "Content-Type": "application/json"
   }

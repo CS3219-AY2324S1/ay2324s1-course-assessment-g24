@@ -38,7 +38,7 @@ const CodeEditor = ({
   };
 
   useEffect(() => {
-    const url = "http://localhost:8004";
+    const url = import.meta.env.VITE_COLLABORATION_SERVICE_URL;
     const sock = io(url || '', {
       autoConnect: false,
     });
@@ -77,7 +77,7 @@ const CodeEditor = ({
   return (
     <div>
       <Editor
-        language="javascript"
+        language={(language ?? user.language).toLowerCase()}
         defaultLanguage={(language ?? user.language).toLowerCase()}
         onChange={handleChange}
         height={`${height}dvh`}

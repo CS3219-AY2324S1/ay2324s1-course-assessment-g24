@@ -44,7 +44,6 @@ async def execute_code(request: CodeRequest):
         if language == "python":
             process = subprocess.run([language, script_path], capture_output=True, text=True, timeout=5)
         elif language == "javascript":
-            # Use Node.js to run JavaScript code
             process = subprocess.run(["node", script_path], capture_output=True, text=True, timeout=5)
         elif language == "cpp":
             compile_process = subprocess.run(["g++", script_path, "-o", "temp_executable"], capture_output=True, text=True, timeout=5)

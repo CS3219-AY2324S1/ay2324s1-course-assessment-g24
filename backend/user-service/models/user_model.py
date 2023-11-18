@@ -12,6 +12,7 @@ class User(Document):
     hashed_password: str
     disabled: Optional[bool] = None
     language: str
+    is_admin: bool
 
     def __repr__(self) -> str:
         return f"<User {self.email}>"

@@ -1,0 +1,14 @@
+FROM node:16
+
+WORKDIR /app/backend/matching-service
+
+COPY ./matching-service/package.json ./
+COPY ./matching-service/package-lock.json ./
+
+RUN npm install
+
+COPY ./matching-service ./
+
+EXPOSE 8002
+
+CMD ["npm", "run", "dev"]

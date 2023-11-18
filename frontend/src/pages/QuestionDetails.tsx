@@ -8,6 +8,8 @@ import FullQuestionPanel from "../components/FullQuestionPanel";
 import LoadingWrapper from "../components/LoadingWrapper";
 import { fetchQuestion } from "../services/questionService";
 import NavBar from "../components/NavBar/NavBar";
+import { useAuth } from "../contexts/AuthContext";
+import { LANGUAGE } from "../utils/enums";
 
 interface Question {
   title: string;
@@ -21,6 +23,7 @@ interface Question {
 }
 
 const QuestionDetailsPage = () => {
+  const { user } = useAuth();
   const { title } = useParams();
   const [question, setQuestion] = useState<Question>();
   const [_executionOutput, setExecutionOutput] = useState<string | null>(null);
@@ -49,7 +52,7 @@ const QuestionDetailsPage = () => {
   return (
     <Box w={"100vw"} h={"100vh"}>
       <LoadingWrapper isLoading={!question} repeat={2}>
-        <NavBar withoutAnything activeLink={false} whereToGoOnClick={"/userprofile"} />
+        <NavBar withoutAnything activeLink={true} whereToGoOnClick={"/userprofile"} />
         <Box h={"80%"} p={2} mt={6}>
           <Flex flexDirection={"row"}>
             <Box w={"35%"}>
@@ -81,12 +84,19 @@ const QuestionDetailsPage = () => {
                 </Text>
                 {/* Style the Select component */}
                 <Select
+                  defaultValue={user.language}
                   value={selectedLanguage}
                   onChange={(e) => setSelectedLanguage(e.target.value)}
                 >
-                  <option value="python">Python</option>
-                  <option value="javascript">JavaScript</option>
-                  <option value="cpp">C++</option>
+                  <Box as={"option"} data-testid={"language-option"} value={LANGUAGE.PYTHON}>
+                    Python
+                  </Box>
+                  <Box as={"option"} data-testid={"language-option"} value={LANGUAGE.CPP}>
+                    C++
+                  </Box>
+                  <Box as={"option"} data-testid={"language-option"} value={LANGUAGE.JAVASCRIPT}>
+                    JavaScript
+                  </Box>
                 </Select>
               </Flex>
               {/* Pass the selected language to CodeEditor */}

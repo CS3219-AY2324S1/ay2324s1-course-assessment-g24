@@ -31,7 +31,7 @@ import { object, string } from "yup";
 
 import HeadingWithGradient from "../../components/HeadingWithGradient";
 import LinkButton from "../../components/LinkButton";
-import NavBar from "../../components/NavBar/NavBar";
+import NavBar from "../../components/NavBar";
 import { LANGUAGE } from "../../utils/enums";
 import { useAuth } from "../../contexts/AuthContext";
 
@@ -50,7 +50,7 @@ const EditProfile = () => {
 
   return (
     <Box w={"100dvw"} h={"100dvh"}>
-      <NavBar whereToGoOnClick={"/userprofile"} />
+      <NavBar whereToGoOnClick={"/userprofile"} withAdmin={user.is_admin} />
       <Container>
         <AbsoluteCenter>
           <VStack spacing={5}>

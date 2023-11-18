@@ -17,11 +17,11 @@ async def get_histories_by_user(email: str):
         )
 
 
-@history_router.post("/history", response_model=History)
-async def create_history(history: History):
+@history_router.post("/history")
+async def create_history(email: str, matched_email: str, difficulty_level: str, question_title: str, question_id: str):
     try:
-        await history.insert()
-        return history
+        h = History(email=email, matched_email=matched_email, difficulty_level=difficulty_level, question_title=question_title, question_id=question_id)
+        await h.insert()
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error creating history: {str(e)}")
 

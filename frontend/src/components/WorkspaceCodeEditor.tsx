@@ -127,7 +127,7 @@ const WorkspaceCodeEditor = ({
       <Box>
         <Box style={containerStyle}>
           <Editor
-            language="javascript"
+            language={(language ?? user.language).toLowerCase()}
             defaultLanguage={(language ?? user.language).toLowerCase()}
             onChange={handleChange}
             height={`${height}dvh`}

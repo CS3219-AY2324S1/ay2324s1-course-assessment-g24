@@ -76,9 +76,11 @@ const UserProfile = () => {
     return matchesDifficulty && matchesTopic;
   });
 
+  console.log("User Admin Status: ", user.is_admin);
+
   return (
     <Box w="100vw" h="100vh">
-      <NavBar withHomePage={false} whereToGoOnClick={"/userprofile"} />
+      <NavBar withHomePage={false} whereToGoOnClick={"/userprofile"} withAdmin={user.is_admin} />
       <VStack
         w={"100%"}
         h={"80%"}
