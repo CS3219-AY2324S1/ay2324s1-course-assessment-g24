@@ -8,6 +8,7 @@ class UserAuth(BaseModel):
     email: EmailStr = Field(..., description="user email")
     password: str = Field(..., min_length=5, max_length=50, description="user password")
     language: str = "PYTHON"
+    is_admin: bool = False
 
 
 class UserOut(BaseModel):
@@ -15,7 +16,7 @@ class UserOut(BaseModel):
     email: EmailStr
     disabled: Optional[bool] = False
     language: str
-
+    is_admin: bool
 
 class UserUpdate(BaseModel):
     email: Optional[EmailStr] = None
