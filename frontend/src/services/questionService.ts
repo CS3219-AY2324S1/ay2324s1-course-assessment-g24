@@ -42,4 +42,14 @@ export const fetchQuestion = async (title: string) => {
   return response.data;
 };
 
+export const addLeetCodeQuestion = async (leetcodeQuestion: string) => {
+  try {
+    const response = await questionServiceAxiosInstance.post(`/add/${leetcodeQuestion}`);
+    return response.data;
+  } catch (error) {
+    console.error(`An error occurred: ${error}`);
+    throw error;
+  }
+};
+
 export default questionServiceAxiosInstance;
