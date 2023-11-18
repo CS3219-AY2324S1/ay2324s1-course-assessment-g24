@@ -72,4 +72,8 @@ With regards to the current version, the following environment variables are nee
 
 ```
 VITE_USER_SERVICE_URL
+VITE_QUESTION_SERVICE_URL
+VITE_CODE_EXECUTION_SERVICE_URL
+VITE_COMMUNICATION_SERVICE_URL
+VITE_MATCHING_SERVICE_URL
 ```
