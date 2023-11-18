@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from api.question_handler import question_router
+from api.crud_handler import question_crud_router
 from core.config import settings
 from models.question_model import QuestionRepo, QuestionCrudRepo
 import certifi
@@ -31,3 +32,4 @@ app.add_middleware(
 )
 
 app.include_router(question_router, prefix="/questions", tags=["questions"])
+app.include_router(question_crud_router, prefix="/crud", tags=["questions_crud"])
