@@ -22,6 +22,7 @@ interface IAuthContext extends AuthState {
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   updatePreferredLanguage: (language: string) => void;
+  deleteUser: () => void;
 }
 
 const initialState: AuthState = {
@@ -35,6 +36,7 @@ const AuthContext = createContext<IAuthContext>({
   login: () => Promise.resolve(),
   logout: () => Promise.resolve(),
   updatePreferredLanguage: () => Promise.resolve(),
+  deleteUser: () => Promise.resolve()
 });
 
 interface InitializeAction {
@@ -63,7 +65,11 @@ interface UpdatePreferredLanguage {
   }
 }
 
-type AuthAction = InitializeAction | LoginAction | LogoutAction | UpdatePreferredLanguage;
+interface DeleteAction {
+  type: "DELETEUSER"
+}
+
+type AuthAction = InitializeAction | LoginAction | LogoutAction | UpdatePreferredLanguage | DeleteAction;
 
 const reducer = (state: AuthState, action: AuthAction): AuthState => {
   switch (action.type) {
@@ -90,6 +96,12 @@ const reducer = (state: AuthState, action: AuthAction): AuthState => {
       return {
         ...state,
         user: action.payload.user
+      };
+    case "DELETEUSER":
+      return {
+        ...state,
+        isAuthenticated: false,
+        user: null,
       }
     default:
       return state;
@@ -199,12 +211,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   }
 
+  const deleteUser = async () => {
+    try {
+      const response = await userServiceAxiosInstance.post("/users/delete");
+      
+      dispatch({
+        type: "DELETEUSER",
+      });
+
+      resetSession();
+    } catch (err) {
+      return Promise.reject(err);
+    }
+  }
+
   const value = useMemo(
     () => ({
       ...state,
       login,
       logout,
       updatePreferredLanguage,
+      deleteUser,
     }),
     [state],
   );

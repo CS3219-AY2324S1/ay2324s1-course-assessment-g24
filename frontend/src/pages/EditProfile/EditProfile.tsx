@@ -34,13 +34,16 @@ import LinkButton from "../../components/LinkButton";
 import NavBar from "../../components/NavBar/NavBar";
 import { LANGUAGE } from "../../utils/enums";
 import { useAuth } from "../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const EditProfile = () => {
   const deleteModalDisclosure = useDisclosure();
   const successAlert = useDisclosure({ defaultIsOpen: false });
   const sameValueAlert = useDisclosure({ defaultIsOpen: false });
   const cancelRef = useRef<HTMLButtonElement>(null);
-  const { updatePreferredLanguage, user } = useAuth();
+  const { updatePreferredLanguage, user, deleteUser } = useAuth();
+
+  const navigate = useNavigate();
 
   const [currentLanguage, setCurrentLanguage] = useState<string>(user.language);
 
@@ -208,7 +211,10 @@ const EditProfile = () => {
                       </Button>
                       <Button
                         colorScheme={"red"}
-                        onClick={deleteModalDisclosure.onClose}
+                        onClick={() => {
+                          deleteUser(user.email);
+                          navigate("/");
+                        }}
                       >
                         Delete
                       </Button>

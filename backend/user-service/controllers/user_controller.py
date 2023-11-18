@@ -7,6 +7,8 @@ from core.security import get_password, verify_password
 from models.user_model import User
 from schemas.user_schema import UserAuth, UserUpdate
 
+from pydantic import EmailStr
+
 
 class UserController:
     @staticmethod
@@ -52,3 +54,7 @@ class UserController:
         await user.update({"$set": data.dict(exclude_unset=True)})
         return user
     
+    @staticmethod
+    async def delete_user(email: EmailStr) -> None:
+        await User.find_one(User.email == email).delete()
+

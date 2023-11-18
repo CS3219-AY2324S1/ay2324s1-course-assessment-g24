@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from api.deps.user_deps import get_current_user
 from controllers.user_controller import UserController
 from models.user_model import User
-from schemas.user_schema import UserAuth, UserOut, UserUpdate
+from schemas.user_schema import UserAuth, UserDelete, UserOut, UserUpdate
 
 user_router = APIRouter()
 
@@ -34,4 +34,15 @@ async def update_user(data: UserUpdate, user: User = Depends(get_current_user)):
     except pymongo.errors.OperationFailure:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="User does not exist"
+        )
+    
+
+@user_router.post("/delete", summary="Delete existing user")
+async def delete_user(user: User = Depends(get_current_user)):
+    try:
+        return await UserController.delete_user(user.email)
+    except pymongo.errors.DuplicateKeyError as error:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(error),
         )
