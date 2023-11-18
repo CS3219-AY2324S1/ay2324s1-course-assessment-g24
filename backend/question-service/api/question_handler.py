@@ -8,6 +8,7 @@ from typing import List
 import random
 import httpx
 from beanie import PydanticObjectId
+from beanie import operators as ops
 
 from models.question_model import QuestionRepo
 from schemas.question_schema import QuestionTitle
@@ -25,7 +26,6 @@ async def get_questions():
       status_code=500, 
       detail=f"Error retrieving all questions: {str(e)}"
     )
-
 
 # get all questions of a particular difficulty level
 @question_router.get("/{difficulty_level}", response_model=List[QuestionRepo])
