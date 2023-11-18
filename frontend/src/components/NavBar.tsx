@@ -23,6 +23,7 @@ const NavBar = ({
   withoutAnything,
   activeLink,
   whereToGoOnClick,
+  withAdmin,
 }: NavBarProps) => {
   const { logout } = useAuth();
 
@@ -59,6 +60,15 @@ const NavBar = ({
                       </Link>
                     </MenuGroup>
                   )}
+                  {withAdmin ? (
+                    <MenuGroup title={"ADMIN"}>
+                      <Link to={"/questionslist"}>
+                        <MenuItem fontWeight={"normal"}>Admin</MenuItem>
+                      </Link>
+                    </MenuGroup>
+                  ): (
+                    <></>
+                  )}
                   {withSettings ?? (
                     <MenuGroup title={"PROFILE"}>
                       <Link to={"/editprofile"}>
@@ -94,6 +104,7 @@ interface NavBarProps {
   withoutAnything?: boolean;
   activeLink?: boolean;
   whereToGoOnClick: string;
+  withAdmin: boolean;
 }
 
 export default NavBar;

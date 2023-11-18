@@ -33,11 +33,14 @@ import { object, ref, string } from "yup";
 import HeadingWithGradient from "../../components/HeadingWithGradient";
 import LinkButton from "../../components/LinkButton";
 import NavBar from "../../components/NavBar/NavBar";
+import { useAuth } from "../../contexts/AuthContext";
 
 const ChangePassword = () => {
   const deleteModalDisclosure = useDisclosure();
   const successAlert = useDisclosure({ defaultIsOpen: false });
   const cancelRef = useRef<HTMLButtonElement>(null);
+
+  const { user } = useAuth();
 
   const newPasswordValidation = object().shape({
     password: string()
@@ -50,7 +53,7 @@ const ChangePassword = () => {
 
   return (
     <Box w={"100dvw"} h={"100dvh"}>
-      <NavBar whereToGoOnClick={"/userprofile"} />
+      <NavBar whereToGoOnClick={"/userprofile"} withAdmin={user.is_admin} />
       <Container>
         <AbsoluteCenter>
           <VStack spacing={5}>
