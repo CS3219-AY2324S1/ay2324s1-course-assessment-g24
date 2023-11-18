@@ -11,7 +11,6 @@ question_crud_router = APIRouter()
 # Get all questions
 @question_crud_router.get("/", response_model=List[QuestionCrudRepo])
 async def get_questions_crud():
-  print("hello")
   try:
     questions = await QuestionCrudRepo.find_all().to_list()
     return questions
