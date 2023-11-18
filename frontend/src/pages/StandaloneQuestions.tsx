@@ -11,16 +11,12 @@ import {
   Textarea,
   VStack,
 } from "@chakra-ui/react";
-import {  useState } from "react";
+import { useEffect, useState } from "react";
 
 import QuestionAlone from "../components/QuestionAlone";
 import { DIFFICULTY } from "../utils/enums";
 import { Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter } from "@chakra-ui/react";
 
-
-// Gets all questions from the question service
-//const questionRepo = await getAllQuestions();
-const questionRepo: QuestionType[] = [];
 
 interface QuestionType {
   id: number,
@@ -38,9 +34,11 @@ export const difficultyToColorScheme = {
 };
 
 const StandaloneQuestions = () => {
-  const [questions, setQuestions] = useState<QuestionType[]>(questionRepo);
+  const initialQuestions = JSON.parse(localStorage.getItem("questions") as string) || [];
+  const initialInputId = JSON.parse(localStorage.getItem("inputId") as string) || 1;
+  const [questions, setQuestions] = useState<QuestionType[]>(initialQuestions);
   const [newQuestion, setNewQuestion] = useState({
-    id: 1,
+    id: initialInputId,
     title: "",
     topic: "",
     difficulty_level: "",
@@ -52,6 +50,14 @@ const StandaloneQuestions = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [updatedQuestion, setUpdatedQuestion] = useState<Partial<QuestionType> | null>(null);
+
+  useEffect(() => {
+    localStorage.setItem("questions", JSON.stringify(questions));
+  }, [questions]);
+
+  useEffect(() => {
+    localStorage.setItem("inputId", JSON.stringify(newQuestion.id));
+  }, [newQuestion.id]);
 
   const isAddQuestionDisabled =
     !newQuestion.title ||
